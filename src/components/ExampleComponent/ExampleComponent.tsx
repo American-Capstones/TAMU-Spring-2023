@@ -25,7 +25,7 @@ export const ExampleComponent = () => (
         <Grid item>
           <InfoCard title="Information card">
             <Typography variant="body1">
-              All content should be wrapped in a card like this.
+              All content should be wrapped in a card like this...
             </Typography>
           </InfoCard>
         </Grid>
