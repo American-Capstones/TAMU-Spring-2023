@@ -13,7 +13,7 @@ export const DependabotDashboardPage = dependabotDashboardPlugin.provide(
   createRoutableExtension({
     name: 'DependabotDashboardPage',
     component: () =>
-      import('./components/ExampleComponent').then(m => m.ExampleComponent),
+      import('./components/Overview').then(m => m.Overview),
     mountPoint: rootRouteRef,
   }),
 );
