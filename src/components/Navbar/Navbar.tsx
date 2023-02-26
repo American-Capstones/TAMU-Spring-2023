@@ -1,5 +1,10 @@
 import React from 'react';
-import { TabbedLayout } from '@backstage/core-components';
+import { Route } from 'react-router-dom';
+import {
+  TabbedLayout, 
+} from '@backstage/core-components';
+import { Repo } from '../Repo';
+import { FlatRoutes } from '@backstage/core-app-api';
 
 
 
@@ -14,7 +19,11 @@ export const Navbar = ({  }: { }) => {
         <h1>Teams</h1>
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/repos" title="Repos">
-        <h1>Repos</h1>
+        <FlatRoutes>
+          <Route 
+            path='/*'
+            element={<Repo />}/>
+        </FlatRoutes>
       </TabbedLayout.Route>
     </TabbedLayout>
   );
