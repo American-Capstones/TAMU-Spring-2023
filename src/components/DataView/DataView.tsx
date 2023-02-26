@@ -12,7 +12,8 @@ export const DataView = ({  }: { }) => {
                 padding={0.3}
                 valueScale={{ type: 'linear' }}
                 indexScale={{ type: 'band', round: true }}
-                colors={{ scheme: 'nivo' }}
+                colors={{ scheme:"category10" }}
+                colorBy="indexValue"
                 defs={[
                     {
                         id: 'dots',
