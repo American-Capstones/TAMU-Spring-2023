@@ -1,18 +1,26 @@
 import React from 'react';
 import { ResponsiveBar } from '@nivo/bar'
 import mockData from "../../mock/data.json";
+import { Box } from '@material-ui/core';
 
-export const DataView = ({  }: { }) => {
+export const DataView = ({ }: {}) => {
     return (
-        <ResponsiveBar
+        <Box sx={
+            {
+                width: 600,
+                height: 300
+            }
+        }>
+            <ResponsiveBar
                 data={mockData}
                 indexBy="severity"
                 keys={["count"]}
                 margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-                padding={0.3}
+                labelTextColor={"white"}
+                padding={0.2}
                 valueScale={{ type: 'linear' }}
                 indexScale={{ type: 'band', round: true }}
-                colors={{ scheme:"category10" }}
+                colors={{ scheme: "category10" }}
                 colorBy="indexValue"
                 defs={[
                     {
@@ -89,7 +97,8 @@ export const DataView = ({  }: { }) => {
                 ]}
                 role="application"
                 ariaLabel="Nivo bar chart demo"
-                barAriaLabel={function(e){return e.id+": "+e.formattedValue+" in country: "+e.indexValue}}
-        />
+                barAriaLabel={function (e) { return e.indexValue.toString() }}
+            />
+        </Box>
     );
 };
