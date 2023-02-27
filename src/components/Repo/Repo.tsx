@@ -13,23 +13,23 @@ export const Repo = ({  }: { }) => {
   return (
     <div>
         <h1>Repository Vulnerabilities</h1>
-        <Grid container spacing={3}>
-            <Grid item xs={6}>
+        <Grid container spacing={1}>
+            <Grid item xs={3}>
             <InfoCard title="Critical">
                 <ExampleFetchComponent />
             </InfoCard>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={3}>
             <InfoCard title="High">
                 <ExampleFetchComponent />
             </InfoCard>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={3}>
             <InfoCard title="Moderate">
                 <ExampleFetchComponent />
             </InfoCard>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={3}>
             <InfoCard title="Low">
                 <ExampleFetchComponent />
             </InfoCard>
