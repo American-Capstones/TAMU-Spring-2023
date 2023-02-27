@@ -22,6 +22,7 @@ jobs:
           cd "plugins/dependabot-dashboard"
           git checkout master
           git pull origin master
+          git fetch
           git checkout ${{ github.event.pull_request.head.sha }}
           git pull
           cd ../..
