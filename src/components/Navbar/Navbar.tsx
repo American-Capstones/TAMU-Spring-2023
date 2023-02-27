@@ -1,22 +1,25 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import {
-  TabbedLayout, 
-} from '@backstage/core-components';
 import { Repo } from '../Repo';
-import { FlatRoutes } from '@backstage/core-app-api';
+import { TabbedLayout } from '@backstage/core-components';
+import { DataView } from '../DataView';
+import { Box } from '@material-ui/core';
 
 
-
-export const Navbar = ({  }: { }) => {
+export const Navbar = ({ }: {}) => {
 
   return (
     <TabbedLayout>
       <TabbedLayout.Route path="/" title="Overview">
-        <h1>Overview</h1>
+        <>
+          <h1>Overview</h1>
+          <DataView />
+        </>
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/teams" title="Teams">
-        <h1>Teams</h1>
+        <>
+          <h1>Teams</h1>
+          <DataView />
+        </>
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/repos" title="Repos">
         <Repo/>
