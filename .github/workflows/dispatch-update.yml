@@ -16,4 +16,4 @@ jobs:
           token: ${{ secrets.BAGGAGE_CLAIM_DEPLOY_KEY }}
           repository: ${{ matrix.repo }}
           event-type: update
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "module": "owner/submodule", "branch": "master"}'
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "module": "American-Capstones/TAMU-Spring-2023", "branch": "master"}'
