@@ -4,13 +4,25 @@ on:
   pull_request:
     branches:
       - master
+      - dev
 
 jobs:
   merge_pull_request:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout master branch
-        uses: actions/checkout@v2
+      - name: "Checkout baggage-claim Repository"
+        uses: actions/checkout@v3
+        with:
+          repository: tamu-edu-students/baggage-claim
+          token: ${{ secrets.BAGGAGE_CLAIM_DEPLOY_KEY }}
+          submodules: recursive
+
+      - name: "Update submodule to referenced branch"
+        run: |
+          cd "plugins/dependabot-dashboard"
+          git checkout ${{ github.sha }}
+          git pull
+          cd ../..
 
       - name: Use Node.js
         uses: actions/setup-node@v1
@@ -23,9 +35,5 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Test application
+      - name: Run tests
         run: yarn test
-
-      - name: Build application
-        run: yarn build:all
-
