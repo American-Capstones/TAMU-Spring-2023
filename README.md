@@ -1,4 +1,5 @@
 # dependabot-dashboard
+[![Continuous Integration](https://github.com/American-Capstones/TAMU-Spring-2023/actions/workflows/integration.yml/badge.svg?branch=master)](https://github.com/American-Capstones/TAMU-Spring-2023/actions/workflows/integration.yml)
 
 Welcome to the dependabot-dashboard plugin!
 
