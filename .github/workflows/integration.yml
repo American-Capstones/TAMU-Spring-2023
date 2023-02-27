@@ -21,6 +21,7 @@ jobs:
         run: |
           cd "plugins/dependabot-dashboard"
           git add remote origin git@github.com:American-Capstones/TAMU-Spring-2023.git
+          git fetch origin
           git checkout ${{ github.head_ref }}
           git pull
           cd ../..
