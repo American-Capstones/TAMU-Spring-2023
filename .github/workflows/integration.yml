@@ -20,7 +20,9 @@ jobs:
       - name: "Update submodule to referenced branch"
         run: |
           cd "plugins/dependabot-dashboard"
-          git checkout ${{ github.event.pull_request.head }}
+          git checkout master
+          git pull origin master
+          git checkout ${{ github.event.pull_request.head.sha }}
           git pull
           cd ../..
 
