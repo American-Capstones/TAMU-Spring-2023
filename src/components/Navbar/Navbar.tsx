@@ -19,11 +19,7 @@ export const Navbar = ({  }: { }) => {
         <h1>Teams</h1>
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/repos" title="Repos">
-        <FlatRoutes>
-          <Route 
-            path='/*'
-            element={<Repo />}/>
-        </FlatRoutes>
+        <Repo/>
       </TabbedLayout.Route>
     </TabbedLayout>
   );
