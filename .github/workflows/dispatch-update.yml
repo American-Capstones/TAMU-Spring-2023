@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        repo: ["owner/repo"]
+        repo: ["tamu-edu-students/baggage-claim"]
     steps:
       - name: Push to repo
         uses: peter-evans/repository-dispatch@v2
