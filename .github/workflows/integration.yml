@@ -20,7 +20,6 @@ jobs:
       - name: "Update submodule to referenced branch"
         run: |
           cd "plugins/dependabot-dashboard"
-          git remote add origin git@github.com:American-Capstones/TAMU-Spring-2023.git
           git fetch origin
           git checkout ${{ github.head_ref }}
           git pull
