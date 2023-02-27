@@ -13,6 +13,7 @@ jobs:
       - name: "Checkout baggage-claim Repository"
         uses: actions/checkout@v3
         with:
+          fetch-depth: 0
           repository: tamu-edu-students/baggage-claim
           token: ${{ secrets.BAGGAGE_CLAIM_DEPLOY_KEY }}
           submodules: recursive
@@ -20,7 +21,6 @@ jobs:
       - name: "Update submodule to referenced branch"
         run: |
           cd "plugins/dependabot-dashboard"
-          git fetch origin
           git checkout ${{ github.head_ref }}
           git pull
           cd ../..
