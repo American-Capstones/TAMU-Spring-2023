@@ -1,0 +1,19 @@
+name: Dispatch update action to baggage-claim
+on:
+  push:
+    branches:
+      - 'master'
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo: ["owner/repo"]
+    steps:
+      - name: Push to repo
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.BAGGAGE_CLAIM_DEPLOY_KEY }}
+          repository: ${{ matrix.repo }}
+          event-type: update
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "module": "owner/submodule", "branch": "master"}'
