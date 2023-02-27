@@ -1,8 +1,8 @@
 import React from 'react';
+import { Repo } from '../Repo';
 import { TabbedLayout } from '@backstage/core-components';
 import { DataView } from '../DataView';
 import { Box } from '@material-ui/core';
-
 
 
 export const Navbar = ({ }: {}) => {
@@ -22,9 +22,7 @@ export const Navbar = ({ }: {}) => {
         </>
       </TabbedLayout.Route>
       <TabbedLayout.Route path="/repos" title="Repos">
-        <>
-          <h1>Repos</h1>
-        </>
+        <Repo/>
       </TabbedLayout.Route>
     </TabbedLayout>
   );
