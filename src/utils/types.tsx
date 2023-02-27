@@ -31,5 +31,17 @@
   export type RepoName = {
     name: string;
   };
+
+  export type VulnerabilityAlerts = {
+    name:string;
+    url:string;
+    vulnerabilityAlerts : {
+      nodes : {
+        securityAdvisory : {
+          severity : string;
+        }
+      }
+    }
+  }
   
   
