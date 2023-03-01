@@ -4,7 +4,7 @@ import {
   InfoCard, 
   TabbedLayout,
 } from '@backstage/core-components';
-import { ExampleFetchComponent } from '../ExampleFetchComponent';
+import { ExampleFetchComponent } from '../../ExampleFetchComponent';
 
 
 
