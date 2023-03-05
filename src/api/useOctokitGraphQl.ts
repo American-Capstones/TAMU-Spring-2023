@@ -33,7 +33,7 @@ export const useOctokitGraphQl = <T>() => {
 
   return (path: string, options?: any): Promise<T> =>
     auth
-      .getAccessToken(['repo'])
+      .getAccessToken(['repo', 'read:org', 'read:discussion'])
       .then((token: string) => {
         if (!octokit) {
           octokit = new Octokit({ auth: token, ...(baseUrl && { baseUrl }) });
