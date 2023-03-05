@@ -13,6 +13,7 @@ export type VulnInfo = {
     pullRequest: string;
     dismissedAt: string;
     fixedAt: string;
+    vulnVersionRange: string,
     classification: string;
     severity: string;
     summary: string;
@@ -21,5 +22,5 @@ export type VulnInfo = {
 };
 
 export type VulnListProps = {
-vulns: VulnInfo[];
+    vulns: VulnInfo[];
 }
