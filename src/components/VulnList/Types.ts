@@ -19,6 +19,14 @@ export type VulnInfo = {
     summary: string;
     vulnerabilityCount: object;
     state: string;
+    /*
+    url: string
+    number: number
+    vulnerableManifestPath: string // which file the vuln is in
+    pullRequestNum: number;
+    pullRequestLink: string;
+    ecosystem: string
+    */
 };
 
 export type VulnListProps = {

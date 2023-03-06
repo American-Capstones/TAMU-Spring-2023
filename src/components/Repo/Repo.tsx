@@ -17,10 +17,10 @@ let testArrays : RepoVulns = {
       fixedAt: "1/6/23",
       vulnVersionRange: ">= 1.0.0",
       classification: "none",
-      severity: "critical",
-      summary: "vuln",
+      severity: "CRITICAL",
+      summary: "This is a summary of a critical vulnerability",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
+      state: "OPEN",
     }, 
     {
       packageName: "Maven",
@@ -34,7 +34,7 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
+      state: "RESOLVED",
     } 
   ], 
   high: [
