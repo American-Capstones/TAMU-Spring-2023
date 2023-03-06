@@ -5,7 +5,7 @@ import { Box, Container, Grid } from '@material-ui/core';
 import { InfoCard, Table } from '@backstage/core-components';
 import { TableProps } from './Types';
 
-export const DataView = ({ columns, rows, filters }: TableProps) => {
+export const DataView = ({ columns, rows, filters, title, onRowClick }: TableProps) => {
 
     return (
         <Grid container spacing={8} direction='column'>
@@ -306,13 +306,20 @@ export const DataView = ({ columns, rows, filters }: TableProps) => {
                 </Grid>
             </Grid>
             <Table 
-                title="Teams in this Organization"
+                title={title}
                 options={{ search: true, paging: true }}
                 columns={columns}
                 data={rows}
+                onRowClick={onRowClick}
+                // actions={[
+                //     {
+                //       icon: 'save',
+                //       tooltip: 'Save User',
+                //       onClick: (event, rowData) => alert("You saved " + rowData.name)
+                //     }
+                //   ]}
                 filters={filters}
             />
         </Grid>
-        
     );
 };

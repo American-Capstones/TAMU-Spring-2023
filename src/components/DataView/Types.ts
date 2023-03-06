@@ -3,5 +3,7 @@ import { TableColumn, TableFilter } from '@backstage/core-components';
 export type TableProps = {
     columns: TableColumn[],
     rows: any[],
-    filters: TableFilter[]
+    filters: TableFilter[],
+    title: string,
+    onRowClick: (event: React.MouseEvent, rowData: any) => void
 };
