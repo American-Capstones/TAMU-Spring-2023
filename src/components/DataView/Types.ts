@@ -5,5 +5,5 @@ export type TableProps = {
     rows: any[],
     filters: TableFilter[],
     title: string,
-    onRowClick: (event: React.MouseEvent, rowData: any) => void
+    onRowClick: (event: React.MouseEvent | undefined, rowData: any) => void
 };

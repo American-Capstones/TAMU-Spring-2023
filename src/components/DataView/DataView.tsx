@@ -311,13 +311,6 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
                 columns={columns}
                 data={rows}
                 onRowClick={onRowClick}
-                // actions={[
-                //     {
-                //       icon: 'save',
-                //       tooltip: 'Save User',
-                //       onClick: (event, rowData) => alert("You saved " + rowData.name)
-                //     }
-                //   ]}
                 filters={filters}
             />
         </Grid>

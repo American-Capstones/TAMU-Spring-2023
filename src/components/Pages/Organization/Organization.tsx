@@ -20,8 +20,8 @@ const testData: TableProps = {
 export const Organization = ({} : {}) => {
     const navigate = useNavigate();
 
-    let handleClick = (event: React.MouseEvent, rowData: any) => {
-        navigate(`${window.location.pathname}/team/${rowData.name}`, { replace: true });
+    let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
+        navigate(`./teams/${rowData.name}`, { replace: true });
     }
 
     const cols = testData.columns

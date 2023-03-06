@@ -17,7 +17,7 @@ export const Navbar = ({ }: {}) => {
       <TabbedLayout.Route path="/teams/:teamName" title="Teams">
         <Team/>
       </TabbedLayout.Route>
-      <TabbedLayout.Route path="/repos" title="Repos">
+      <TabbedLayout.Route path="/repos/:repoId" title="Repos">
         <Repo/>
       </TabbedLayout.Route>
     </TabbedLayout>
