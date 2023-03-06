@@ -22,6 +22,15 @@ jobs:
           submodules: recursive
 
       - name: "Update submodule to referenced branch"
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          cd "plugins/dependabot-dashboard"
+          git checkout ${{ github.head_ref }}
+          git pull
+          cd ../..
+
+      - name: "Update submodule to referenced branch"
+        if: ${{ github.event_name == 'push' }}
         run: |
           cd "plugins/dependabot-dashboard"
           git checkout ${{ github.ref_name }}
