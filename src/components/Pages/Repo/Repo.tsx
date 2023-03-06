@@ -3,8 +3,8 @@ import { Grid } from '@material-ui/core';
 import {
   InfoCard, 
 } from '@backstage/core-components';
-import { ExampleFetchComponent } from '../ExampleFetchComponent';
-import { VulnList, VulnInfo, RepoVulns } from '../VulnList';
+import { ExampleFetchComponent } from '../../ExampleFetchComponent';
+import { VulnList, VulnInfo, RepoVulns } from '../../VulnList';
 
 let testArrays : RepoVulns = {
   critical: [
