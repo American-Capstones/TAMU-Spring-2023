@@ -14,34 +14,87 @@
  * limitations under the License.
  */
 
-  export type Connection<T> = {
-    nodes: T;
-    pageInfo: {
-      hasNextPage: boolean;
-      endCursor?: string;
-    };
+export type Connection<T> = {
+  nodes: T;
+  pageInfo: {
+    hasNextPage: boolean;
+    endCursor?: string;
   };
-  
-  export type Repositories<T> = {
-    user: {
-      repositories: Connection<T>;
-    };
-  };
-  
-  export type RepoName = {
-    name: string;
-  };
+};
+ 
+export type Repository = {
+  name: string;
+}
 
-  export type VulnerabilityAlerts = {
+export type Repositories<T> = {
+  user: {
+    repositories: Connection<T>;
+  };
+};
+
+export type RepoName = {
+  name: string;
+};
+
+export type VulnInfoRepo<T> = {
+  repository : {
     name:string;
     url:string;
     vulnerabilityAlerts : {
-      nodes : {
-        securityAdvisory : {
-          severity : string;
-        }
-      }
+      nodes : T
     }
   }
-  
-  
+}
+export type VulnInfoUnformatted = {
+  createdAt : string;
+  dismissedAt : string;
+  fixedAt : string;
+  securityAdvisory : {
+    summary : string;
+    severity : string;
+    classification : string;
+    vulnerabilities : {
+      totalCount : number
+    }
+  }
+  securityVulnerability : {
+    package : {
+      name : string
+    }
+    vulnerableVersionRange : string;
+    firstPatchedVersion : {
+      identifier : string
+    }
+  }
+  state : string
+}
+
+export type VulnInfoFormatted = {
+  packageName: string;
+  versionNum: string;
+  createdAt: string; 
+  pullRequest: string;
+  dismissedAt: string;
+  fixedAt: string;
+  vulnVersionRange: string,
+  classification: string;
+  severity: string;
+  summary: string;
+  vulnerabilityCount: number;
+  state: string;
+  /*
+  url: string
+  number: number
+  vulnerableManifestPath: string // which file the vuln is in
+  pullRequestNum: number;
+  pullRequestLink: string;
+  ecosystem: string
+  */
+};
+
+export type RepoVulns = {
+  critical: VulnInfoFormatted[];
+  high: VulnInfoFormatted[];
+  moderate: VulnInfoFormatted[];
+  low: VulnInfoFormatted[];
+}

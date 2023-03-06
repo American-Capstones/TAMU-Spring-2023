@@ -13,46 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   Repositories, 
-  VulnerabilityAlerts,
+  RepoName,
 } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
 
-const REPO_REQUEST_LIMIT = 10;
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
-export const useGetVulnerabilitiesFromUser = () => {
+export async function getVulnerabilitiesFromUser(
+  userLogin: string
+): Promise<RepoName[]> {
+  const repoRequestLimit = 10
   const graphql =
-    useOctokitGraphQl<Repositories<VulnerabilityAlerts[]>>();
-
-  const fn = React.useRef(
-    async (
-      userLogin: string,
-      repoRequestLimit?: number,
-    ): Promise<VulnerabilityAlerts[]> => {
-      const limit = repoRequestLimit ?? REPO_REQUEST_LIMIT;
-
-      return await getVulnerabilityNodes(graphql, userLogin, limit);
-    },
-  );
-
-  return fn.current;
-};
-
-async function getVulnerabilityNodes(
-  graphql: (
-    path: string,
-    options?: any,
-  ) => Promise<Repositories<VulnerabilityAlerts[]>>,
-  userLogin: string,
-  repoRequestLimit: number,
-): Promise<VulnerabilityAlerts[]> {
-  const repoRequestNodes: VulnerabilityAlerts[] = [];
+    useOctokitGraphQl<Repositories<RepoName[]>>();
+  const repoRequestNodes: RepoName[] = [];
   let result:
-    | Repositories<VulnerabilityAlerts[]>
+    | Repositories<RepoName[]>
     | undefined = undefined;
 
   do {
@@ -65,11 +42,29 @@ async function getVulnerabilityNodes(
             nodes {
               name
               url
-              vulnerabilityAlerts(first: 10) {
+              vulnerabilityAlerts(first: $first) {
                 nodes {
+                  createdAt
+                  dismissedAt
+                  fixedAt
                   securityAdvisory {
+                    summary
                     severity
+                    classification
+                    vulnerabilities {
+                      totalCount
+                    }
                   }
+                  securityVulnerability {
+                    package {
+                      name
+                    }
+                    firstPatchedVersion {
+                      identifier
+                    }
+                    vulnerableVersionRange
+                  }
+                  state
                 }
               }
             }
