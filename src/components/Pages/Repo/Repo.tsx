@@ -1,17 +1,20 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Divider, Grid } from '@material-ui/core';
 import {
-  InfoCard, 
+  HorizontalScrollGrid,
+  InfoCard,
+  StatusOK,
 } from '@backstage/core-components';
 import { ExampleFetchComponent } from '../../ExampleFetchComponent';
 import { VulnList, VulnInfo, RepoVulns } from '../../VulnList';
+import { BorderRight } from '@material-ui/icons';
 
-let testArrays : RepoVulns = {
+let testArrays: RepoVulns = {
   critical: [
     {
       packageName: "Maven",
       versionNum: 1.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -21,11 +24,11 @@ let testArrays : RepoVulns = {
       summary: "This is a summary of a critical vulnerability",
       vulnerabilityCount: [1, 2, 3],
       state: "OPEN",
-    }, 
+    },
     {
       packageName: "Maven",
       versionNum: 2.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -34,14 +37,14 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "RESOLVED",
-    } 
-  ], 
+      state: "FIXED",
+    }
+  ],
   high: [
     {
       packageName: "Maven",
       versionNum: 1.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -50,12 +53,12 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    }, 
+      state: "FIXED",
+    },
     {
       packageName: "Maven",
       versionNum: 2.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -64,14 +67,14 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    } 
-  ], 
+      state: "FIXED",
+    }
+  ],
   moderate: [
     {
       packageName: "Maven",
       versionNum: 1.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -80,12 +83,12 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    }, 
+      state: "FIXED",
+    },
     {
       packageName: "Maven",
       versionNum: 2.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -94,14 +97,14 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    } 
+      state: "FIXED",
+    }
   ],
   low: [
     {
       packageName: "Maven",
       versionNum: 1.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -110,12 +113,12 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    }, 
+      state: "FIXED",
+    },
     {
       packageName: "Maven",
       versionNum: 2.6,
-      createdAt: "1/2/23", 
+      createdAt: "1/2/23",
       pullRequest: "Yes",
       dismissedAt: "1/5/23",
       fixedAt: "1/6/23",
@@ -124,38 +127,38 @@ let testArrays : RepoVulns = {
       severity: "critical",
       summary: "vuln",
       vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    } 
+      state: "FIXED",
+    }
   ]
 }
 
-export const Repo = ({  }: { }) => {
+const columnStyle : React.CSSProperties = {
+  marginRight: "2em",
+}
+
+export const Repo = ({ }: {}) => {
 
   return (
     <div>
-        <h1>Repository Vulnerabilities</h1>
-        <Grid container spacing={1}>
-            <Grid item xs={3}>
-            <InfoCard title="Critical">
-              <VulnList vulns={testArrays.critical} />
-            </InfoCard>
-            </Grid>
-            <Grid item xs={3}>
-            <InfoCard title="High">
-              <VulnList vulns={testArrays.high} />
-            </InfoCard>
-            </Grid>
-            <Grid item xs={3}>
-            <InfoCard title="Moderate">
-              <VulnList vulns={testArrays.moderate} />
-            </InfoCard>
-            </Grid>
-            <Grid item xs={3}>
-            <InfoCard title="Low">
-              <VulnList vulns={testArrays.low} />
-            </InfoCard>
-            </Grid>
-        </Grid>
-    </div> 
+      <h1>Repository Vulnerabilities</h1>
+      <HorizontalScrollGrid>
+        <div title="Critical" style={columnStyle}>
+          <h3>Critical Vulnerabilities</h3>
+          <VulnList vulns={testArrays.critical} />
+        </div>
+        <div title="High" style={columnStyle}>
+          <h3>High Vulnerabilities</h3>
+          <VulnList vulns={testArrays.high} />
+        </div>
+        <div title="Moderate" style={columnStyle}>
+          <h3>Moderate Vulnerabilities</h3>
+          <VulnList vulns={testArrays.moderate} />
+        </div>
+        <div title="Low" style={columnStyle}>
+          <h3>Low Vulnerabilities</h3>
+          <VulnList vulns={testArrays.low} />
+        </div>
+      </HorizontalScrollGrid>
+    </div>
   );
 };
