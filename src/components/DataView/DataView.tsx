@@ -6,9 +6,14 @@ import lineMockData from '../../mock/lineMock.json';
 import { Box, Container, Grid } from '@material-ui/core';
 import { InfoCard, Table } from '@backstage/core-components';
 import { TableProps } from './Types';
+import { lightTheme, darkTheme } from './GraphThemes';
 
 export const DataView = ({ columns, rows, filters, title, onRowClick }: TableProps) => {
+    const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    
 
+    const dataTheme = darkThemeMq ? darkTheme : lightTheme;
+    console.log(`datathemes: ${darkThemeMq}`)
     return (
         <Grid container spacing={8} direction='column'>
             <Grid container item justifyContent='center' spacing={8}>
@@ -25,7 +30,7 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
                                 indexBy="severity"
                                 keys={["count"]}
                                 margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-                                labelTextColor={"white"}
+                                theme={dataTheme}
                                 padding={0.2}
                                 valueScale={{ type: 'linear' }}
                                 indexScale={{ type: 'band', round: true }}
@@ -139,6 +144,7 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
                                     stacked: true,
                                     reverse: false
                                 }}
+                                theme={dataTheme}
                                 yFormat=" >-.2f"
                                 axisTop={null}
                                 axisRight={null}
