@@ -13,64 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
-
 import {
   Repositories, 
   Repository,
 } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
 
-const REPO_REQUEST_LIMIT = 10;
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
-export const useGetRepositoriesForTeam = () => {
-  const graphql =
-    useOctokitGraphQl<Repositories<Repository[]>>();
-
-  //this doesnt work
-  const fn = React.useRef(
-    async (
-      userLogin: string,
-      teamLimit?: number,
-    ): Promise<Repository[]> => {
-      const limit = teamLimit ?? REPO_REQUEST_LIMIT;
-
-      return await getRepoNodes(graphql, userLogin, "TeamA", limit);
-    },
-  );
-  //
-
-  getRepoNodes(graphql, "baggage-claim-incorporated", "Team A", 10);
-
-  return fn.current;
-};
-
-async function getRepoNodes(
-  graphql: (
-    path: string,
-    options?: any,
-  ) => Promise<Repositories<Repository[]>>,
-  orgLogin: string,
-  teamLogin: string,
-  repoLimit: number,
-): Promise<Repository[]> {
-  const repoNodes: Repository[] = [];
+export async function useGetRepositoriesForTeam (
+    graphql: (
+        path: string,
+        options?: any,
+      ) => Promise<Repositories>,
+    orgLogin: string,
+    teamLogin: string,
+    repoLimit: number,
+    ): Promise<Repository[]> { 
+    const repoNodes: Repository[] = [];
   let result:
-    | Repositories<Repository[]>
+    | Repositories
     | undefined = undefined;
 
   do {
     result = await graphql(
-      `
+        `
         query($login: String!, $teamLogin: String!, $first: Int, $endCursor: String){
             organization(login: $login){
-                teams(query: $teamLogin, first:$first, after: $endCursor) {
-                     pageInfo {hasNextPage, endCursor}
+                teams(query: $teamLogin, first:1) {
                      nodes {
-                       repositories(first:10){
+                       repositories(first:$first, after: $endCursor){
+                        pageInfo {hasNextPage, endCursor}
                          nodes{
                            name
+                           id
                          }
                        }
                     }  
@@ -86,20 +62,21 @@ async function getRepoNodes(
             ? GITHUB_GRAPHQL_MAX_ITEMS
             : repoLimit,
         endCursor: result
-          ? result.organization.teams.pageInfo.endCursor
+          ? result.organization.teams.nodes[0].repositories.pageInfo.endCursor
           : undefined,
       },
     );
 
     repoNodes.push(
-      ...result.organization.teams.nodes
+      ...result.organization.teams.nodes[0].repositories.nodes
     );
 
     if (repoNodes.length >= repoLimit) return repoNodes;
-  } while (result.organization.teams.pageInfo.hasNextPage);
+  } while (result.organization.teams.nodes[0].repositories.pageInfo.hasNextPage);
 
   console.log("REPONODES");
   console.log(repoNodes);
 
   return repoNodes;
-}
+  
+};

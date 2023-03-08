@@ -13,23 +13,78 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/*
+import { getVulnerabilitiesFromRepo } from './getVulnerabilitiesFromRepo';
 import { useGetRepositoriesForTeam } from './useGetRepositoriesForTeam';
 import { useGetTeamsForOrg } from './useGetTeamsForOrg';
 
-export const useGetSeverityCountsForOrg = (
-) => {
+export function getSeverityCountsForOrg() {
         let TeamsInOrg = useGetTeamsForOrg("baggage-claim-incorporated", 10);
         useGetRepositoriesForTeam("baggage-claim-incorporated", "Team A", 10);
 
-        // because TeamsInOrg is wrapped in a Promise
         TeamsInOrg.then((Teams) => {
             for (var Team of Teams){
-                console.log("team ", Team );
-                // get the repositories
-                // useGetRepositoriesForTeam("baggage-claim-incorporated", Team.name, 10); says invalid use of hook here?.
-                // use the repository names (and maybe the org name) to get the VulnerabilityAlerts
+                console.log("team ", Team);
+                /*let ReposInTeam = useGetRepositoriesForTeam("baggage-claim-incorporated", Team.name, 10); //says invalid use of hook here?.
+
+                ReposInTeam.then((Repos) => {
+                    for (var Repo of Repos){
+                        getVulnerabilitiesFromRepo(Repo.name, "baggage-claim-incorporated");
+                    }
+                });*
             }
         });
         
     }
+*/
+
+
+import { sortVulnData } from '../utils/functions';
+
+import {
+  Repositories, 
+  Repository, 
+  Team,
+  Teams,
+  VulnInfoRepo,
+  VulnInfoUnformatted,
+} from '../utils/types';
+import { getVulnerabilitiesFromRepo } from './getVulnerabilitiesFromRepo';
+import { useGetRepositoriesForTeam } from './useGetRepositoriesForTeam';
+import { useGetTeamsForOrg } from './useGetTeamsForOrg';
+import { useOctokitGraphQl } from './useOctokitGraphQl';
+
+const GITHUB_GRAPHQL_MAX_ITEMS = 100;
+
+export const useGetSeverityCountsForOrg = () => {
+    const graphql_1 = useOctokitGraphQl<Teams<Team[]>>();
+    const graphql_2 = useOctokitGraphQl<Repositories>();
+    const graphql_3 = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
+    const AllVulns: VulnInfoUnformatted[] = [];   
+    const ReposVisited: string[] = [];
+
+    let TeamsInOrg = useGetTeamsForOrg(graphql_1, "baggage-claim-incorporated", 10);
+
+    TeamsInOrg.then((Teams) => {
+        for (var Team of Teams){
+            let ReposInTeam = useGetRepositoriesForTeam(graphql_2, "baggage-claim-incorporated", Team.name, 10);
+
+            ReposInTeam.then((Repos) => {
+                for (var Repo of Repos){
+                    if (!ReposVisited.includes(Repo.ID)){
+                        let vulns = getVulnerabilitiesFromRepo(graphql_3, Repo.name, "baggage-claim-incorporated");
+                        vulns.then((vulnInfo) =>{
+                            AllVulns.push(...vulnInfo);
+                            console.log(AllVulns);
+                        });
+                        ReposVisited.push(Repo.ID);
+                    }   
+                }
+            });
+        }
+        const test = sortVulnData(AllVulns);
+        console.log("test", test);
+    });
+
+    
+};

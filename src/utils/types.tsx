@@ -22,19 +22,36 @@ export type Connection<T> = {
   };
 };
  
-export type Repository = {
-  name: string;
+export type Repositories = {
+  organization: {
+    teams: {
+      nodes: RepositoryNode[];
+    }
+  }
 }
 
-export type Repositories<T> = {
-  user: {
-    repositories: Connection<T>;
-  };
-};
+export type RepositoryNode = {
+  repositories: Connection<Repository[]>;
+}
+
+export type Repository = {
+  ID: string;
+  name: string;
+}
 
 export type RepoName = {
   name: string;
 };
+
+export type Teams<T> = {
+  organization: {
+    teams: Connection<T>;
+  };
+}
+
+export type Team = { 
+  name: string;
+}
 
 export type VulnInfoRepo<T> = {
   repository : {
