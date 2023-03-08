@@ -17,7 +17,7 @@ function Badge(status: string) {
     case "FIXED":
       return (
         <Tooltip title="Fixed">
-          <VerifiedUserOutlined style={{ color: grey[600] }} />
+          <VerifiedUserOutlined style={{ color: green[600] }} />
         </Tooltip>
       );
     case "DISMISSED":
@@ -44,24 +44,29 @@ export const VulnList = ({ vulns }: VulnListProps) => {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <div style={{ marginRight: "1em" }}>
-              {Badge(vuln.state.toUpperCase())}
-            </div>
-            <div style={{ marginRight: "1em" }}>
-              <Typography variant='button'>{vuln.packageName + " " + vuln.versionNum}</Typography>
-              <Typography style={{fontWeight: "normal", color: grey[600]}} variant='subtitle2'>{"Created "} <span style={{fontWeight: "bolder"}}>{vuln.createdAt}</span></Typography>
+            <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+              <div style={{ marginRight: "1.5em", marginBottom: 0, marginTop: 0 }}>
+                {Badge(vuln.state.toUpperCase())}
+              </div>
+              <div style={{ marginRight: "1.5em", marginBottom: 0, marginTop: 0 }}>
+                <Typography variant='button'>{vuln.packageName + " " + vuln.versionNum}</Typography>
+                <Typography style={{ fontWeight: "normal", color: grey[600] }} variant='subtitle2'>{"Created "} <span style={{ fontWeight: "bolder" }}>{vuln.createdAt}</span></Typography>
 
-            </div>
-            <div>
-              <Chip
-                style={{
-                color: 'white',
-                fontWeight: 'bolder',
-                background: deepPurple[500]
-              }} label={"PR"} />
+              </div>
+              <div style={{
+                marginBottom: 0,
+                marginTop: 0
+              }}>
+                <Chip
+                  style={{
+                    color: 'white',
+                    fontWeight: 'bolder',
+                    background: deepPurple[500]
+                  }} label={"PR"} />
+              </div>
             </div>
           </AccordionSummary>
-          <AccordionDetails style={{marginLeft: "2em"}}>
+          <AccordionDetails>
             <Typography>
               <Typography>{vuln.summary}</Typography>
               <Typography>Pull Request: {vuln.pullRequest}</Typography>
