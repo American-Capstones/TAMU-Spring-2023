@@ -1,6 +1,7 @@
 import React from 'react';
 import { DataView, TableProps } from '../../DataView';
 import OrgTableTest from '../../../mock/Organization.json';
+import { useGetSeverityCountsForOrg } from '../../../api/useGetSeverityCountsForOrg';
 
 const testData: TableProps = {
     columns: [
@@ -15,7 +16,7 @@ const testData: TableProps = {
 }
 
 export const Organization = ({} : {}) => {
-
+    useGetSeverityCountsForOrg();
     const cols = testData.columns
     const rows = testData.rows
     const filters = testData.filters

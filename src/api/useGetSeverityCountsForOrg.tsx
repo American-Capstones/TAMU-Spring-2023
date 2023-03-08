@@ -56,35 +56,60 @@ import { useOctokitGraphQl } from './useOctokitGraphQl';
 
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
-export const useGetSeverityCountsForOrg = () => {
+export const useGetSeverityCountsForOrg = async () => {
     const graphql_1 = useOctokitGraphQl<Teams<Team[]>>();
     const graphql_2 = useOctokitGraphQl<Repositories>();
     const graphql_3 = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
     const AllVulns: VulnInfoUnformatted[] = [];   
     const ReposVisited: string[] = [];
 
-    let TeamsInOrg = useGetTeamsForOrg(graphql_1, "baggage-claim-incorporated", 10);
+    let TeamsInOrg = await useGetTeamsForOrg(graphql_1, "baggage-claim-incorporated", 10);
 
-    TeamsInOrg.then((Teams) => {
-        for (var Team of Teams){
-            let ReposInTeam = useGetRepositoriesForTeam(graphql_2, "baggage-claim-incorporated", Team.name, 10);
+    for (var Team of TeamsInOrg) {
+        let ReposForTeams = await useGetRepositoriesForTeam(graphql_2, "baggage-claim-incorporated", Team.name, 10);
 
-            ReposInTeam.then((Repos) => {
-                for (var Repo of Repos){
-                    if (!ReposVisited.includes(Repo.ID)){
-                        let vulns = getVulnerabilitiesFromRepo(graphql_3, Repo.name, "baggage-claim-incorporated");
-                        vulns.then((vulnInfo) =>{
-                            AllVulns.push(...vulnInfo);
-                            console.log(AllVulns);
-                        });
-                        ReposVisited.push(Repo.ID);
-                    }   
+        for (var Repo of ReposForTeams) {
+            if (!ReposVisited.includes(Repo.ID)){
+                let vulns = await getVulnerabilitiesFromRepo(graphql_3, Repo.name, "baggage-claim-incorporated");
+                
+                for (var vulnInfo of vulns) {
+                    AllVulns.push(vulnInfo);
                 }
-            });
+                console.log("AllVulns", AllVulns);
+
+                ReposVisited.push(Repo.ID);
+            }  
         }
-        const test = sortVulnData(AllVulns);
-        console.log("test", test);
-    });
+    }
+    const test = sortVulnData(AllVulns);
+    console.log("test", test);
+  
+    // TeamsInOrg.then((Teams) => {
+        // for (var Team of Teams){
+    //         let ReposInTeam = useGetRepositoriesForTeam(graphql_2, "baggage-claim-incorporated", Team.name, 10);
+
+    //         ReposInTeam.then((Repos) => {
+    //             for (var Repo of Repos){
+    //                 if (!ReposVisited.includes(Repo.ID)){
+    //                     let vulns = getVulnerabilitiesFromRepo(graphql_3, Repo.name, "baggage-claim-incorporated");
+    //                     vulns.then((vulnInfo) =>{
+    //                         AllVulns.push(...vulnInfo);
+    //                         console.log("AllVulns", AllVulns);
+    //                     }).finally(() => {
+    //                         console.log("finally allVulns", AllVulns);
+    //                     });
+    //                     ReposVisited.push(Repo.ID);
+    //                 }  
+    //             }
+    //         }).finally(() => {
+    //             console.log("finally allVulns 2", AllVulns);
+    //         });
+    //     }
+        
+    // }).finally (() => {
+    //     const test = sortVulnData(AllVulns);
+    //     console.log("test", test);
+    // });
 
     
 };
