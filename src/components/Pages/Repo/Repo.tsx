@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, FormControlLabel, Switch, SwitchProps } from '@material-ui/core';
 import {
   InfoCard, 
 } from '@backstage/core-components';
@@ -131,9 +131,17 @@ let testArrays : RepoVulns = {
 
 export const Repo = ({  }: { }) => {
 
+  const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
+    const target = event.target as HTMLInputElement;
+    if (target.checked) {
+      
+    }
+  }
+
   return (
     <div>
         <h1>Repository Vulnerabilities</h1>
+        <FormControlLabel control={<Switch onChange={openFilter} defaultChecked />} label="Open Only" />
         <Grid container spacing={1}>
             <Grid item xs={3}>
             <InfoCard title="Critical">
