@@ -1,33 +1,28 @@
 import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { DataView, TableProps } from '../../DataView';
-import OrgTableTest from '../../../mock/Organization.json';
-
-const testData: TableProps = {
-    columns: [
-        { title: 'Name', field: 'name' },
-        { title: 'Low', field: 'low' },
-        { title: 'Moderate', field: 'moderate' },
-        { title: 'High', field: 'high' },
-        { title: 'Critical', field: 'critical' },
-    ],
-    rows: OrgTableTest.data,
-    filters: [],
-    title: 'Teams within this organization',
-    onRowClick: () => {}
-}
+import { DataView } from '../../DataView';
+import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
+import { Team } from '../../../utils/types';
 
 export const Organization = ({} : {}) => {
+    const [tableData, setTableData] = useState<Team[]>([]);
     const navigate = useNavigate();
+
+    if (tableData.length == 0) {
+        useGetTeamsForOrg().then((data: any) => {
+            setTableData(data);
+        });
+    }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./teams/${rowData.name}`, { replace: true });
     }
 
-    const cols = testData.columns
-    const rows = testData.rows
-    const filters = testData.filters
-    const title = testData.title
+    const cols = [{title: 'Team Name', field: 'name'}]
+    const rows = tableData;
+    const filters: any[] = []
+    const title = 'Teams within this organization'
     return (
         <>
             <h1>Organization</h1>

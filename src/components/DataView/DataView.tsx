@@ -3,12 +3,12 @@ import { ResponsiveBar } from '@nivo/bar';
 import { ResponsiveLine } from '@nivo/line';
 import mockData from "../../mock/data.json";
 import lineMockData from '../../mock/lineMock.json';
-import { Box, Container, Grid } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { InfoCard, Table } from '@backstage/core-components';
 import { TableProps } from './Types';
 
 export const DataView = ({ columns, rows, filters, title, onRowClick }: TableProps) => {
-
+    console.log(`rows: ${rows}`)
     return (
         <Grid container spacing={8} direction='column'>
             <Grid container item justifyContent='center' spacing={8}>

@@ -29,21 +29,21 @@ export const useGetRepositoriesForTeam = () => {
     useOctokitGraphQl<Repositories<Repository[]>>();
 
   //this doesnt work
-  const fn = React.useRef(
-    async (
-      userLogin: string,
-      teamLimit?: number,
-    ): Promise<Repository[]> => {
-      const limit = teamLimit ?? REPO_REQUEST_LIMIT;
+//   const fn = React.useRef(
+//     async (
+//       userLogin: string,
+//       teamLimit?: number,
+//     ): Promise<Repository[]> => {
+//       const limit = teamLimit ?? REPO_REQUEST_LIMIT;
 
-      return await getRepoNodes(graphql, userLogin, "TeamA", limit);
-    },
-  );
+//       return await getRepoNodes(graphql, userLogin, "TeamA", limit);
+//     },
+//   );
   //
 
-  getRepoNodes(graphql, "baggage-claim-incorporated", "Team A", 10);
+  return getRepoNodes(graphql, "baggage-claim-incorporated", "Team A", 10);
 
-  return fn.current;
+//   return fn.current;
 };
 
 async function getRepoNodes(
@@ -99,7 +99,7 @@ async function getRepoNodes(
   } while (result.organization.teams.pageInfo.hasNextPage);
 
   console.log("REPONODES");
-  console.log(repoNodes);
+  console.log(repoNodes.at(0).repositories.nodes);
 
-  return repoNodes;
+  return repoNodes.at(0).repositories.nodes;
 }

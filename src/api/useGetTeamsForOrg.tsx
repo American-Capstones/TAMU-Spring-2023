@@ -29,21 +29,21 @@ export const useGetTeamsForOrg = () => {
     useOctokitGraphQl<Teams<Team[]>>();
 
   //this doesnt work
-  const fn = React.useRef(
-    async (
-      userLogin: string,
-      teamLimit?: number,
-    ): Promise<Team[]> => {
-      const limit = teamLimit ?? TEAM_REQUEST_LIMIT;
+//   const fn = React.useRef(
+//     async (
+//       userLogin: string,
+//       teamLimit?: number,
+//     ): Promise<Team[]> => {
+//       const limit = teamLimit ?? TEAM_REQUEST_LIMIT;
 
-      return await getTeamNodes(graphql, userLogin, limit);
-    },
-  );
+//       return await getTeamNodes(graphql, userLogin, limit);
+//     },
+//   );
   //
 
-  getTeamNodes(graphql, "baggage-claim-incorporated", 10);
+  return getTeamNodes(graphql, "baggage-claim-incorporated", 10);
 
-  return fn.current;
+//   return fn.current;
 };
 
 async function getTeamNodes(
