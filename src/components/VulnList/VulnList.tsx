@@ -1,7 +1,7 @@
 import { Typography, Grid, Chip, Card, CardContent, CardHeader, Accordion, AccordionSummary, AccordionDetails, Tooltip, Icon, Avatar, SvgIcon } from '@material-ui/core';
 import { SecurityOutlined, VerifiedUserOutlined, ExpandMore } from '@material-ui/icons'
 import React from "react";
-import { VulnListProps } from "./Types";
+import { VulnListProps } from "../../utils/types";
 import { green, grey, deepPurple } from '@material-ui/core/colors';
 
 

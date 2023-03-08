@@ -22,12 +22,15 @@ import { useOctokitGraphQl } from './useOctokitGraphQl';
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
 export async function getVulnerabilitiesFromRepo(
+//   graphql: (
+    // path: string,
+    // options?: any,
+//   ) => Promise<VulnInfoRepo<VulnInfoUnformatted[]>>,
   name: string,
   owner: string
 ): Promise<VulnInfoUnformatted[]> {
   const repoRequestLimit = 10
-  const graphql =
-    useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
+  const graphql = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
   const vulnerabilityData : VulnInfoUnformatted[] = [];
   let result:
     | VulnInfoRepo<VulnInfoUnformatted[]>

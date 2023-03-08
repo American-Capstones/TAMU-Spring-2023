@@ -4,9 +4,6 @@ import { Organization } from '../Pages/Organization';
 import { Team } from '../Pages/Team';
 import { TabbedLayout } from '@backstage/core-components';
 
-// import 
-
-
 export const Navbar = ({ }: {}) => {
 
   return (
@@ -17,7 +14,7 @@ export const Navbar = ({ }: {}) => {
       <TabbedLayout.Route path="/teams/:teamName" title="Teams">
         <Team/>
       </TabbedLayout.Route>
-      <TabbedLayout.Route path="/repos/:repoId" title="Repos">
+      <TabbedLayout.Route path="/repos/:repoName" title="Repos">
         <Repo/>
       </TabbedLayout.Route>
     </TabbedLayout>
