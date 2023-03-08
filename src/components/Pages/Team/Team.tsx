@@ -9,8 +9,8 @@ export const Team = ({} : {}) => {
     const [tableData, setTableData] = useState<Repository[]>([])
     const navigate = useNavigate();
 
-    if (tableData.length == 0) {
-        useGetRepositoriesForTeam().then((data: any) => {
+    if (tableData.length == 0 && teamName) {
+        useGetRepositoriesForTeam('baggage-claim-incorporated', teamName, 10).then((data: any) => {
             setTableData(data);
         });
     }

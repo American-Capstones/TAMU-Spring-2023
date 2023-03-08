@@ -10,7 +10,7 @@ export const Organization = ({} : {}) => {
     const navigate = useNavigate();
 
     if (tableData.length == 0) {
-        useGetTeamsForOrg().then((data: any) => {
+        useGetTeamsForOrg("baggage-claim-incorporated", 10).then((data: any) => {
             setTableData(data);
         });
     }

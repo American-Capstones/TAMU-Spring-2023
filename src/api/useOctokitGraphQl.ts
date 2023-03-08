@@ -27,9 +27,10 @@ export const useOctokitGraphQl = <T>() => {
   const auth = useApi(githubAuthApiRef);
   const config = useApi(configApiRef);
 
-  const baseUrl = readGithubIntegrationConfigs(
+  /*const baseUrl = readGithubIntegrationConfigs(
     config.getOptionalConfigArray('integrations.github') ?? [],
-  )[0].apiBaseUrl;
+  )[0].apiBaseUrl;*/
+  const baseUrl = "https://api.github.com"
 
   return (path: string, options?: any): Promise<T> =>
     auth
