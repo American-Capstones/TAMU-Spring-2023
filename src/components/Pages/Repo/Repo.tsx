@@ -11,6 +11,9 @@ import { sortVulnData } from '../../../utils/functions';
 
 export const Repo = ({  }: { }) => {
     const { repoName } = useParams();
+    if (repoName == ":repoName") {
+      alert("Not a valid repository.");
+    }
     const defaultValues = {critical: [], high: [], moderate: [], low: []}
     const [ repoInfo, setRepoInfo ] = useState<RepoVulns>(defaultValues);
 
