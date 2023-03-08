@@ -19,7 +19,7 @@ import {
 } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
 
-const GITHUB_GRAPHQL_MAX_ITEMS = 100;
+const GITHUB_GRAPHQL_MAX_ITEMS = 5;
 
 export async function getVulnerabilitiesFromRepo(
 //   graphql: (
@@ -79,7 +79,7 @@ export async function getVulnerabilitiesFromRepo(
           : repoRequestLimit,
     },
   );
-    
+
   vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
   return vulnerabilityData;
 }

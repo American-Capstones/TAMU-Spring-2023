@@ -10,10 +10,20 @@ import {
   StatusOK,
 } from '@backstage/core-components';
 import { VulnList } from '../../VulnList';
+import { Skeleton } from '@material-ui/lab';
+
+const columnStyle : React.CSSProperties = {
+  marginRight: "4em",
+  display: "flex",
+  flexDirection: "column",
+  minWidth: "25em",
+  maxWidth: "25em"
+}
 
 export const Repo = ({ }: {}) => {
 
   const { repoName } = useParams();
+  const [loadingState, setLoadingState] = useState<Boolean>(true);
   const [repoInfo, setRepoInfo] = useState<RepoVulns>({
     critical: [],
     high: [],
@@ -27,30 +37,44 @@ export const Repo = ({ }: {}) => {
         setRepoInfo(sortVulnData(data))
       })
   return (
-    <div>
+    <div style={{
+      width: "100%",
+      height: "100%"
+    }}>
       <h1>Repository Vulnerabilities</h1>
-      <Grid container spacing={1}>
-        <Grid item xs={3}>
-          <InfoCard title="Critical">
-            <VulnList vulns={repoInfo.critical} />
-          </InfoCard>
-        </Grid>
-        <Grid item xs={3}>
-          <InfoCard title="High">
-            <VulnList vulns={repoInfo.high} />
-          </InfoCard>
-        </Grid>
-        <Grid item xs={3}>
-          <InfoCard title="Moderate">
-            <VulnList vulns={repoInfo.moderate} />
-          </InfoCard>
-        </Grid>
-        <Grid item xs={3}>
-          <InfoCard title="Low">
-            <VulnList vulns={repoInfo.low} />
-          </InfoCard>
-        </Grid>
-      </Grid>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row'
+      }}>
+        <div title="Critical" style={columnStyle}>
+          <h3>Critical Vulnerabilities</h3>
+          {loadingState == true &&
+            <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+          }
+          <VulnList vulns={repoInfo.critical}/>
+        </div>
+        <div title="High" style={columnStyle}>
+          <h3>High Vulnerabilities</h3>
+          {loadingState == true &&
+            <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+          }
+          <VulnList vulns={repoInfo.high}/>
+        </div>
+        <div title="Moderate" style={columnStyle}>
+          <h3>Moderate Vulnerabilities</h3>
+          {loadingState == true &&
+            <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+          }
+          <VulnList vulns={repoInfo.moderate}/>
+        </div>
+        <div title="Low" style={columnStyle}>
+          <h3>Low Vulnerabilities</h3>
+          {loadingState == true &&
+            <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+          }
+          <VulnList vulns={repoInfo.low}/>
+        </div>
+      </div>
     </div>
   );
 };
