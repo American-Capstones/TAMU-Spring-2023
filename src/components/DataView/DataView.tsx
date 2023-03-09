@@ -4,28 +4,35 @@ import { ResponsiveLine } from '@nivo/line';
 import mockData from "../../mock/data.json";
 import lineMockData from '../../mock/lineMock.json';
 import { Box, Grid } from '@material-ui/core';
-import { InfoCard, Table } from '@backstage/core-components';
+import { ErrorPage, InfoCard, Table } from '@backstage/core-components';
 import { TableProps } from './Types';
+import { lightTheme, darkTheme } from './GraphThemes';
 
 export const DataView = ({ columns, rows, filters, title, onRowClick }: TableProps) => {
-    console.log(`rows: ${rows}`)
+    const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    const dataTheme = darkThemeMq ? darkTheme : lightTheme;
+    
+    if (!rows || rows.length == 0 || !columns || columns.length == 0) {
+        return (<ErrorPage status={'Invalid Input'} statusMessage={'Invalid data given to DataView'} />)
+    }
+
     return (
         <Grid container spacing={8} direction='column'>
             <Grid container item justifyContent='center' spacing={8}>
                 <Grid item>
                     <InfoCard variant='flex'>
-                        <Box style={{
-                            width: "30rem",
-                            height: "15rem"
-                        }}
-                        >
+                        <Box
+                            style={{
+                                width: "30rem",
+                                height: "15rem"
+                            }}>
                             <ResponsiveBar
                                 colors={{scheme: 'red_blue'}}
                                 data={mockData}
                                 indexBy="severity"
                                 keys={["count"]}
                                 margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-                                labelTextColor={"white"}
+                                theme={dataTheme}
                                 padding={0.2}
                                 valueScale={{ type: 'linear' }}
                                 indexScale={{ type: 'band', round: true }}
@@ -104,7 +111,7 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
                                     }
                                 ]}
                                 role="application"
-                                ariaLabel="Nivo bar chart demo"
+                                ariaLabel="Nivo bar chart"
                                 barAriaLabel={function (e) { return e.indexValue.toString() }}
                             />
                         </Box>
@@ -139,6 +146,7 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
                                     stacked: true,
                                     reverse: false
                                 }}
+                                theme={dataTheme}
                                 yFormat=" >-.2f"
                                 axisTop={null}
                                 axisRight={null}
