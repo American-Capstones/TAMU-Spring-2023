@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import { Grid, FormControlLabel, Switch, SwitchProps } from '@material-ui/core';
 import {
   InfoCard, 
 } from '@backstage/core-components';
@@ -11,22 +11,40 @@ import { sortVulnData } from '../../../utils/functions';
 
 export const Repo = ({  }: { }) => {
     const { repoName } = useParams();
-    const [ repoInfo, setRepoInfo ] = useState<RepoVulns>({
-        critical: [],
-        high: [],
-        moderate: [],
-        low: [],
-    })
+    const defaultValues = {critical: [], high: [], moderate: [], low: []}
+    const [ repoInfo, setRepoInfo ] = useState<RepoVulns>(defaultValues);
 
-    if (repoName)
+    if (repoName && repoInfo != defaultValues)
         getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
         .then((data) => {
             setRepoInfo(sortVulnData(data))
         })
 
+    const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
+      const target = event.target as HTMLInputElement;
+      if (target.checked && repoInfo) {
+        const newObject = {
+          critical: repoInfo.critical.filter(vuln => vuln.state.toLowerCase() == "open"),
+          high: repoInfo.high.filter(vuln => vuln.state.toLowerCase() == "open"),
+          moderate: repoInfo.moderate.filter(vuln => vuln.state.toLowerCase() == "open"),
+          low: repoInfo.low.filter(vuln => vuln.state.toLowerCase() == "open")
+        }
+        setRepoInfo(newObject);
+      } else if (repoName && repoInfo != defaultValues){
+        getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
+        .then((data) => {
+            setRepoInfo(sortVulnData(data))
+        })
+      }
+
+      
+    }
+
+
     return (
         <div>
             <h1>Repository Vulnerabilities</h1>
+            <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
             <Grid container spacing={1}>
                 <Grid item xs={3}>
                     <InfoCard title="Critical">
