@@ -19,11 +19,11 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
             <Grid container item justifyContent='center' spacing={8}>
                 <Grid item>
                     <InfoCard variant='flex'>
-                        <Box style={{
-                            width: "30rem",
-                            height: "15rem"
-                        }}
-                        >
+                        <Box
+                            style={{
+                                width: "30rem",
+                                height: "15rem"
+                            }}>
                             <ResponsiveBar
                                 colors={{scheme: 'red_blue'}}
                                 data={mockData}
@@ -109,7 +109,7 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
                                     }
                                 ]}
                                 role="application"
-                                ariaLabel="Nivo bar chart demo"
+                                ariaLabel="Nivo bar chart"
                                 barAriaLabel={function (e) { return e.indexValue.toString() }}
                             />
                         </Box>
