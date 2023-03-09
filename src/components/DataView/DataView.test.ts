@@ -1,34 +1,17 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { DataView, TableProps } from '../DataView';
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import OrgTableTest from '../../mock/Organization.json';
-import {
-  setupRequestMockHandlers,
-  renderInTestApp,
-} from "@backstage/test-utils";
-import { configure, mount, shallow } from 'enzyme';
+import { renderInTestApp } from "@backstage/test-utils";
+import { configure, shallow } from 'enzyme';
 import { Table } from '@backstage/core-components';
+import { ErrorPage } from '@backstage/core-components';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsiveLine } from '@nivo/line';
-
-
 
 configure({adapter: new Adapter()});
 
 describe('ExampleComponent', () => {
-    const server = setupServer();
-    // Enable sane handlers for network requests
-    setupRequestMockHandlers(server);
-
-    // setup mock response
-    beforeEach(() => {
-        server.use(
-            rest.get('/*', (_, res, ctx) => res(ctx.status(200), ctx.json({}))),
-        );
-    });
-
     const emptyProps: TableProps = {
         columns: [],
         rows: [],
@@ -50,15 +33,21 @@ describe('ExampleComponent', () => {
         onRowClick: () => {}
     };
     const ComponentWithData = DataView(input);
-    const EmptyComponent = DataView;
+    const EmptyComponent = DataView(emptyProps);
 
-    it('should render when given data', async () => {        
-        await renderInTestApp(ComponentWithData);
-        expect(screen.getByText('Teams within this organization')).toBeInTheDocument();
-    });
+    it('should only render error page when given empty props', async () => {
+        await renderInTestApp(EmptyComponent);
+        expect(screen.getByTestId('error')).toBeInTheDocument();
+    })
 
-    it('should thow error when no props are given', async () => {
-        expect(() => render(EmptyComponent(emptyProps))).toThrow(Error);
+    it('should not render the error page when given correct props', async () => {
+        const wrapper = shallow(ComponentWithData);
+
+        expect(wrapper.find(ResponsiveBar)).toHaveLength(1);
+        expect(wrapper.find(ResponsiveLine)).toHaveLength(1);
+        expect(wrapper.find(Table)).toHaveLength(1);
+        
+        expect(wrapper.find(ErrorPage)).toHaveLength(0);
     })
 
     it('should render a bar graph', async () => {

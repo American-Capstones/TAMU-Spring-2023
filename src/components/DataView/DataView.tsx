@@ -3,17 +3,19 @@ import { ResponsiveBar } from '@nivo/bar';
 import { ResponsiveLine } from '@nivo/line';
 import mockData from "../../mock/data.json";
 import lineMockData from '../../mock/lineMock.json';
-import { Box, Container, Grid } from '@material-ui/core';
-import { InfoCard, Table } from '@backstage/core-components';
+import { Box, Grid } from '@material-ui/core';
+import { ErrorPage, InfoCard, Table } from '@backstage/core-components';
 import { TableProps } from './Types';
 import { lightTheme, darkTheme } from './GraphThemes';
 
 export const DataView = ({ columns, rows, filters, title, onRowClick }: TableProps) => {
     const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-    
-
     const dataTheme = darkThemeMq ? darkTheme : lightTheme;
-    console.log(`datathemes: ${darkThemeMq}`)
+    
+    if (!rows || rows.length == 0 || !columns || columns.length == 0) {
+        return (<ErrorPage status={'Invalid Input'} statusMessage={'Invalid data given to DataView'} />)
+    }
+
     return (
         <Grid container spacing={8} direction='column'>
             <Grid container item justifyContent='center' spacing={8}>
