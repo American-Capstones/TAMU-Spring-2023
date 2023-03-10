@@ -15,7 +15,7 @@ export const Repo = ({  }: { }) => {
     const [ repoInfo, setRepoInfo ] = useState<RepoVulns>(defaultValues);
     const [ allRepoInfo, setAllRepoInfo ] = useState<RepoVulns>(defaultValues);
 
-    if (repoName && repoInfo != defaultValues) {
+    if (repoName && repoInfo == defaultValues) {
         getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
         .then((data) => {
             setRepoInfo(sortVulnData(data))
