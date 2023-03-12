@@ -99,14 +99,6 @@ export type VulnInfoFormatted = {
   summary: string;
   vulnerabilityCount: number;
   state: string;
-  /*
-  url: string
-  number: number
-  vulnerableManifestPath: string // which file the vuln is in
-  pullRequestNum: number;
-  pullRequestLink: string;
-  ecosystem: string
-  */
 };
 
 export type RepoVulns = {
@@ -114,4 +106,18 @@ export type RepoVulns = {
   high: VulnInfoFormatted[];
   moderate: VulnInfoFormatted[];
   low: VulnInfoFormatted[];
+}
+
+export type VulnListProps = {
+    vulns: VulnInfoFormatted[];
+}
+
+export type Orgs <T> = { 
+  viewer:{
+    organizations:Connection<T>;
+  }
+}
+
+export type Org = {
+  name: string;
 }
