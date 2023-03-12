@@ -1,5 +1,5 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { DataView, TableProps } from '../DataView';
+import { DataView, TableProps } from '.';
 import { screen } from '@testing-library/react';
 import OrgTableTest from '../../mock/Organization.json';
 import { renderInTestApp } from "@backstage/test-utils";
@@ -8,10 +8,11 @@ import { Table } from '@backstage/core-components';
 import { ErrorPage } from '@backstage/core-components';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsiveLine } from '@nivo/line';
+import React from 'react';
 
 configure({adapter: new Adapter()});
 
-describe('ExampleComponent', () => {
+describe('DataView test suite', () => {
     const emptyProps: TableProps = {
         columns: [],
         rows: [],
