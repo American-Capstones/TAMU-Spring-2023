@@ -32,7 +32,7 @@ export const useGetTeamsForOrg = (
     throw new InputError("Invalid orgLogin");
   }
 
-  if (teamLimit <= 0 || teamLimit >= 100){
+  if (teamLimit <= 0 || teamLimit >= 100 || !teamLimit){
     throw new InputError("Invalid teamLimit");
   }
 

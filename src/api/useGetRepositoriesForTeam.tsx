@@ -18,10 +18,35 @@ import {
   Repository,
 } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
+import { InputError } from '@backstage/errors'
 
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
-export async function useGetRepositoriesForTeam (
+export const useGetRepositoriesForTeam = (
+    orgLogin: string,
+    teamLogin: string,
+    repoLimit: number,
+    ) => {
+
+    if (orgLogin == "" || !orgLogin){
+        throw new InputError("Invalid orgLogin");
+    }
+
+    if (teamLogin == "" || !teamLogin){
+        throw new InputError("Invalid teamLogin");
+    }
+        
+    if (repoLimit <= 0 || repoLimit >= 100 || !repoLimit){
+        throw new InputError("Invalid repoLimit");
+    }
+
+    const graphql = useOctokitGraphQl<Repositories<Repository[]>>();
+
+    return getRepoNodes(graphql, orgLogin, teamLogin, repoLimit);;
+
+};
+
+async function getRepoNodes (
     graphql: (
         path: string,
         options?: any,
@@ -35,36 +60,36 @@ export async function useGetRepositoriesForTeam (
     | Repositories
     | undefined = undefined;
 
-  do {
-    result = await graphql(
-        `
-        query($login: String!, $teamLogin: String!, $first: Int, $endCursor: String){
-            organization(login: $login){
-                teams(query: $teamLogin, first:1) {
-                     nodes {
-                       repositories(first:$first, after: $endCursor){
-                        pageInfo {hasNextPage, endCursor}
-                         nodes{
-                           name
-                           id
-                         }
-                       }
-                    }  
-                } 
-            }
-        }      
-      `,
-      {
-        login: orgLogin,
-        teamLogin: teamLogin,
-        first:
-          repoLimit > GITHUB_GRAPHQL_MAX_ITEMS
-            ? GITHUB_GRAPHQL_MAX_ITEMS
-            : repoLimit,
-        endCursor: result
-          ? result.organization.teams.nodes[0].repositories.pageInfo.endCursor
-          : undefined,
-      },
+    do {
+        result = await graphql(
+            `
+            query($login: String!, $teamLogin: String!, $first: Int, $endCursor: String){
+                organization(login: $login){
+                    teams(query: $teamLogin, first:1) {
+                        nodes {
+                        repositories(first:$first, after: $endCursor){
+                            pageInfo {hasNextPage, endCursor}
+                            nodes{
+                            name
+                            id
+                            }
+                        }
+                        }  
+                    } 
+                }
+            }      
+        `,
+        {
+            login: orgLogin,
+            teamLogin: teamLogin,
+            first:
+            repoLimit > GITHUB_GRAPHQL_MAX_ITEMS
+                ? GITHUB_GRAPHQL_MAX_ITEMS
+                : repoLimit,
+            endCursor: result
+            ? result.organization.teams.nodes[0].repositories.pageInfo.endCursor
+            : undefined,
+        },
     );
 
     repoNodes.push(
@@ -74,9 +99,5 @@ export async function useGetRepositoriesForTeam (
     if (repoNodes.length >= repoLimit) return repoNodes;
   } while (result.organization.teams.nodes[0].repositories.pageInfo.hasNextPage);
 
-  console.log("REPONODES");
-  console.log(repoNodes);
-
   return repoNodes;
-  
-};
+}

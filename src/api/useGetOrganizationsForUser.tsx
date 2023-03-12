@@ -15,25 +15,22 @@
 */
 
 import { useOctokitGraphQl } from './useOctokitGraphQl';
-import { InputError } from '@backstage/errors'
 import { Org, Orgs } from '../utils/types';
-
+import { InputError } from '@backstage/errors'
 
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
-export const useGetOrgsForUser = async(
+export const useGetOrgsForUser = (
     orgLimit: number,
     ) => {
 
-    if (orgLimit <= 0 || orgLimit >= 100){
-        throw new InputError("Invalid teamLimit");
+    if (orgLimit <= 0 || orgLimit >= 100 || !orgLimit){
+        throw new InputError("Invalid orgLimit");
     }
 
     const graphql = useOctokitGraphQl<Orgs<Org[]>>();
 
-    let OrgNodes = await getOrgNodes(graphql, orgLimit);
-    OrgNodes = OrgNodes.map(a => a.name);
-    return OrgNodes;
+    return getOrgNodes(graphql, orgLimit);;
 
 };
 
