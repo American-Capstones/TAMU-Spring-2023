@@ -1,37 +1,74 @@
 import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import { DataView, TableProps } from '../../DataView';
-import OrgTableTest from '../../../mock/Organization.json';
+import { DataView } from '../../DataView';
+import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
 
-const testData: TableProps = {
-    columns: [
-        { title: 'Name', field: 'name' },
-        { title: 'Low', field: 'low' },
-        { title: 'Moderate', field: 'moderate' },
-        { title: 'High', field: 'high' },
-        { title: 'Critical', field: 'critical' },
-    ],
-    rows: OrgTableTest.data,
-    filters: [],
-    title: 'Teams within this organization',
-    onRowClick: () => {}
+import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
+import { Team } from '../../../utils/types';
+import { useGetOrgsForUser } from '../../../api/useGetOrganizationsForUser';
+import { formatOrgData } from '../../../utils/functions';
+import { ErrorPage } from '@backstage/core-components';
+
+const emptyContent = () => {
+    return (
+        <h1>No teams in this organization listed.</h1>
+    )
 }
 
 export const Organization = ({} : {}) => {
+    const defaultValues: string[] = [];
+    const [ orgs, setOrgs ] = useState<string[]>(defaultValues);
+
+    if (orgs == defaultValues){
+        useGetOrgsForUser(10).then((data) => {
+            setOrgs(formatOrgData(data));
+        })
+    }
+    //console.log("orgList2" , organizationList2);
+    const [tableData, setTableData] = useState<Team[]>([]);
     const navigate = useNavigate();
+
+    if (tableData.length == 0) {
+        useGetTeamsForOrg("baggage-claim-incorporated", 10)
+        .then((data: any) => {
+            setTableData(data);
+        });
+    }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./teams/${rowData.name}`, { replace: true });
     }
 
-    const cols = testData.columns
-    const rows = testData.rows
-    const filters = testData.filters
-    const title = testData.title
+    const cols = [{title: 'Team Name', field: 'name'}]
+    const rows = tableData;
+    const filters: any[] = []
+    const title = 'Teams within this organization'
     return (
         <>
-            <h1>Organization</h1>
-            <DataView columns={cols} rows={rows} filters={filters} title={title} onRowClick={handleClick}/>
+            <FormControl style={{width: 200, paddingBottom: 30 }}>
+                <InputLabel>Organization Name</InputLabel>
+                <Select
+                    label="Organization Name"
+                >
+                    {orgs?.map(org => {
+                        return (
+                            <MenuItem value={org}>{org}</MenuItem>
+                        );
+                    })}
+                </Select>
+            </FormControl>
+            {(tableData && tableData.length > 0) ?
+                <DataView
+                    columns={cols}
+                    rows={rows}
+                    filters={filters}
+                    title={title}
+                    onRowClick={handleClick}
+                    emptyContent={emptyContent}/>
+            :
+                <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
+            }
         </>
     );
 };

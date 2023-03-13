@@ -13,37 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React from 'react';
 
 import {
   Teams, 
   Team,
 } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
+import { InputError } from '@backstage/errors'
 
-const TEAM_REQUEST_LIMIT = 10;
+
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
-export const useGetTeamsForOrg = () => {
-  const graphql =
-    useOctokitGraphQl<Teams<Team[]>>();
+export const useGetTeamsForOrg = (
+  orgLogin: string,
+  teamLimit: number,
+) => {
+  if (orgLogin == "" || !orgLogin){
+    throw new InputError("Invalid orgLogin");
+  }
 
-  //this doesnt work
-  const fn = React.useRef(
-    async (
-      userLogin: string,
-      teamLimit?: number,
-    ): Promise<Team[]> => {
-      const limit = teamLimit ?? TEAM_REQUEST_LIMIT;
+  if (teamLimit <= 0 || teamLimit >= 100 || !teamLimit){
+    throw new InputError("Invalid teamLimit");
+  }
 
-      return await getTeamNodes(graphql, userLogin, limit);
-    },
-  );
-  //
+  const graphql = useOctokitGraphQl<Teams<Team[]>>();
 
-  getTeamNodes(graphql, "baggage-claim-incorporated", 10);
+  return getTeamNodes(graphql, orgLogin, teamLimit);
 
-  return fn.current;
 };
 
 async function getTeamNodes(
@@ -91,9 +87,6 @@ async function getTeamNodes(
 
     if (teamNodes.length >= teamLimit) return teamNodes;
   } while (result.organization.teams.pageInfo.hasNextPage);
-
-  console.log("TEAMNODES");
-  console.log(teamNodes);
 
   return teamNodes;
 }

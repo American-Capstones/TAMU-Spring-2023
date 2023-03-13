@@ -1,7 +1,7 @@
 import { InfoCard } from "@backstage/core-components";
 import { Typography } from '@material-ui/core';
 import React from "react";
-import { VulnListProps } from "./Types";
+import { VulnListProps } from "../../utils/types";
 
 export const VulnList = ({vulns}: VulnListProps) => {
   return (

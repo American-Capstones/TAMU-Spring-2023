@@ -13,23 +13,101 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/*
+import { getVulnerabilitiesFromRepo } from './getVulnerabilitiesFromRepo';
 import { useGetRepositoriesForTeam } from './useGetRepositoriesForTeam';
 import { useGetTeamsForOrg } from './useGetTeamsForOrg';
 
-export const useGetSeverityCountsForOrg = (
-) => {
+export function getSeverityCountsForOrg() {
         let TeamsInOrg = useGetTeamsForOrg("baggage-claim-incorporated", 10);
         useGetRepositoriesForTeam("baggage-claim-incorporated", "Team A", 10);
 
-        // because TeamsInOrg is wrapped in a Promise
         TeamsInOrg.then((Teams) => {
             for (var Team of Teams){
-                console.log("team ", Team );
-                // get the repositories
-                // useGetRepositoriesForTeam("baggage-claim-incorporated", Team.name, 10); says invalid use of hook here?.
-                // use the repository names (and maybe the org name) to get the VulnerabilityAlerts
+                console.log("team ", Team);
+                /*let ReposInTeam = useGetRepositoriesForTeam("baggage-claim-incorporated", Team.name, 10); //says invalid use of hook here?.
+
+                ReposInTeam.then((Repos) => {
+                    for (var Repo of Repos){
+                        getVulnerabilitiesFromRepo(Repo.name, "baggage-claim-incorporated");
+                    }
+                });*
             }
         });
         
     }
+*/
+
+
+import { sortVulnData } from '../utils/functions';
+
+import {
+  VulnInfoUnformatted,
+} from '../utils/types';
+import { getVulnerabilitiesFromRepo } from './getVulnerabilitiesFromRepo';
+import { useGetRepositoriesForTeam } from './useGetRepositoriesForTeam';
+import { useGetTeamsForOrg } from './useGetTeamsForOrg';
+import { InputError } from '@backstage/errors'
+
+export const useGetSeverityCountsForOrg = async (
+    orgLogin: string,
+    teamLimit: number, 
+    repoLimit: number,
+    ) => {
+    // const graphql_1 = useOctokitGraphQl<Teams<Team[]>>();
+    // const graphql_2 = useOctokitGraphQl<Repositories>();
+    // const graphql_3 = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
+    const AllVulns: VulnInfoUnformatted[] = [];   
+    const ReposVisited: string[] = [];
+
+    let TeamsInOrg = await useGetTeamsForOrg(orgLogin, teamLimit);
+
+    for (var Team of TeamsInOrg) {
+        let ReposForTeams = await useGetRepositoriesForTeam(orgLogin, Team.name, repoLimit);
+
+        for (var Repo of ReposForTeams) {
+            if (!ReposVisited.includes(Repo.ID)){
+                let vulns = await getVulnerabilitiesFromRepo(Repo.name, orgLogin);
+                
+                for (var vulnInfo of vulns) {
+                    AllVulns.push(vulnInfo);
+                }
+
+                ReposVisited.push(Repo.ID);
+            }  
+        }
+    }
+    const sortedVulnData = sortVulnData(AllVulns);
+    //console.log("test", test);
+  
+    // This comment is left in for learning purposes at the moment;
+    // TO teach us the difference between nested promises and using async await
+    // TeamsInOrg.then((Teams) => {
+        // for (var Team of Teams){
+    //         let ReposInTeam = useGetRepositoriesForTeam(graphql_2, "baggage-claim-incorporated", Team.name, 10);
+
+    //         ReposInTeam.then((Repos) => {
+    //             for (var Repo of Repos){
+    //                 if (!ReposVisited.includes(Repo.ID)){
+    //                     let vulns = getVulnerabilitiesFromRepo(graphql_3, Repo.name, "baggage-claim-incorporated");
+    //                     vulns.then((vulnInfo) =>{
+    //                         AllVulns.push(...vulnInfo);
+    //                         console.log("AllVulns", AllVulns);
+    //                     }).finally(() => {
+    //                         console.log("finally allVulns", AllVulns);
+    //                     });
+    //                     ReposVisited.push(Repo.ID);
+    //                 }  
+    //             }
+    //         }).finally(() => {
+    //             console.log("finally allVulns 2", AllVulns);
+    //         });
+    //     }
+        
+    // }).finally (() => {
+    //     const test = sortVulnData(AllVulns);
+    //     console.log("test", test);
+    // });
+
+    
+};

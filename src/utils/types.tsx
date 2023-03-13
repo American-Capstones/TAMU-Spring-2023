@@ -22,19 +22,36 @@ export type Connection<T> = {
   };
 };
  
-export type Repository = {
-  name: string;
+export type Repositories = {
+  organization: {
+    teams: {
+      nodes: RepositoryNode[];
+    }
+  }
 }
 
-export type Repositories<T> = {
-  user: {
-    repositories: Connection<T>;
-  };
-};
+export type RepositoryNode = {
+  repositories: Connection<Repository[]>;
+}
+
+export type Repository = {
+  ID: string;
+  name: string;
+}
 
 export type RepoName = {
   name: string;
 };
+
+export type Teams<T> = {
+  organization: {
+    teams: Connection<T>;
+  };
+}
+
+export type Team = { 
+  name: string;
+}
 
 export type VulnInfoRepo<T> = {
   repository : {
@@ -82,14 +99,6 @@ export type VulnInfoFormatted = {
   summary: string;
   vulnerabilityCount: number;
   state: string;
-  /*
-  url: string
-  number: number
-  vulnerableManifestPath: string // which file the vuln is in
-  pullRequestNum: number;
-  pullRequestLink: string;
-  ecosystem: string
-  */
 };
 
 export type RepoVulns = {
@@ -97,4 +106,18 @@ export type RepoVulns = {
   high: VulnInfoFormatted[];
   moderate: VulnInfoFormatted[];
   low: VulnInfoFormatted[];
+}
+
+export type VulnListProps = {
+    vulns: VulnInfoFormatted[];
+}
+
+export type Orgs <T> = { 
+  viewer:{
+    organizations:Connection<T>;
+  }
+}
+
+export type Org = {
+  name: string;
 }

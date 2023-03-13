@@ -1,8 +1,10 @@
+import { Org } from "./types";
 import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
 
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
     const vdfArr : VulnInfoFormatted[] = []
     for (let vdu of VulnDataUnformatted) {
+        console.log("inside loop");
         let vdf : VulnInfoFormatted = {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
@@ -50,3 +52,9 @@ export const sortVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) => {
     }
     return rv 
 } 
+
+
+export const formatOrgData = (orgList:Org[]) => {
+    let OrgNodes = orgList.map(a => a.name);
+    return OrgNodes
+}

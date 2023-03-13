@@ -1,161 +1,86 @@
-import React from 'react';
-import { Grid } from '@material-ui/core';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { Grid, FormControlLabel, Switch, SwitchProps } from '@material-ui/core';
 import {
   InfoCard, 
 } from '@backstage/core-components';
-import { ExampleFetchComponent } from '../../ExampleFetchComponent';
-import { VulnList, VulnInfo, RepoVulns } from '../../VulnList';
-
-let testArrays : RepoVulns = {
-  critical: [
-    {
-      packageName: "Maven",
-      versionNum: 1.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "CRITICAL",
-      summary: "This is a summary of a critical vulnerability",
-      vulnerabilityCount: [1, 2, 3],
-      state: "OPEN",
-    }, 
-    {
-      packageName: "Maven",
-      versionNum: 2.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "critical",
-      summary: "vuln",
-      vulnerabilityCount: [1, 2, 3],
-      state: "RESOLVED",
-    } 
-  ], 
-  high: [
-    {
-      packageName: "Maven",
-      versionNum: 1.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "critical",
-      summary: "vuln",
-      vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    }, 
-    {
-      packageName: "Maven",
-      versionNum: 2.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "critical",
-      summary: "vuln",
-      vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    } 
-  ], 
-  moderate: [
-    {
-      packageName: "Maven",
-      versionNum: 1.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "critical",
-      summary: "vuln",
-      vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    }, 
-    {
-      packageName: "Maven",
-      versionNum: 2.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "critical",
-      summary: "vuln",
-      vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    } 
-  ],
-  low: [
-    {
-      packageName: "Maven",
-      versionNum: 1.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "critical",
-      summary: "vuln",
-      vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    }, 
-    {
-      packageName: "Maven",
-      versionNum: 2.6,
-      createdAt: "1/2/23", 
-      pullRequest: "Yes",
-      dismissedAt: "1/5/23",
-      fixedAt: "1/6/23",
-      vulnVersionRange: ">= 1.0.0",
-      classification: "none",
-      severity: "critical",
-      summary: "vuln",
-      vulnerabilityCount: [1, 2, 3],
-      state: "resolved",
-    } 
-  ]
-}
+import { VulnList } from '../../VulnList';
+import { RepoVulns } from '../../../utils/types';
+import { getVulnerabilitiesFromRepo } from '../../../api/getVulnerabilitiesFromRepo';
+import { sortVulnData } from '../../../utils/functions';
 
 export const Repo = ({  }: { }) => {
+    const { repoName } = useParams();
+    if (repoName == ":repoName") {
+      alert("Not a valid repository.");
+    }
+    const defaultValues = {critical: [], high: [], moderate: [], low: []}
+    // This state variable isn't very representative of the information it's storing for the UI.
+    // Really this is being used when filling out the VulnList's. 
+    // So maybe call it "shownRepoVulns" or "activeVulns" or something like that
+    const [ repoInfo, setRepoInfo ] = useState<RepoVulns>(defaultValues);
+    // I like this just fine, think it makes sense given it's context.
+    const [ allRepoInfo, setAllRepoInfo ] = useState<RepoVulns>(defaultValues);
 
-  return (
-    <div>
-        <h1>Repository Vulnerabilities</h1>
-        <Grid container spacing={1}>
-            <Grid item xs={3}>
-            <InfoCard title="Critical">
-              <VulnList vulns={testArrays.critical} />
-            </InfoCard>
+    if (repoName && repoInfo == defaultValues) {
+        // This call should only have to be made once, and you can call each set function in the then() fn
+        getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
+        .then((data) => {
+            setRepoInfo(sortVulnData(data))
+        })
+        getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
+        .then((data) => {
+            setAllRepoInfo(sortVulnData(data))
+        })
+    }
+
+    // Probably best for this to have a more descriptive name, maybe "openVulns"?
+    const newObject = {
+      critical: repoInfo.critical.filter(vuln => vuln.state.toLowerCase() == "open"),
+      high: repoInfo.high.filter(vuln => vuln.state.toLowerCase() == "open"),
+      moderate: repoInfo.moderate.filter(vuln => vuln.state.toLowerCase() == "open"),
+      low: repoInfo.low.filter(vuln => vuln.state.toLowerCase() == "open"),
+    }
+    
+    const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
+      const target = event.target as HTMLInputElement;
+      // I think both of these conditionals might be trying to say
+      // "if (switch_state) then set active vulns to ____"
+      // so you probably want to sub each of the ___ values 
+      // instead of "repoInfo" in these if statements.
+      if (target.checked && repoInfo) {
+        setRepoInfo(newObject);
+      } else if (!target.checked && repoInfo){
+        setRepoInfo(allRepoInfo);
+      }
+    }
+    
+    return (
+        <div>
+            <h1>Repository Vulnerabilities</h1>
+            <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
+            <Grid container spacing={1}>
+                <Grid item xs={3}>
+                    <InfoCard title="Critical">
+                        <VulnList vulns={repoInfo.critical} />
+                    </InfoCard>
+                </Grid>
+                <Grid item xs={3}>
+                    <InfoCard title="High">
+                        <VulnList vulns={repoInfo.high} />
+                    </InfoCard>
+                </Grid>
+                <Grid item xs={3}>
+                    <InfoCard title="Moderate">
+                        <VulnList vulns={repoInfo.moderate} />
+                    </InfoCard>
+                </Grid>
+                <Grid item xs={3}>
+                    <InfoCard title="Low">
+                        <VulnList vulns={repoInfo.low} />
+                    </InfoCard>
+                </Grid>
             </Grid>
-            <Grid item xs={3}>
-            <InfoCard title="High">
-              <VulnList vulns={testArrays.high} />
-            </InfoCard>
-            </Grid>
-            <Grid item xs={3}>
-            <InfoCard title="Moderate">
-              <VulnList vulns={testArrays.moderate} />
-            </InfoCard>
-            </Grid>
-            <Grid item xs={3}>
-            <InfoCard title="Low">
-              <VulnList vulns={testArrays.low} />
-            </InfoCard>
-            </Grid>
-        </Grid>
-    </div> 
-  );
+        </div> 
+    );
 };
