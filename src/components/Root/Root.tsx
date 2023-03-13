@@ -13,14 +13,14 @@ import {
 import { FlatRoutes } from '@backstage/core-app-api';
 import { Navbar } from '../Navbar';
 
-export const Overview = () => (
+export const Root = () => (
   <Page themeId="tool">
-    <Header title="Welcome to OVERVIEW!" subtitle="The Overview Page">
+    <Header title="Welcome to Dependabot Dashboard!" >
       <HeaderLabel label="Owner" value="Team X" />
       <HeaderLabel label="Lifecycle" value="Alpha" />
     </Header>
     <Content>
-      <ContentHeader title="Plugin title">
+      <ContentHeader title="Dependabot Dashboard">
         <SupportButton>A description of your plugin goes here.</SupportButton>
       </ContentHeader>
       <FlatRoutes>
