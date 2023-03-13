@@ -46,7 +46,6 @@ export const Team = ({} : {}) => {
                 title={title}
                 onRowClick={goToRepo}
                 emptyContent={emptyContent}/>
-            
         </>
     );
 };
