@@ -39,17 +39,14 @@ export const Team = ({} : {}) => {
     return (
         <>
             <h1>Team</h1>
-            {teamName != ':teamName' && teamName != undefined ?
-                <DataView
-                    columns={cols}
-                    rows={rows}
-                    filters={filters}
-                    title={title}
-                    onRowClick={goToRepo}
-                    emptyContent={emptyContent}/>
-                :
-                <h1>Error - this team does not exist.</h1>
-            }
+            <DataView
+                columns={cols}
+                rows={rows}
+                filters={filters}
+                title={title}
+                onRowClick={goToRepo}
+                emptyContent={emptyContent}/>
+            
         </>
     );
 };
