@@ -2,11 +2,22 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { DataView } from '../../DataView';
+import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
+
 import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
 import { Team } from '../../../utils/types';
 import { ErrorPage } from '@backstage/core-components';
 
+const emptyContent = () => {
+    return (
+        <h1>No teams in this organization listed.</h1>
+    )
+}
+
 export const Organization = ({} : {}) => {
+    const organizationList = [
+        "org1", "org2", "org3"
+    ];
     const [tableData, setTableData] = useState<Team[]>([]);
     const navigate = useNavigate();
 
@@ -27,18 +38,29 @@ export const Organization = ({} : {}) => {
     const title = 'Teams within this organization'
     return (
         <>
-            <h1>Organization</h1>
+            <FormControl style={{width: 200, paddingBottom: 30 }}>
+                <InputLabel>Organization Name</InputLabel>
+                <Select
+                    label="Organization Name"
+                >
+                    {organizationList?.map(org => {
+                        return (
+                            <MenuItem value={org}>{org}</MenuItem>
+                        );
+                    })}
+                </Select>
+            </FormControl>
             {(tableData && tableData.length > 0) ?
                 <DataView
                     columns={cols}
                     rows={rows}
                     filters={filters}
                     title={title}
-                    onRowClick={handleClick}/>
+                    onRowClick={handleClick}
+                    emptyContent={emptyContent}/>
             :
                 <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
             }
-            
         </>
     );
 };

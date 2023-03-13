@@ -11,30 +11,37 @@ import { sortVulnData } from '../../../utils/functions';
 
 export const Repo = ({  }: { }) => {
     const { repoName } = useParams();
+    if (repoName == ":repoName") {
+      alert("Not a valid repository.");
+    }
     const defaultValues = {critical: [], high: [], moderate: [], low: []}
     const [ repoInfo, setRepoInfo ] = useState<RepoVulns>(defaultValues);
+    const [ allRepoInfo, setAllRepoInfo ] = useState<RepoVulns>(defaultValues);
 
-    if (repoName && repoInfo != defaultValues)
+    if (repoName && repoInfo == defaultValues) {
         getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
         .then((data) => {
             setRepoInfo(sortVulnData(data))
         })
+        getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
+        .then((data) => {
+            setAllRepoInfo(sortVulnData(data))
+        })
+      }
 
+    const newObject = {
+      critical: repoInfo.critical.filter(vuln => vuln.state.toLowerCase() == "open"),
+      high: repoInfo.high.filter(vuln => vuln.state.toLowerCase() == "open"),
+      moderate: repoInfo.moderate.filter(vuln => vuln.state.toLowerCase() == "open"),
+      low: repoInfo.low.filter(vuln => vuln.state.toLowerCase() == "open")
+    }
+    
     const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
       const target = event.target as HTMLInputElement;
       if (target.checked && repoInfo) {
-        const newObject = {
-          critical: repoInfo.critical.filter(vuln => vuln.state.toLowerCase() == "open"),
-          high: repoInfo.high.filter(vuln => vuln.state.toLowerCase() == "open"),
-          moderate: repoInfo.moderate.filter(vuln => vuln.state.toLowerCase() == "open"),
-          low: repoInfo.low.filter(vuln => vuln.state.toLowerCase() == "open")
-        }
         setRepoInfo(newObject);
-      } else if (repoName && repoInfo != defaultValues){
-        getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
-        .then((data) => {
-            setRepoInfo(sortVulnData(data))
-        })
+      } else if (!target.checked && repoInfo){
+        setRepoInfo(allRepoInfo);
       }
 
       
