@@ -18,19 +18,37 @@ import {
   VulnInfoUnformatted
 } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
+import { InputError } from '@backstage/errors'
 
 const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
-export async function getVulnerabilitiesFromRepo(
-//   graphql: (
-    // path: string,
-    // options?: any,
-//   ) => Promise<VulnInfoRepo<VulnInfoUnformatted[]>>,
+export const getVulnerabilitiesFromRepo = (
+    repoName: string,
+    orgLogin: string,
+  ) => {
+    if (orgLogin == "" || !orgLogin){
+      throw new InputError("Invalid orgLogin");
+    }
+  
+    if (repoName == "" || !repoName){
+        throw new InputError("Invalid orgLogin");
+      }
+  
+    const graphql = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
+  
+    return getVulnerabilityNodes(graphql, repoName, orgLogin);
+  
+  };
+
+async function getVulnerabilityNodes(
+  graphql: (
+    path: string,
+    options?: any,
+  ) => Promise<VulnInfoRepo<VulnInfoUnformatted[]>>,
   name: string,
   owner: string
 ): Promise<VulnInfoUnformatted[]> {
   const repoRequestLimit = 10
-  const graphql = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
   const vulnerabilityData : VulnInfoUnformatted[] = [];
   let result:
     | VulnInfoRepo<VulnInfoUnformatted[]>

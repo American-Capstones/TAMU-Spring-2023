@@ -6,6 +6,8 @@ import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
 
 import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
 import { Team } from '../../../utils/types';
+import { useGetOrgsForUser } from '../../../api/useGetOrganizationsForUser';
+import { formatOrgData } from '../../../utils/functions';
 import { ErrorPage } from '@backstage/core-components';
 
 const emptyContent = () => {
@@ -15,17 +17,23 @@ const emptyContent = () => {
 }
 
 export const Organization = ({} : {}) => {
-    const organizationList = [
-        "org1", "org2", "org3"
-    ];
+    const defaultValues: string[] = [];
+    const [ orgs, setOrgs ] = useState<string[]>(defaultValues);
+
+    if (orgs == defaultValues){
+        useGetOrgsForUser(10).then((data) => {
+            setOrgs(formatOrgData(data));
+        })
+    }
+    //console.log("orgList2" , organizationList2);
     const [tableData, setTableData] = useState<Team[]>([]);
     const navigate = useNavigate();
 
     if (tableData.length == 0) {
         useGetTeamsForOrg("baggage-claim-incorporated", 10)
-            .then((data: any) => {
-                setTableData(data);
-            });
+        .then((data: any) => {
+            setTableData(data);
+        });
     }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
@@ -43,7 +51,7 @@ export const Organization = ({} : {}) => {
                 <Select
                     label="Organization Name"
                 >
-                    {organizationList?.map(org => {
+                    {orgs?.map(org => {
                         return (
                             <MenuItem value={org}>{org}</MenuItem>
                         );

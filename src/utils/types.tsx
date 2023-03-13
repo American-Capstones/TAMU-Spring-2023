@@ -111,3 +111,13 @@ export type RepoVulns = {
 export type VulnListProps = {
     vulns: VulnInfoFormatted[];
 }
+
+export type Orgs <T> = { 
+  viewer:{
+    organizations:Connection<T>;
+  }
+}
+
+export type Org = {
+  name: string;
+}
