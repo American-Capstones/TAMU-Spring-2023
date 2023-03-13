@@ -11,16 +11,7 @@ jest.mock('../useGetTeamsForOrg', () => ({
 
 jest.mock('../useGetRepositoriesForTeam', () => ({
     ...jest.requireActual('../useGetRepositoriesForTeam'),
-    useGetRepositoriesForTeam: jest.fn().mockReturnValue([
-        // {
-        //     "name": "repo1",
-        //     "ID": 1
-        // },
-        // {
-        //     "name": "repo2",
-        //     "ID": 2
-        // }
-    ]),
+    useGetRepositoriesForTeam: jest.fn().mockReturnValue([]),
 }));
 
 
@@ -31,21 +22,14 @@ jest.mock('../getVulnerabilitiesFromRepo', () => ({
 
 describe("Should call helper functions", () => {
   test("Should call useGetTeamsForOrg only once", () => {
-    const { result } = renderHook(async() => await useGetSeverityCountsForOrg());
+    const { result } = renderHook(async() => await useGetSeverityCountsForOrg("org", 10, 10));
 
     expect(useGetTeamsForOrg).toHaveBeenCalledTimes(1);
   });
 
   test("Should call useGetRepositories for each item in TeamsInOrg (3 here)", () => {
-    const { result } = renderHook(async() => await useGetSeverityCountsForOrg());
+    const { result } = renderHook(async() => await useGetSeverityCountsForOrg("org", 10, 10));
 
     expect(useGetRepositoriesForTeam).toHaveBeenCalledTimes(3);
   });
-
-//   test("Should call useGetRepositories for each item in TeamsInOrg (3 here)", () => {
-//     const { result } = renderHook(async() => await useGetSeverityCountsForOrg());
-
-//     expect(getVulnerabilitiesFromRepo).toHaveBeenCalledTimes(0);
-//   });
 });
-
