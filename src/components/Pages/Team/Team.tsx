@@ -4,21 +4,29 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useGetRepositoriesForTeam } from '../../../api/useGetRepositoriesForTeam';
 import { Repository } from '../../../utils/types';
 
+const emptyContent = () => {
+    return (
+        <h1>This team has no associated repositories</h1>
+    )
+}
+
 export const Team = ({} : {}) => {
-    const { teamName } = useParams();
+    let { teamName } = useParams();
     const [tableData, setTableData] = useState<Repository[]>([])
     const navigate = useNavigate();
 
     if (tableData.length == 0 && teamName) {
-        useGetRepositoriesForTeam('baggage-claim-incorporated', teamName, 10).then((data: any) => {
+        useGetRepositoriesForTeam('baggage-claim-incorporated', teamName, 10)
+        .then((data: any) => {
             setTableData(data);
+        })
+        .catch((e) => {
+            // Need to add more specific error checking here.
+            // For now, i'll assume that an error means
+            // that the team doesn't exist
+            navigate(`../`, { replace: true });
         });
     }
-
-    // todo: This is where we should do some checking to make sure that the team actually exists within the github organization.
-    // todo: if it does not exist, we can just set teamName to undefined and it will generate the correct error message.
-
-    // of less importance, but it might be beneficial to design a standardized error styling system across our plugin.
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`../repos/${rowData.name}`, { replace: true });
@@ -27,12 +35,18 @@ export const Team = ({} : {}) => {
     const cols = [{title: 'Repository Name', field: 'name'}]
     const rows = tableData;
     const filters: any[] = [];
-    const title = `Repositories under Team ${teamName}`;
+    const title = `Repositories under ${teamName}`;
     return (
         <>
             <h1>Team</h1>
             {teamName != ':teamName' && teamName != undefined ?
-                <DataView columns={cols} rows={rows} filters={filters} title={`Repositories for team ${teamName}`} onRowClick={goToRepo}/>
+                <DataView
+                    columns={cols}
+                    rows={rows}
+                    filters={filters}
+                    title={title}
+                    onRowClick={goToRepo}
+                    emptyContent={emptyContent}/>
                 :
                 <h1>Error - this team does not exist.</h1>
             }

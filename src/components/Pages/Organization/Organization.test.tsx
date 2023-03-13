@@ -32,7 +32,6 @@ class ResizeObserver {
 describe('Organization page test suite', () => {
     window.ResizeObserver = ResizeObserver;
     it('should render', async () => {
-
         const wrapper = shallow(<Organization />);
         expect(wrapper.contains(<h1>Organization</h1>)).toBeTruthy();
     });

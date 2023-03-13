@@ -29,7 +29,12 @@ export const Organization = ({} : {}) => {
         <>
             <h1>Organization</h1>
             {(tableData && tableData.length > 0) ?
-                <DataView columns={cols} rows={rows} filters={filters} title={title} onRowClick={handleClick}/>
+                <DataView
+                    columns={cols}
+                    rows={rows}
+                    filters={filters}
+                    title={title}
+                    onRowClick={handleClick}/>
             :
                 <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
             }

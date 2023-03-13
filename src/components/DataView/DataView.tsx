@@ -8,7 +8,7 @@ import { ErrorPage, InfoCard, Table } from '@backstage/core-components';
 import { TableProps } from './Types';
 import { lightTheme, darkTheme } from './GraphThemes';
 
-export const DataView = ({ columns, rows, filters, title, onRowClick }: TableProps) => {
+export const DataView = ({ columns, rows, filters, title, onRowClick, emptyContent }: TableProps) => {
     const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
     const dataTheme = darkThemeMq ? darkTheme : lightTheme;
     
@@ -210,6 +210,7 @@ export const DataView = ({ columns, rows, filters, title, onRowClick }: TablePro
                 data={rows}
                 onRowClick={onRowClick}
                 filters={filters}
+                emptyContent={emptyContent}
             />
         </Grid>
     );
