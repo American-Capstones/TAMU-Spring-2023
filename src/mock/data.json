@@ -1,19 +1,18 @@
 [
-  
     {
-      "severity": "Low",
-      "count" : 84
+        "severity": "Critical",
+        "count" : 30
     },
     {
-      "severity": "Medium",
+        "severity": "High",
+        "count" : 20
+    },
+    {
+      "severity": "Moderate",
       "count" : 60
     },
     {
-      "severity": "High",
-      "count" : 20
-    },
-    {
-      "severity": "Critical",
-      "count" : 30
+        "severity": "Low",
+        "count" : 84
     }
 ]
