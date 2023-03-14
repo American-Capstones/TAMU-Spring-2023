@@ -2,13 +2,12 @@ import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { DataView } from '../../DataView';
-import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
-
 import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
 import { Team } from '../../../utils/types';
 import { useGetOrgsForUser } from '../../../api/useGetOrganizationsForUser';
 import { formatOrgData } from '../../../utils/functions';
 import { ErrorPage } from '@backstage/core-components';
+import { SelectOrg } from '../../SelectOrg';
 
 const emptyContent = () => {
     return (
@@ -46,18 +45,7 @@ export const Organization = ({} : {}) => {
     const title = 'Teams within this organization'
     return (
         <>
-            <FormControl style={{width: 200, paddingBottom: 30 }}>
-                <InputLabel>Organization Name</InputLabel>
-                <Select
-                    label="Organization Name"
-                >
-                    {orgs?.map(org => {
-                        return (
-                            <MenuItem value={org}>{org}</MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
+            <SelectOrg />
             {(tableData && tableData.length > 0) ?
                 <DataView
                     columns={cols}

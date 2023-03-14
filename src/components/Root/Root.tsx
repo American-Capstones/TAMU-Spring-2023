@@ -11,23 +11,33 @@ import {
   SupportButton,
 } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
-import { Navbar } from '../Navbar';
+import { OrgChoice, Organization, Team, Repo } from '../Pages';
 
 export const Root = () => (
   <Page themeId="tool">
     <Header title="Welcome to Dependabot Dashboard!" >
-      <HeaderLabel label="Owner" value="Team X" />
+      <HeaderLabel label="Owner" value="Never Spirit Airlines" />
       <HeaderLabel label="Lifecycle" value="Alpha" />
     </Header>
     <Content>
-      <ContentHeader title="Dependabot Dashboard">
-        <SupportButton>A description of your plugin goes here.</SupportButton>
-      </ContentHeader>
-      <FlatRoutes>
-        <Route 
-          path='/*'
-          element={<Navbar />}/>
-      </FlatRoutes>
+      <div style={{
+        margin: '30px'
+      }}>
+        <FlatRoutes>
+          <Route 
+            path='/'
+            element={<OrgChoice />}/>
+          <Route 
+            path='/:orgName'
+            element={<Organization />}/>
+          <Route 
+            path='/:orgName/:teamName'
+            element={<Team />}/>
+          <Route 
+            path='/:orgName/:teamName/:repoName'
+            element={<Repo />}/>
+        </FlatRoutes>
+      </div>
     </Content>
   </Page>
 );

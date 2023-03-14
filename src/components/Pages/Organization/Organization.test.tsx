@@ -1,10 +1,10 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { screen } from '@testing-library/react';
 import { renderInTestApp } from "@backstage/test-utils";
-import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
 import { configure, shallow } from 'enzyme';
 import { Organization } from '.';
 import React from 'react';
+import { SelectOrg } from '../../SelectOrg';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
@@ -22,6 +22,10 @@ jest.mock('../../../api/useGetTeamsForOrg', () => ({
         Promise.resolve([{ name: 'test'}]))
 }));
 
+jest.mock('../../../api/useGetOrganizationsForUser');
+const useGetOrgs = require('../../../api/useGetOrganizationsForUser');
+const testData = [{name: 'test org'}, {name: 'test org 2'}];
+
 // Needed when fully rendering a Responsive element from Nivo
 class ResizeObserver {
     observe() {}
@@ -31,9 +35,13 @@ class ResizeObserver {
 
 describe('Organization page test suite', () => {
     window.ResizeObserver = ResizeObserver;
+
+    jest.spyOn(useGetOrgs, 'useGetOrgsForUser')
+        .mockImplementation(() => Promise.resolve(testData));
+
     it('should render', async () => {
         const wrapper = shallow(<Organization />);
-        expect(wrapper.contains(<h1>Organization</h1>)).toBeTruthy();
+        expect(wrapper.contains(<SelectOrg />)).toBeTruthy();
     });
 
     it('should display a table when data is received from backend', async () => {
