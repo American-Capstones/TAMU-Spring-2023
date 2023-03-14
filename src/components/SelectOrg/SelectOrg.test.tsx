@@ -47,6 +47,12 @@ describe('SelectOrg test suite', () => {
         expect(Options.length).toEqual(testData.length + 1); 
     });
 
+    it('should select the correct value if defaultOption is given', async () => {
+        const wrapper = await renderInTestApp(<SelectOrg defaultOption='test org 2'/>);
+        const Select = wrapper.getByRole('button');
+        expect(Select.textContent).toEqual('test org 2');
+    })
+
     it('should redirect to the org page if value is selected', async () => {
         const wrapper = await renderInTestApp(<SelectOrg />);
 

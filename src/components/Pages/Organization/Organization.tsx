@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DataView } from '../../DataView';
 import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
 import { Team } from '../../../utils/types';
@@ -20,6 +20,7 @@ export const Organization = ({} : {}) => {
     const [ orgs, setOrgs ] = useState<string[]>(defaultValues);
     const [tableData, setTableData] = useState<Team[]>([]);
     const navigate = useNavigate();
+    const { orgName } = useParams();
 
     if (orgs == defaultValues){
         useGetOrgsForUser(10).then((data) => {
@@ -44,7 +45,7 @@ export const Organization = ({} : {}) => {
     const title = 'Teams within this organization'
     return (
         <>
-            <SelectOrg />
+            <SelectOrg defaultOption={orgName ?? ''}/>
             {(tableData && tableData.length > 0) ?
                 <DataView
                     columns={cols}

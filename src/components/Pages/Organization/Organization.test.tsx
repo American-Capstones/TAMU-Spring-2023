@@ -41,7 +41,7 @@ describe('Organization page test suite', () => {
 
     it('should render', async () => {
         const wrapper = shallow(<Organization />);
-        expect(wrapper.contains(<SelectOrg />)).toBeTruthy();
+        expect(wrapper.contains(<SelectOrg defaultOption=''/>)).toBeTruthy();
     });
 
     it('should display a table when data is received from backend', async () => {

@@ -6,10 +6,10 @@ import { formatOrgData } from '../../utils/functions';
 import { Org } from '../../utils/types';
 import { useNavigate } from "react-router-dom";
 
-export const SelectOrg = ({} : {}) => {
+export const SelectOrg = ({ defaultOption = '' } : { defaultOption?: string }) => {
     const defaultValues: string[] = [];
     const [ orgs, setOrgs ] = useState<string[]>(defaultValues);
-    const [ selectValue, setSelectValue ] = useState<string>('');
+    const [ selectValue, setSelectValue ] = useState<string>(defaultOption);
     const navigate = useNavigate();
 
     if (orgs == defaultValues){
