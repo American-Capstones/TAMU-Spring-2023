@@ -29,7 +29,7 @@ export const Team = ({} : {}) => {
     }
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
-        navigate(`../repos/${rowData.name}`, { replace: true });
+        navigate(`./${rowData.name}`, { replace: true });
     }
 
     const cols = [{title: 'Repository Name', field: 'name'}]

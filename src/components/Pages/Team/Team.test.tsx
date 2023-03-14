@@ -47,6 +47,10 @@ describe('Team page test suite', () => {
         expect(await screen.findByText('test')).toBeVisible();
     })
 
+    it('should navigate to repo page when row is clicked in table', async () => {
+        // todo: not sure how to click on a row; see Organization.test.tsx
+    });
+
     it('should redirect to organization page if teamName doesnt exist', async () => {
         jest.spyOn(useGetRepos, 'useGetRepositoriesForTeam').mockImplementation(
             () => Promise.reject(undefined));
