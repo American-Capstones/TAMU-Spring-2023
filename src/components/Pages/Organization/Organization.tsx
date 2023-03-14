@@ -18,15 +18,14 @@ const emptyContent = () => {
 export const Organization = ({} : {}) => {
     const defaultValues: string[] = [];
     const [ orgs, setOrgs ] = useState<string[]>(defaultValues);
+    const [tableData, setTableData] = useState<Team[]>([]);
+    const navigate = useNavigate();
 
     if (orgs == defaultValues){
         useGetOrgsForUser(10).then((data) => {
             setOrgs(formatOrgData(data));
         })
     }
-    //console.log("orgList2" , organizationList2);
-    const [tableData, setTableData] = useState<Team[]>([]);
-    const navigate = useNavigate();
 
     if (tableData.length == 0) {
         useGetTeamsForOrg("baggage-claim-incorporated", 10)
@@ -36,7 +35,7 @@ export const Organization = ({} : {}) => {
     }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
-        navigate(`./teams/${rowData.name}`, { replace: true });
+        navigate(`./${rowData.name}`, { replace: true });
     }
 
     const cols = [{title: 'Team Name', field: 'name'}]

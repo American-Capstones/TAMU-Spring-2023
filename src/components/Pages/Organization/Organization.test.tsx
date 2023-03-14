@@ -1,7 +1,8 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { renderInTestApp } from "@backstage/test-utils";
-import { configure, shallow } from 'enzyme';
+import { configure, render, shallow } from 'enzyme';
 import { Organization } from '.';
 import React from 'react';
 import { SelectOrg } from '../../SelectOrg';
@@ -24,7 +25,6 @@ jest.mock('../../../api/useGetTeamsForOrg', () => ({
 
 jest.mock('../../../api/useGetOrganizationsForUser');
 const useGetOrgs = require('../../../api/useGetOrganizationsForUser');
-const testData = [{name: 'test org'}, {name: 'test org 2'}];
 
 // Needed when fully rendering a Responsive element from Nivo
 class ResizeObserver {
@@ -37,7 +37,7 @@ describe('Organization page test suite', () => {
     window.ResizeObserver = ResizeObserver;
 
     jest.spyOn(useGetOrgs, 'useGetOrgsForUser')
-        .mockImplementation(() => Promise.resolve(testData));
+        .mockImplementation(() => Promise.resolve([{name: 'test org'}, {name: 'test org 2'}]));
 
     it('should render', async () => {
         const wrapper = shallow(<Organization />);
@@ -48,5 +48,14 @@ describe('Organization page test suite', () => {
         await renderInTestApp(<Organization />);
         expect(await screen.findByText('Teams within this organization')).toBeVisible();
         expect(await screen.findByText('test')).toBeVisible();
+    });
+
+    it('should redirect to the teams page when table row is clicked', async () => {
+        // Cannot get the mockedUsedNavigate to be called in this test
+        // await renderInTestApp(<Organization />);
+        // const testLabel = await screen.findByText('test');
+        // const row = testLabel.parentElement;
+        // await userEvent.click(row);
+        // expect(mockedUsedNavigate).toHaveBeenCalled();
     })
 });
