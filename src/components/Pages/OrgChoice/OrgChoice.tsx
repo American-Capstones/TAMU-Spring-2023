@@ -1,5 +1,5 @@
 import React from 'react';
-import { SelectOrg } from '../../SelectOrg';
+import { SelectOrg } from '../../Utility/SelectOrg';
 
 export const OrgChoice = ({} : {}) => {
     return (

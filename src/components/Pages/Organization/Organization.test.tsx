@@ -5,7 +5,7 @@ import { renderInTestApp } from "@backstage/test-utils";
 import { configure, render, shallow } from 'enzyme';
 import { Organization } from '.';
 import React from 'react';
-import { SelectOrg } from '../../SelectOrg';
+import { SelectOrg } from '../../Utility/SelectOrg';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks

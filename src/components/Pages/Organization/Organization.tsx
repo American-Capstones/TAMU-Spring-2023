@@ -7,7 +7,7 @@ import { Team } from '../../../utils/types';
 import { useGetOrgsForUser } from '../../../api/useGetOrganizationsForUser';
 import { formatOrgData } from '../../../utils/functions';
 import { ErrorPage } from '@backstage/core-components';
-import { SelectOrg } from '../../SelectOrg';
+import { SelectOrg } from '../../Utility/SelectOrg';
 
 const emptyContent = () => {
     return (

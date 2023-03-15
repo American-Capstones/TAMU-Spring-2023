@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
 import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
-import { useGetOrgsForUser } from '../../api/useGetOrganizationsForUser';
-import { formatOrgData } from '../../utils/functions';
-import { Org } from '../../utils/types';
+import { useGetOrgsForUser } from '../../../api/useGetOrganizationsForUser';
+import { formatOrgData } from '../../../utils/functions';
+import { Org } from '../../../utils/types';
 import { useNavigate } from "react-router-dom";
 
 export const SelectOrg = ({ defaultOption = '' } : { defaultOption?: string }) => {
