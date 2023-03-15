@@ -12,6 +12,7 @@ import {
 } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { OrgChoice, Organization, Team, Repo } from '../Pages';
+import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
 
 export const Root = () => (
   <Page themeId="tool">
@@ -23,6 +24,7 @@ export const Root = () => (
       <div style={{
         margin: '30px'
       }}>
+        <Breadcrumbs />
         <FlatRoutes>
           <Route 
             path='/'
