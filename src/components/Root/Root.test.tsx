@@ -1,7 +1,5 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { screen } from '@testing-library/react';
-import { Route, RouteProps } from 'react-router-dom';
-import { renderInTestApp } from "@backstage/test-utils";
+import { Route } from 'react-router-dom';
 import { configure, shallow } from 'enzyme';
 import React from 'react';
 import { Root } from './Root';

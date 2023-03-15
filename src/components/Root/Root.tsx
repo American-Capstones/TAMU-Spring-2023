@@ -1,18 +1,14 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-// import { Typography, Grid } from '@material-ui/core';
 import {
-//   InfoCard,
   Header,
   Page,
   Content,
-  ContentHeader,
   HeaderLabel,
-  SupportButton,
 } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { OrgChoice, Organization, Team, Repo } from '../Pages';
-import { Breadcrumbs } from '../Utility/Breadcrumbs';
+import { Breadcrumbs } from '../Utility';
 
 export const Root = () => (
   <Page themeId="tool">

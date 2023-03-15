@@ -1,11 +1,10 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { fireEvent, screen, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen } from '@testing-library/react';
 import { renderInTestApp } from "@backstage/test-utils";
-import { configure, render, shallow } from 'enzyme';
+import { configure, shallow } from 'enzyme';
 import { Organization } from '.';
 import React from 'react';
-import { SelectOrg } from '../../Utility/SelectOrg';
+import { SelectOrg } from '../../Utility';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks

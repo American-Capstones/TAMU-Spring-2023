@@ -2,7 +2,7 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { configure, shallow } from 'enzyme';
 import { OrgChoice } from '.';
 import React from 'react';
-import { SelectOrg } from '../../Utility/SelectOrg';
+import { SelectOrg } from '../../Utility';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
