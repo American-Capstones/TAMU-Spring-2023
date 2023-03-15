@@ -1,59 +1,81 @@
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Breadcrumbs } from "./Breadcrumbs";
-import { Breadcrumbs as BC } from "@material-ui/core";
+import { Breadcrumbs as BC, Typography } from "@material-ui/core";
 import { screen } from "@testing-library/react";
 import React from 'react';
-import { shallow } from "enzyme";
+import { configure, render, shallow } from 'enzyme';
 import { renderInTestApp } from "@backstage/test-utils";
+import { Link } from "@backstage/core-components";
 
-// This is my first component made completely via TDD.
+configure({adapter: new Adapter()});
 
-const orgLoc  = { pathname: '/dd/testOrg' };
-const teamLoc = { pathname: '/dd/testOrg/testTeam' };
-const repoLoc = { pathname: '/dd/testOrg/testTeam/testRepo' };
+// When these paths are split, will result in an array like:
+// [ "", "dd", "testOrg", ...]
+// So the first two elements are always sliced out
+const root = { pathname: '/dd' };
+const one = { pathname: '/dd/testOrg' }
+const loc = { pathname: '/dd/testOrg/testTeam/testRepo' };
 
 jest.mock('react-router-dom');
 const routerDom = require('react-router-dom');
 
 describe('Breadcrumbs test suite', () => {
-    it('should render the correct amount of breadcrumbs', async () => {
-        jest.spyOn(routerDom, 'useLocation').mockImplementation(() => {
-            return repoLoc
-        });
-        
-        const wrapper = await renderInTestApp(<Breadcrumbs />);
-        const numPaths = repoLoc.pathname.split('/').length;
-        expect(wrapper.getAllByRole('link').length).toEqual(numPaths);
+    beforeEach(() => {
+        jest.spyOn(routerDom, 'useLocation').mockImplementation(() => loc);
+    })
+    it('should render the correct amount of breadcrumbs', () => {
+        const wrapper = shallow(<Breadcrumbs />);
+        expect(wrapper.find(Link).length).toEqual(2);
+        expect(wrapper.find(Typography).length).toEqual(1);
     });
 
-    it('should render the correct name for each crumb', async () => {
-        jest.spyOn(routerDom, 'useLocation').mockImplementation(() => repoLoc);
+    it('should render the correct name for each crumb', () => {
+        const wrapper = shallow(<Breadcrumbs />);
+        const crumbs = loc.pathname.split('/').slice(2);
+        const links = wrapper.find(Link);
+        const current = wrapper.find(Typography);
         
-        const wrapper = await renderInTestApp(<Breadcrumbs />);
-        const numPaths = repoLoc.pathname.split('/').length;
-        const crumbs: HTMLAnchorElement[] = screen.getAllByRole('link');
-        
-        let path = '';
-        crumbs.forEach((crumb) => {
-            path += `/${crumb.textContent}`;
-            console.log(crumb.textContent);
+        links.forEach((link) => {
+            expect(crumbs.includes(link.text())).toBeTruthy();
         })
-        
-        expect(path).toEqual(repoLoc.pathname);
+
+        expect(crumbs.includes(current.text())).toBeTruthy();
     });
 
     it('should make each crumb link to the correct page', () => {
-
+        // Find the link tags, test their "to" attr
+        const wrapper = shallow(<Breadcrumbs />);
+        const links = wrapper.find(Link);
+        let aggregate = '';
+        links.forEach((link) => {
+            const page = link.text();
+            const to = link.prop('to');
+            const expected = `${aggregate}/${page}`;
+            expect(to).toEqual(`.${expected}`);
+            aggregate = expected;
+        })
     });
 
     it('should make the last crumb unclickable', () => {
+        const wrapper = shallow(<Breadcrumbs />);
+        const crumbs = loc.pathname.split('/').slice(2);
+        const current = wrapper.find(Typography);
 
+        expect(current.text()).toEqual(crumbs.at(-1));
     });
 
     it('should not render a clickable crumb with only 1 path', () => {
+        jest.spyOn(routerDom, 'useLocation').mockImplementation(() => one);
 
+        const wrapper = shallow(<Breadcrumbs />);
+        expect(wrapper.find(Link).length).toEqual(0);
     });
 
     it('should not render anything if path is root', () => {
+        jest.spyOn(routerDom, 'useLocation').mockImplementation(() => root);
 
+        const wrapper = shallow(<Breadcrumbs />);
+        expect(wrapper.find(Link).length).toEqual(0);
+        expect(wrapper.find(Typography).length).toEqual(0);
     });
 });
