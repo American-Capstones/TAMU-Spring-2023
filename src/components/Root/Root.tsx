@@ -12,7 +12,7 @@ import {
 } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { OrgChoice, Organization, Team, Repo } from '../Pages';
-import { Breadcrumbs } from '../Breadcrumbs/Breadcrumbs';
+import { Breadcrumbs } from '../Utility/Breadcrumbs';
 
 export const Root = () => (
   <Page themeId="tool">
