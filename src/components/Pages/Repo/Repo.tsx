@@ -34,7 +34,8 @@ export const Repo = ({ }: {}) => {
   if (repoName)
     getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
       .then((data) => {
-        setRepoInfo(sortVulnData(data))
+        setRepoInfo(sortVulnData(data));
+        setLoadingState(false);
       })
   return (
     <div style={{
