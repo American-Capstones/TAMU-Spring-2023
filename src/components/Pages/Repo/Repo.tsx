@@ -22,7 +22,7 @@ const columnStyle: React.CSSProperties = {
 
 export const Repo = ({ }: {}) => {
 
-  const { repoName } = useParams();
+  const { repoName } = useParams(); // Pulling the repository name from the url params
   const [loadingState, setLoadingState] = useState<Boolean>(true);
   const [repoInfo, setRepoInfo] = useState<RepoVulns>({
     critical: [],
@@ -151,24 +151,34 @@ export const Repo = ({ }: {}) => {
 
   const sorted_dummy_data = sortVulnData(dummy_data);
 
+  // The API Call is wrapped in a useEffect so that it is only called once
+  // If the API calls aren't placed here, it will cause a state change, re-rendering the component
+  // and get called over and over
   useEffect(() => {
     if(repoName)
+      /* MOCK API CALL
+      *  (Preventing rate limit exceeding)
+      */
       setTimeout(()=> {
-
         setRepoInfo(sorted_dummy_data);
         setLoadingState(false);
-      }, 1500);
+      }, 500);
+
+      // REAL API CALL
+      // getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
+      //   .then((data) => {
+      //     setRepoInfo(sortVulnData(data));
+      //     setLoadingState(false);
+      //   })
   }, [])
+
   return (
     <div style={{
       width: "100%",
       height: "100%"
     }}>
       <h1>Repository Vulnerabilities</h1>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'row'
-      }}>
+      <HorizontalScrollGrid>
         <div title="Critical" style={columnStyle}>
           <h3>Critical Vulnerabilities</h3>
           {loadingState == true &&
@@ -176,6 +186,7 @@ export const Repo = ({ }: {}) => {
           }
           <VulnList vulns={repoInfo.critical} />
         </div>
+
         <div title="High" style={columnStyle}>
           <h3>High Vulnerabilities</h3>
           {loadingState == true &&
@@ -183,6 +194,7 @@ export const Repo = ({ }: {}) => {
           }
           <VulnList vulns={repoInfo.high} />
         </div>
+
         <div title="Moderate" style={columnStyle}>
           <h3>Moderate Vulnerabilities</h3>
           {loadingState == true &&
@@ -190,6 +202,7 @@ export const Repo = ({ }: {}) => {
           }
           <VulnList vulns={repoInfo.moderate} />
         </div>
+        
         <div title="Low" style={columnStyle}>
           <h3>Low Vulnerabilities</h3>
           {loadingState == true &&
@@ -197,7 +210,7 @@ export const Repo = ({ }: {}) => {
           }
           <VulnList vulns={repoInfo.low} />
         </div>
-      </div>
+      </HorizontalScrollGrid>
     </div>
   );
 };
