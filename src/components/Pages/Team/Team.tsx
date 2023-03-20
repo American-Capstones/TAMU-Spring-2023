@@ -36,7 +36,7 @@ export const Team = ({} : {}) => {
     }
 
     if (!done) {
-        return <div style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
           type={"spin"}
           color={"#8B0000"}
           height={100}
