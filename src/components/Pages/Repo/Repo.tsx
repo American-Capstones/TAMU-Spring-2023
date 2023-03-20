@@ -8,6 +8,7 @@ import { VulnList } from '../../VulnList';
 import { RepoVulns } from '../../../utils/types';
 import { getVulnerabilitiesFromRepo } from '../../../api/getVulnerabilitiesFromRepo';
 import { sortVulnData } from '../../../utils/functions';
+import ReactLoading from "react-loading";
 
 export const Repo = ({  }: { }) => {
     const { repoName } = useParams();
@@ -21,16 +22,20 @@ export const Repo = ({  }: { }) => {
     const [ repoInfo, setRepoInfo ] = useState<RepoVulns>(defaultValues);
     // I like this just fine, think it makes sense given it's context.
     const [ allRepoInfo, setAllRepoInfo ] = useState<RepoVulns>(defaultValues);
+    const [ done, setDone1 ] = useState(false);
+    const [ doneAll, setDoneAll ] = useState(false);
 
     if (repoName && repoInfo == defaultValues) {
         // This call should only have to be made once, and you can call each set function in the then() fn
         getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
         .then((data) => {
             setRepoInfo(sortVulnData(data))
+            setDone1(true);
         })
         getVulnerabilitiesFromRepo(repoName, 'Baggage-Claim-Incorporated')
         .then((data) => {
             setAllRepoInfo(sortVulnData(data))
+            setDoneAll(true);
         })
     }
 
@@ -54,10 +59,20 @@ export const Repo = ({  }: { }) => {
         setRepoInfo(allRepoInfo);
       }
     }
+
+    if (!done || !doneAll) {
+      return <div style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+        type={"spin"}
+        color={"#8B0000"}
+        height={100}
+        width={100}
+      />
+      </div>
+    }
     
     return (
         <div>
-            <h1>Repository Vulnerabilities</h1>
+            <h1>{repoName}</h1>
             <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
             <Grid container spacing={1}>
                 <Grid item xs={3}>

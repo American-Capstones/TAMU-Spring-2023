@@ -3,6 +3,7 @@ import { DataView } from '../../DataView';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetRepositoriesForTeam } from '../../../api/useGetRepositoriesForTeam';
 import { Repository } from '../../../utils/types';
+import ReactLoading from "react-loading";
 
 const emptyContent = () => {
     return (
@@ -14,11 +15,13 @@ export const Team = ({} : {}) => {
     let { teamName } = useParams();
     const [tableData, setTableData] = useState<Repository[]>([])
     const navigate = useNavigate();
+    const [ done, setDone ] = useState(false);
 
     if (tableData.length == 0 && teamName) {
         useGetRepositoriesForTeam('baggage-claim-incorporated', teamName, 10)
         .then((data: any) => {
             setTableData(data);
+            setDone(true);
         })
         .catch((e) => {
             // Need to add more specific error checking here.
@@ -30,6 +33,16 @@ export const Team = ({} : {}) => {
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`../repos/${rowData.name}`, { replace: true });
+    }
+
+    if (!done) {
+        return <div style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+          type={"spin"}
+          color={"#8B0000"}
+          height={100}
+          width={100}
+        />
+        </div>
     }
 
     const cols = [{title: 'Repository Name', field: 'name'}]
