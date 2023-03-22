@@ -312,22 +312,6 @@ export const Repo = ({ }: {}) => {
         marginBottom: "2.4rem"
       }}>
         <h1>Repository Vulnerabilities</h1>
-        <Accordion TransitionProps={{ unmountOnExit: true }}>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header">
-            <Typography>Loaded Data</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <CodeSnippet
-              text={loaded_data}
-              language='json'
-              showLineNumbers
-              showCopyCodeButton
-            />
-          </AccordionDetails>
-        </Accordion>
       </div>
 
       <HorizontalScrollGrid>
