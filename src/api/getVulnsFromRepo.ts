@@ -18,7 +18,7 @@ import {
   VulnInfoUnformatted
 } from '../utils/types';
 
-const GITHUB_GRAPHQL_MAX_ITEMS = 100;
+const GITHUB_GRAPHQL_MAX_ITEMS = 5;
 
 export const getVulnsFromRepo = (graphql: any, repoName: string, orgLogin: string) => {  
     return getVulnerabilityNodes(graphql, repoName, orgLogin);
@@ -81,7 +81,7 @@ async function getVulnerabilityNodes(
           : repoRequestLimit,
     },
   );
-    
+
   vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
   return vulnerabilityData;
 }

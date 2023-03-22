@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Grid, FormControlLabel, Switch, SwitchProps } from '@material-ui/core';
-import {
-  InfoCard, 
-} from '@backstage/core-components';
+import { FormControlLabel, Switch } from '@material-ui/core';
 import { VulnList } from '../../VulnList';
-import { RepoVulns, VulnInfoFormatted } from '../../../utils/types';
+import { RepoVulns } from '../../../utils/types';
 import ReactLoading from "react-loading";
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
+
+const columnStyle : React.CSSProperties = {
+    marginRight: "4em",
+    display: "flex",
+    flexDirection: "column",
+    minWidth: "25em",
+    maxWidth: "25em"
+  }
 
 export const Repo = ({  }: { }) => {
     const { orgName, repoName } = useParams();
@@ -51,28 +56,36 @@ export const Repo = ({  }: { }) => {
         <div>
             <h1>{repoName}</h1>
             <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
-            <Grid container spacing={1}>
-                <Grid item xs={3}>
-                    <InfoCard title="Critical">
-                        <VulnList vulns={shownRepoVulns.critical} />
-                    </InfoCard>
-                </Grid>
-                <Grid item xs={3}>
-                    <InfoCard title="High">
-                        <VulnList vulns={shownRepoVulns.high} />
-                    </InfoCard>
-                </Grid>
-                <Grid item xs={3}>
-                    <InfoCard title="Moderate">
-                        <VulnList vulns={shownRepoVulns.moderate} />
-                    </InfoCard>
-                </Grid>
-                <Grid item xs={3}>
-                    <InfoCard title="Low">
-                        <VulnList vulns={shownRepoVulns.low} />
-                    </InfoCard>
-                </Grid>
-            </Grid>
+            <div title="Critical" style={columnStyle}>
+                <h3>Critical Vulnerabilities</h3>
+                {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+                }
+                <VulnList vulns={shownRepoVulns.critical}/>
+            </div>
+            <div title="High" style={columnStyle}>
+                <h3>High Vulnerabilities</h3>
+                {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+                }
+                <VulnList vulns={shownRepoVulns.high}/>
+            </div>
+            <div title="Moderate" style={columnStyle}>
+                <h3>Moderate Vulnerabilities</h3>
+                {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+                }
+                <VulnList vulns={shownRepoVulns.moderate}/>
+            </div>
+            <div title="Low" style={columnStyle}>
+                <h3>Low Vulnerabilities</h3>
+                {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+                }
+                <VulnList vulns={shownRepoVulns.low}/>
+            </div>
         </div> 
     );
 };
+import { Skeleton } from '@material-ui/lab';
+

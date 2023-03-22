@@ -44,7 +44,7 @@ import { sortVulnData } from '../utils/functions';
 import {
   VulnInfoUnformatted,
 } from '../utils/types';
-import { getVulnerabilitiesFromRepo } from './getVulnsFromRepo';
+import { getVulnsFromRepo } from './getVulnsFromRepo';
 import { getReposForTeam } from './getReposForTeam';
 import { getTeamsForOrg } from './getTeamsForOrg';
 import { InputError } from '@backstage/errors'
@@ -69,7 +69,7 @@ export const useGetSeverityCountsForOrg = async (
 
         for (var Repo of ReposForTeams) {
             if (!ReposVisited.includes(Repo.ID)){
-                let vulns = await getVulnerabilitiesFromRepo(Repo.name, orgLogin);
+                let vulns = await getVulnsFromRepo(auth, Repo.name, orgLogin);
                 
                 for (var vulnInfo of vulns) {
                     AllVulns.push(vulnInfo);
