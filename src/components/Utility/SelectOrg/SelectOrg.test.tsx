@@ -5,6 +5,7 @@ import { renderInTestApp } from "@backstage/test-utils";
 import { configure } from 'enzyme';
 import { SelectOrg } from '.';
 import React from 'react';
+import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
@@ -16,17 +17,12 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedUsedNavigate,
 }));
 
-jest.mock('../../api/useGetOrganizationsForUser');
-const useGetOrgs = require('../../api/useGetOrganizationsForUser');
+jest.mock('../../../hooks/useGetOrgsForUser', () => ({
+    ...jest.requireActual('../../../hooks/useGetOrgsForUser'),
+    useGetOrgsForUser: jest.fn().mockReturnValue({ loading: false, orgs: ['test org', 'test org 2']})
+}));
 
 describe('SelectOrg test suite', () => {
-    let testData: any[];
-
-    beforeEach(() => {
-        testData = [{name: 'test org'}, {name: 'test org 2'}];
-        jest.spyOn(useGetOrgs, 'useGetOrgsForUser')
-            .mockImplementation(() => Promise.resolve(testData));
-    });
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -43,8 +39,8 @@ describe('SelectOrg test suite', () => {
         await userEvent.click(Select);
         const Options = wrapper.getAllByRole('option');
 
-        // Extra item for None option
-        expect(Options.length).toEqual(testData.length + 1); 
+        // Extra item for None option, + orgs length
+        expect(Options.length).toEqual(3); 
     });
 
     it('should select the correct value if defaultOption is given', async () => {
@@ -62,7 +58,7 @@ describe('SelectOrg test suite', () => {
         const target = listbox.getByText('test org');
         await userEvent.click(target);
         
-        expect(mockedUsedNavigate).toHaveBeenCalledWith(`./test org`, { replace: true });
+        expect(mockedUsedNavigate).toHaveBeenCalledWith(`../test org`, { replace: true });
     });
 
     // an undefined value just means the user clicked away from it
@@ -73,4 +69,14 @@ describe('SelectOrg test suite', () => {
         await userEvent.click(document.body);
         expect(mockedUsedNavigate).not.toHaveBeenCalled();
     });
+
+    it('should disable the "None" option when it is not selected', async () => {
+        const wrapper = await renderInTestApp(<SelectOrg />);
+
+        const Select = wrapper.getByRole('button');
+        await userEvent.click(Select);
+        const listbox = within(wrapper.getByRole('listbox'));
+        const target = listbox.getAllByRole('option')[0];
+        expect(target.className).toContain('Mui-disabled')
+    })
 });

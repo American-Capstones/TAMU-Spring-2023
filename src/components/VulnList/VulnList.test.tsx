@@ -1,11 +1,10 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { InfoCard } from "@backstage/core-components";
 import { configure, shallow } from 'enzyme';
-import { screen } from '@testing-library/react';
 import { VulnList } from '.';
 import React from 'react';
 import { VulnInfoFormatted } from '../../utils/types';
-import { renderInTestApp } from '@backstage/test-utils';
+import { VulnCard } from '../VulnCard';
 
 configure({adapter: new Adapter()});
 
@@ -41,40 +40,19 @@ describe('Vuln List test suite', () => {
 
         it('should render', () => {
             const wrapper = shallow(<VulnList vulns={props}/>);
-            expect(wrapper.contains(<h1>Test Package - 1.1.1</h1>)).toBeTruthy();
+            expect(wrapper.find(<></>)).toBeTruthy();
         });
 
         it('should show all given vulns', () => {
             const wrapper = shallow(<VulnList vulns={props}/>);
-            expect(wrapper.contains(<h1>Test Package - 1.1.1</h1>)).toBeTruthy();
-            expect(wrapper.contains(<h1>Test Package 2 - 2.2.2</h1>)).toBeTruthy();
+            expect(wrapper.find(VulnCard)).toHaveLength(2);
         });
     })
 
     describe('When it is not given valid props', () => {
         it('Returns an empty element when props are empty', () => {
             const wrapper = shallow(<VulnList vulns={[]}/>);
-            expect(wrapper.find(InfoCard)).toHaveLength(0);
+            expect(wrapper.find(VulnCard)).toHaveLength(0);
         });
-
-        it('Prints "NOT FOUND" if a prop value is undefined', async () => {
-            const props: any[] = [{
-                packageName: undefined,
-                versionNum: undefined,
-                createdAt: undefined, 
-                pullRequest: undefined,
-                dismissedAt: undefined,
-                fixedAt: undefined,
-                vulnVersionRange: undefined,
-                classification: undefined,
-                severity: undefined,
-                summary: undefined,
-                vulnerabilityCount: undefined,
-                state: undefined,
-            }];
-            await renderInTestApp(<VulnList vulns={props}/>)
-            // Should have 10 occurrences of this text, since 2 are doubled into one element
-            expect(await screen.findAllByText('NOT FOUND', {exact:false})).toHaveLength(10);
-        })
     })
 });

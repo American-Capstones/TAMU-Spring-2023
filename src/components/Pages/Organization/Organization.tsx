@@ -15,7 +15,7 @@ const emptyContent = () => {
 
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
-    const { loading, teams} = useGetTeamsForOrg(orgName);
+    const { loading, teams } = useGetTeamsForOrg(orgName);
     const navigate = useNavigate();
 
     if (loading) {

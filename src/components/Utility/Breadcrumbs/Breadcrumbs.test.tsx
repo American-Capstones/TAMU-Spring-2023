@@ -1,10 +1,8 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Breadcrumbs } from "./Breadcrumbs";
-import { Breadcrumbs as BC, Typography } from "@material-ui/core";
-import { screen } from "@testing-library/react";
+import { Typography } from "@material-ui/core";
 import React from 'react';
-import { configure, render, shallow } from 'enzyme';
-import { renderInTestApp } from "@backstage/test-utils";
+import { configure, shallow } from 'enzyme';
 import { Link } from "@backstage/core-components";
 
 configure({adapter: new Adapter()});
@@ -16,13 +14,14 @@ const root = { pathname: '/dd' };
 const one = { pathname: '/dd/testOrg' }
 const loc = { pathname: '/dd/testOrg/testTeam/testRepo' };
 
-jest.mock('react-router-dom');
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useLocation: jest.fn().mockImplementation(() => loc)
+}));
 const routerDom = require('react-router-dom');
 
 describe('Breadcrumbs test suite', () => {
-    beforeEach(() => {
-        jest.spyOn(routerDom, 'useLocation').mockImplementation(() => loc);
-    })
+    
     it('should render the correct amount of breadcrumbs', () => {
         const wrapper = shallow(<Breadcrumbs />);
         expect(wrapper.find(Link).length).toEqual(2);
@@ -42,18 +41,19 @@ describe('Breadcrumbs test suite', () => {
         expect(crumbs.includes(current.text())).toBeTruthy();
     });
 
-    it('should make each crumb link to the correct page', () => {
+    it('should make each crumb link to the correct page', async () => {
         // Find the link tags, test their "to" attr
         const wrapper = shallow(<Breadcrumbs />);
         const links = wrapper.find(Link);
         let aggregate = '';
-        links.forEach((link) => {
+
+        links.forEach(async (link) => {
             const page = link.text();
             const to = link.prop('to');
             const expected = `${aggregate}/${page}`;
             expect(to).toEqual(`.${expected}`);
             aggregate = expected;
-        })
+        });
     });
 
     it('should make the last crumb unclickable', () => {

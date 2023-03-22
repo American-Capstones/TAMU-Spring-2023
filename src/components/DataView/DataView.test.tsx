@@ -18,7 +18,8 @@ describe('DataView test suite', () => {
         rows: [],
         filters: [],
         title: '',
-        onRowClick: () => {}
+        onRowClick: () => {},
+        emptyContent: <></>
     }
     const input: TableProps = {
         columns: [
@@ -31,7 +32,8 @@ describe('DataView test suite', () => {
         rows: OrgTableTest.data,
         filters: [],
         title: 'Teams within this organization',
-        onRowClick: () => {}
+        onRowClick: () => {},
+        emptyContent: <></>
     };
     const ComponentWithData = DataView(input);
     const EmptyComponent = DataView(emptyProps);
