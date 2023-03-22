@@ -18,7 +18,7 @@ const columnStyle: React.CSSProperties = {
 
 export const Repo = ({  }: { }) => {
     const { orgName, repoName } = useParams();
-    const { loading, vulnInfo: vulns } = useGetVulnsFromRepo(repoName, orgName);
+    const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
     const [ shownRepoVulns, setShownRepoVulns ] = useState<RepoVulns>();
     const [ openVulns, setOpenVulns ] = useState<RepoVulns>();
 

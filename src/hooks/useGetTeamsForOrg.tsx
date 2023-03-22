@@ -11,15 +11,22 @@ import { Team } from "../utils/types";
 export function useGetTeamsForOrg(orgName:string | undefined) {
     const [loading, setLoading] = useState<boolean>(true);
     const [teams, setTeams] = useState<Team[]>([]);
+    const [error, setError] = useState<Error>();
+
     const auth = useApi(githubAuthApiRef)
 
     const getOrgNames = useCallback(async () => {
         setLoading(true);
 
         if (orgName) {
-            const graphql = await getOctokit(auth)
-            const teamNames = await getTeamsForOrg(graphql, orgName)
-            setTeams(teamNames)
+            try {
+                const graphql = await getOctokit(auth)
+                const teamNames = await getTeamsForOrg(graphql, orgName)
+                setTeams(teamNames)
+            }
+            catch {
+                setError(Error("Error in useGetTeamsForOrg"))
+            }
         }
 
         setLoading(false)
@@ -32,5 +39,6 @@ export function useGetTeamsForOrg(orgName:string | undefined) {
     return {
         loading, 
         teams,
+        error,
     };
 }

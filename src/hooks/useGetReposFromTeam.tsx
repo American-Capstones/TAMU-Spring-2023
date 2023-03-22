@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getOrgsForUser } from "../api/getOrgsForUser";
-import { formatOrgData, getOctokit } from "../utils/functions";
+import { getOctokit } from "../utils/functions";
 
 import {
   useApi,
@@ -12,15 +11,22 @@ import { Repository } from "../utils/types";
 export function useGetReposFromTeam(orgName:string|undefined, teamName:string|undefined) {
     const [loading, setLoading] = useState<boolean>(true);
     const [repos, setRepos] = useState<Repository[]>([]);
+    const [error, setError] = useState<Error>();
+
     const auth = useApi(githubAuthApiRef)
 
     const getOrgNames = useCallback(async () => {
         setLoading(true);
-        if(teamName && orgName) {
-            const graphql = await getOctokit(auth)
-            const repoNames = await getReposForTeam(graphql, orgName, teamName)
+        try {
+            if(teamName && orgName) {
+                const graphql = await getOctokit(auth)
+                const repoNames = await getReposForTeam(graphql, orgName, teamName)
 
-            setRepos(repoNames)
+                setRepos(repoNames)
+            }
+        }
+        catch {
+            setError(Error("Error in useGetReposFromTeam"))
         }
         setLoading(false)
     }, [])
@@ -32,5 +38,6 @@ export function useGetReposFromTeam(orgName:string|undefined, teamName:string|un
     return {
         loading, 
         repos,
+        error
     };
 }

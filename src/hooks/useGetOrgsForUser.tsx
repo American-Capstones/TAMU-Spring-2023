@@ -10,16 +10,22 @@ import {
 export function useGetOrgsForUser() {
     const [loading, setLoading] = useState<boolean>(true);
     const [orgs, setOrgs] = useState<string[]>([]);
+    const [error, setError] = useState<Error>();
+
     const auth = useApi(githubAuthApiRef)
 
     const getOrgNames = useCallback(async () => {
         setLoading(true);
+        try {
+            const graphql = await getOctokit(auth)
+            const orgNames = await getOrgsForUser(graphql)
+            const orgNamesFormatted = formatOrgData(orgNames)
+            setOrgs(orgNamesFormatted)
+        }
+        catch {
+            setError(Error("Error in useGetOrgsForUser"))
+        }
 
-        const graphql = await getOctokit(auth)
-        const orgNames = await getOrgsForUser(graphql)
-        const orgNamesFormatted = formatOrgData(orgNames)
-
-        setOrgs(orgNamesFormatted)
         setLoading(false)
     }, [])
 
@@ -30,5 +36,6 @@ export function useGetOrgsForUser() {
     return {
         loading, 
         orgs,
+        error
     };
 }
