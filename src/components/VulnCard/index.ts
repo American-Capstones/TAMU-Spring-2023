@@ -1,0 +1,1 @@
+export { VulnCard } from './VulnCard';

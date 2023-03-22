@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FormControlLabel, Switch } from '@material-ui/core';
+import { RepoVulns, VulnInfoUnformatted } from '../../../utils/types';
 import { VulnList } from '../../VulnList';
-import { RepoVulns } from '../../../utils/types';
 import ReactLoading from "react-loading";
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
+import { Skeleton } from '@material-ui/lab';
+import { HorizontalScrollGrid } from '@backstage/core-components';
 
-const columnStyle : React.CSSProperties = {
-    marginRight: "4em",
-    display: "flex",
-    flexDirection: "column",
-    minWidth: "25em",
-    maxWidth: "25em"
-  }
+const columnStyle: React.CSSProperties = {
+  marginRight: "4em",
+  display: "flex",
+  flexDirection: "column",
+  minWidth: "25em",
+  maxWidth: "25em"
+}
 
 export const Repo = ({  }: { }) => {
     const { orgName, repoName } = useParams();
@@ -53,39 +55,103 @@ export const Repo = ({  }: { }) => {
     }
     
     return (
-        <div>
+        <div style={{
+            width: "100%",
+            height: "100%"
+          }}>
             <h1>{repoName}</h1>
             <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
-            <div title="Critical" style={columnStyle}>
-                <h3>Critical Vulnerabilities</h3>
-                {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
-                }
-                <VulnList vulns={shownRepoVulns.critical}/>
-            </div>
-            <div title="High" style={columnStyle}>
-                <h3>High Vulnerabilities</h3>
-                {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
-                }
-                <VulnList vulns={shownRepoVulns.high}/>
-            </div>
-            <div title="Moderate" style={columnStyle}>
-                <h3>Moderate Vulnerabilities</h3>
-                {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
-                }
-                <VulnList vulns={shownRepoVulns.moderate}/>
-            </div>
-            <div title="Low" style={columnStyle}>
-                <h3>Low Vulnerabilities</h3>
-                {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"}/>
-                }
-                <VulnList vulns={shownRepoVulns.low}/>
-            </div>
+            <HorizontalScrollGrid>
+                <div style={{
+                padding: "1.24rem",
+                display: "flex",
+                flexDirection: "row"
+                }}>
+                <div title="Critical" style={columnStyle}>
+                    <h3>Critical Vulnerabilities</h3>
+                    {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                    }
+                    <VulnList vulns={shownRepoVulns.critical} />
+                </div>
+                <div title="High" style={columnStyle}>
+                    <h3>High Vulnerabilities</h3>
+                    {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                    }
+                    <VulnList vulns={shownRepoVulns.high} />
+                </div>
+                <div title="Moderate" style={columnStyle}>
+                    <h3>Moderate Vulnerabilities</h3>
+                    {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                    }
+                    <VulnList vulns={shownRepoVulns.moderate} />
+                </div>
+                <div title="Low" style={columnStyle}>
+                    <h3>Low Vulnerabilities</h3>
+                    {loading &&
+                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                    }
+                    <VulnList vulns={shownRepoVulns.low} />
+                </div>
+                </div>
+            </HorizontalScrollGrid>
         </div> 
     );
-};
-import { Skeleton } from '@material-ui/lab';
+}
 
+  
+
+//   return (
+//     <div style={{
+//       width: "100%",
+//       height: "100%"
+//     }}>
+//       <div style={{
+//         marginBottom: "2.4rem"
+//       }}>
+//         <h1>Repository Vulnerabilities</h1>
+//       </div>
+
+//       <HorizontalScrollGrid>
+//         <div style={{
+//           padding: "1.24rem",
+//           display: "flex",
+//           flexDirection: "row"
+//         }}>
+//           <div title="Critical" style={columnStyle}>
+//             <h3>Critical Vulnerabilities</h3>
+//             {loadingState == true &&
+//               <Skeleton variant='rect' width={"100%"} height={"10em"} />
+//             }
+//             <VulnList vulns={repoInfo.critical} />
+//           </div>
+//           <div title="High" style={columnStyle}>
+//             <h3>High Vulnerabilities</h3>
+//             {loadingState == true &&
+//               <Skeleton variant='rect' width={"100%"} height={"10em"} />
+//             }
+//             <VulnList vulns={repoInfo.high} />
+//           </div>
+//           <div title="Moderate" style={columnStyle}>
+//             <h3>Moderate Vulnerabilities</h3>
+//             {loadingState == true &&
+//               <Skeleton variant='rect' width={"100%"} height={"10em"} />
+//             }
+//             <VulnList vulns={repoInfo.moderate} />
+//           </div>
+//           <div title="Low" style={columnStyle}>
+//             <h3>Low Vulnerabilities</h3>
+//             {loadingState == true &&
+//               <Skeleton variant='rect' width={"100%"} height={"10em"} />
+//             }
+//             <VulnList vulns={repoInfo.low} />
+//           </div>
+//         </div>
+//       </HorizontalScrollGrid>
+//     </div >
+//   );
+// };
+// import { Skeleton } from '@material-ui/lab';
+// import { HorizontalScrollGrid } from '@backstage/core-components';
