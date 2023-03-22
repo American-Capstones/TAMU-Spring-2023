@@ -11,15 +11,22 @@ import {  RepoVulns, VulnInfoFormatted } from "../utils/types";
 export function useGetVulnsFromRepo(repoName:string|undefined, orgName:string|undefined) {
     const [loading, setLoading] = useState<boolean>(true);
     const [vulnInfo, setVulnInfo] = useState<RepoVulns>();
+    const [error, setError] = useState<Error>();
+    
     const auth = useApi(githubAuthApiRef)
 
     const getVulns = useCallback(async () => {
         setLoading(true);
-        if(repoName && orgName) {
-            const graphql = await getOctokit(auth)
-            const vulns = await getVulnsFromRepo(graphql, repoName, orgName)
+        try {
+            if(repoName && orgName) {
+                const graphql = await getOctokit(auth)
+                const vulns = await getVulnsFromRepo(graphql, repoName, orgName)
 
-            setVulnInfo(sortVulnData(vulns))
+                setVulnInfo(sortVulnData(vulns))
+            }
+        }
+        catch {
+            setError(Error("Error in useGetVulnsFromRepo"))
         }
         setLoading(false)
     }, [])
@@ -31,5 +38,6 @@ export function useGetVulnsFromRepo(repoName:string|undefined, orgName:string|un
     return {
         loading, 
         vulnInfo,
+        error
     };
 }
