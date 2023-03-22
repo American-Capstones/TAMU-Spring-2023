@@ -329,15 +329,17 @@ export const Repo = ({ }: {}) => {
           </AccordionDetails>
         </Accordion>
       </div>
-      <div style={{
-        height: "100%",
-        marginBottom: "2.4rem"
-      }}>
-        <HorizontalScrollGrid>
+
+      <HorizontalScrollGrid>
+        <div style={{
+          padding: "1.24rem",
+          display: "flex",
+          flexDirection: "row"
+        }}>
           <div title="Critical" style={columnStyle}>
             <h3>Critical Vulnerabilities</h3>
             {loadingState == true &&
-              <Skeleton variant='rect' width={"100%"} height={"10em"}/>
+              <Skeleton variant='rect' width={"100%"} height={"10em"} />
             }
             <VulnList vulns={repoInfo.critical} />
           </div>
@@ -362,8 +364,8 @@ export const Repo = ({ }: {}) => {
             }
             <VulnList vulns={repoInfo.low} />
           </div>
-        </HorizontalScrollGrid>
-      </div>
+        </div>
+      </HorizontalScrollGrid>
     </div >
   );
 };
