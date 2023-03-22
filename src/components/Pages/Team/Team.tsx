@@ -2,6 +2,7 @@ import React from 'react';
 import { DataView } from '../../DataView';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
+import ReactLoading from "react-loading";
 
 const emptyContent = () => {
     return (
@@ -10,13 +11,22 @@ const emptyContent = () => {
 }
 
 export const Team = ({} : {}) => {
-    let { orgName, teamName } = useParams();
-    let {loading: isLoading, repos } = useGetReposFromTeam(orgName, teamName);
-
+    const { orgName, teamName } = useParams();
+    const {loading, repos } = useGetReposFromTeam(orgName, teamName);
     const navigate = useNavigate();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
+    }
+
+    if (loading) {
+        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+          type={"spin"}
+          color={"#8B0000"}
+          height={100}
+          width={100}
+        />
+        </div>
     }
 
     const cols = [{title: 'Repository Name', field: 'name'}]

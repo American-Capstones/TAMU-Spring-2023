@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { getVulnerabilitiesFromRepo } from '../getVulnerabilitiesFromRepo';
+import { getVulnerabilitiesFromRepo } from '../getVulnsFromRepo';
 import { useGetRepositoriesForTeam } from '../useGetRepositoriesForTeam';
 import { useGetSeverityCountsForOrg } from '../useGetSeverityCountsForOrg';
 import { useGetTeamsForOrg } from '../useGetTeamsForOrg';

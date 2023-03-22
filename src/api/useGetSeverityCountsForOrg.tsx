@@ -44,7 +44,7 @@ import { sortVulnData } from '../utils/functions';
 import {
   VulnInfoUnformatted,
 } from '../utils/types';
-import { getVulnerabilitiesFromRepo } from './getVulnerabilitiesFromRepo';
+import { getVulnerabilitiesFromRepo } from './getVulnsFromRepo';
 import { getReposForTeam } from './getReposForTeam';
 import { getTeamsForOrg } from './getTeamsForOrg';
 import { InputError } from '@backstage/errors'

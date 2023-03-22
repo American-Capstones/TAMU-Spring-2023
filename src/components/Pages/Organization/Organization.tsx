@@ -5,6 +5,7 @@ import { DataView } from '../../DataView';
 import { SelectOrg } from '../../Utility';
 import { ErrorPage } from '@backstage/core-components';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
+import ReactLoading from "react-loading";
 
 const emptyContent = () => {
     return (
@@ -14,8 +15,18 @@ const emptyContent = () => {
 
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
-    let { loading: isLoading_Teams, teams} = useGetTeamsForOrg(orgName);
+    const { loading, teams} = useGetTeamsForOrg(orgName);
     const navigate = useNavigate();
+
+    if (loading) {
+        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+          type={"spin"}
+          color={"#8B0000"}
+          height={100}
+          width={100}
+        />
+        </div>
+    }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
@@ -25,6 +36,7 @@ export const Organization = ({} : {}) => {
     const filters: any[] = []
     const title = 'Teams within this organization'
     return (
+
         <>
             <SelectOrg defaultOption={orgName ?? ''}/>
             {(teams && teams.length > 0) ?
@@ -39,5 +51,6 @@ export const Organization = ({} : {}) => {
                 <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
             }
         </>
+
     );
 };
