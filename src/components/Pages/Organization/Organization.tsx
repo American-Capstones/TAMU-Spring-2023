@@ -1,14 +1,11 @@
 import React from 'react';
-import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { DataView } from '../../DataView';
 import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
 
-import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
-import { Team } from '../../../utils/types';
-import { useGetOrgsForUser } from '../../../api/useGetOrganizationsForUser';
-import { formatOrgData } from '../../../utils/functions';
 import { ErrorPage } from '@backstage/core-components';
+import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
+import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 
 const emptyContent = () => {
     return (
@@ -17,31 +14,16 @@ const emptyContent = () => {
 }
 
 export const Organization = ({} : {}) => {
-    const defaultValues: string[] = [];
-    const [ orgs, setOrgs ] = useState<string[]>(defaultValues);
-
-    if (orgs == defaultValues){
-        useGetOrgsForUser(10).then((data) => {
-            setOrgs(formatOrgData(data));
-        })
-    }
-    //console.log("orgList2" , organizationList2);
-    const [tableData, setTableData] = useState<Team[]>([]);
+    let { loading: isLoading_Orgs, orgs } = useGetOrgsForUser();
+    let { loading: isLoading_Teams, teams} = useGetTeamsForOrg("baggage-claim-incorporated") 
+    // TODO: PASS SELECTED TO useGetTeamsForOrg
     const navigate = useNavigate();
-
-    if (tableData.length == 0) {
-        useGetTeamsForOrg("baggage-claim-incorporated", 10)
-        .then((data: any) => {
-            setTableData(data);
-        });
-    }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./teams/${rowData.name}`, { replace: true });
     }
 
     const cols = [{title: 'Team Name', field: 'name'}]
-    const rows = tableData;
     const filters: any[] = []
     const title = 'Teams within this organization'
     return (
@@ -58,10 +40,10 @@ export const Organization = ({} : {}) => {
                     })}
                 </Select>
             </FormControl>
-            {(tableData && tableData.length > 0) ?
+            {(!isLoading_Teams && teams.length > 0) ?
                 <DataView
                     columns={cols}
-                    rows={rows}
+                    rows={teams}
                     filters={filters}
                     title={title}
                     onRowClick={handleClick}
