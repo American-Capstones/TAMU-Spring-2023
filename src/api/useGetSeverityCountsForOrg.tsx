@@ -45,9 +45,10 @@ import {
   VulnInfoUnformatted,
 } from '../utils/types';
 import { getVulnerabilitiesFromRepo } from './getVulnerabilitiesFromRepo';
-import { useGetRepositoriesForTeam } from './useGetRepositoriesForTeam';
-import { useGetTeamsForOrg } from './useGetTeamsForOrg';
+import { getReposForTeam } from './getReposForTeam';
+import { getTeamsForOrg } from './getTeamsForOrg';
 import { InputError } from '@backstage/errors'
+import { githubAuthApiRef, useApi } from '@backstage/core-plugin-api';
 
 export const useGetSeverityCountsForOrg = async (
     orgLogin: string,
@@ -59,11 +60,12 @@ export const useGetSeverityCountsForOrg = async (
     // const graphql_3 = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
     const AllVulns: VulnInfoUnformatted[] = [];   
     const ReposVisited: string[] = [];
-
-    let TeamsInOrg = await useGetTeamsForOrg(orgLogin, teamLimit);
+    
+    const auth = useApi(githubAuthApiRef)
+    let TeamsInOrg = await getTeamsForOrg(auth, orgLogin);
 
     for (var Team of TeamsInOrg) {
-        let ReposForTeams = await useGetRepositoriesForTeam(orgLogin, Team.name, repoLimit);
+        let ReposForTeams = await getReposForTeam(auth, orgLogin, Team.name);
 
         for (var Repo of ReposForTeams) {
             if (!ReposVisited.includes(Repo.ID)){

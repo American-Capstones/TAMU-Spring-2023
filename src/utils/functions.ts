@@ -1,3 +1,6 @@
+import { Octokit } from '@octokit/rest';
+import { OAuthApi } from '@backstage/core-plugin-api';
+
 import { Org } from "./types";
 import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
 
@@ -58,3 +61,12 @@ export const formatOrgData = (orgList:Org[]) => {
     let OrgNodes = orgList.map(a => a.name);
     return OrgNodes
 }
+
+export const getOctokit = async (auth:OAuthApi) => {
+    const baseUrl = "https://api.github.com"
+    const token = await auth.getAccessToken(['repo']);
+
+    let octokit:Octokit = new Octokit({ auth: token, ...(baseUrl && { baseUrl }) });
+
+    return octokit.graphql;
+};

@@ -51,6 +51,10 @@ export type Teams<T> = {
 
 export type Team = { 
   name: string;
+  low: number;
+  moderate: number;
+  high: number;
+  critical: number;
 }
 
 export type VulnInfoRepo<T> = {
