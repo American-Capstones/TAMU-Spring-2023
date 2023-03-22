@@ -1,7 +1,7 @@
 import { Tooltip } from '@material-ui/core';
 import { green, grey, red } from '@material-ui/core/colors';
 import { SecurityOutlined, VerifiedUserOutlined } from '@material-ui/icons'
-import RemoveModeratorIcon from '@mui/icons-material/RemoveModerator';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import React from 'react';
 
 /* Conditional logic to render correct badge */
@@ -35,7 +35,7 @@ export const VulnCardBadge = (props: VulnCardBadgeProps) => {
             case "DISMISSED":
                 return (
                     <Tooltip title="Dismissed">
-                        <RemoveModeratorIcon style={{ color: red[300] }} />
+                        <VerifiedUserIcon style={{ color: grey[600] }} />
                     </Tooltip>
                 );
         }

@@ -80,11 +80,11 @@ export const VulnCard = (props: VulnCardProps) => {
                     <div>
                         <Typography>
                             <Typography>{props.vuln.summary}</Typography>
-                            {props.vuln.dismissedAt != 'null' &&
-                                <Typography>Dismissed on {props.vuln.dismissedAt}</Typography>
+                            {props.vuln.dismissedAt &&
+                                <Typography>Dismissed {format(props.vuln.dismissedAt)}</Typography>
                             }
-                            {props.vuln.fixedAt != 'null' &&
-                                <Typography>Fixed at: {props.vuln.fixedAt}</Typography>
+                            {props.vuln.fixedAt &&
+                                <Typography>Fixed {format(props.vuln.fixedAt)}</Typography>
                             }
                         </Typography>
                     </div>
