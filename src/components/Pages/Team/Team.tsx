@@ -12,7 +12,7 @@ const emptyContent = () => {
 
 export const Team = ({} : {}) => {
     const { orgName, teamName } = useParams();
-    const { loading, repos } = useGetReposFromTeam(orgName, teamName);
+    const {loading, repos, error } = useGetReposFromTeam(orgName, teamName);
     const navigate = useNavigate();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
