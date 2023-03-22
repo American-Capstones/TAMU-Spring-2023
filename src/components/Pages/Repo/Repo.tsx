@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Accordion, AccordionDetails, AccordionSummary, Divider, Grid, Typography } from '@material-ui/core';
-import { getVulnerabilitiesFromRepo } from '../../../api/getVulnerabilitiesFromRepo';
 import { sortVulnData } from '../../../utils/functions';
-import { RepoVulns, VulnInfoFormatted, VulnInfoUnformatted } from '../../../utils/types';
+import { RepoVulns, VulnInfoUnformatted } from '../../../utils/types';
 import {
-  CodeSnippet,
   HorizontalScrollGrid,
-  InfoCard,
-  StatusOK,
 } from '@backstage/core-components';
 import { VulnList } from '../../VulnList';
 import { Skeleton } from '@material-ui/lab';
-import { ExpandMore } from '@material-ui/icons';
 
 const columnStyle: React.CSSProperties = {
   marginRight: "4em",
