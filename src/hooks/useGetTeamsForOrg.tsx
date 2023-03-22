@@ -12,7 +12,7 @@ export function useGetTeamsForOrg(orgName:string | undefined) {
     const [loading, setLoading] = useState<boolean>(true);
     const [teams, setTeams] = useState<Team[]>([]);
     const [error, setError] = useState<Error>();
-    
+
     const auth = useApi(githubAuthApiRef)
 
     const getOrgNames = useCallback(async () => {
