@@ -10,15 +10,16 @@ import ReactLoading from "react-loading";
 import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
 
-const emptyContent = () => {
-    return (
-        <h1>No teams in this organization listed.</h1>
-    )
-}
+const emptyTeamsContent = <h1>No teams in this organization available.</h1>
+const emptyReposContent = <h1>No Repos in this organization available.</h1>
+
+const useGetAllRepos = () => ({ loading: false, repos: [{ name: 'Repo 1' }, { name: 'Repo 2' }]})
 
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
     const { loading, teams } = useGetTeamsForOrg(orgName);
+    const { loading: repoLoading, repos} = useGetAllRepos();
+    const [ showTeams, setShowTeams ] = useState(true);
     const navigate = useNavigate();
 
     if (loading) {
@@ -31,13 +32,21 @@ export const Organization = ({} : {}) => {
         </div>
     }
 
-    let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
+    let goToTeams = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
 
-    const cols = [{title: 'Team Name', field: 'name'}]
-    const filters: any[] = []
-    const title = 'Teams within this organization'
+    let changeScope = (newScope: string) => {
+        setShowTeams(newScope == 'teams');
+        console.log(`newScope: ${newScope}`)
+    }
+
+    const team_cols = [{title: 'Team Name', field: 'name'}]
+    const team_filters: any[] = []
+    const team_title = 'Teams within this organization'
+    const repo_cols = [{title: 'Repo Name', field: 'name'}]
+    const repo_filters: any[] = []
+    const repo_title = 'Repos within this organization'
     return (
 
         <>
@@ -48,16 +57,29 @@ export const Organization = ({} : {}) => {
                     <Graphs barData={mockData} lineData={lineMockData} />
                 </Grid>
                 <Grid item>
-                    <SelectScope handleClick={() => alert('click')} title='Table Scope' />
-                    <Table 
-                        title={title}
-                        options={{ search: true, paging: true }}
-                        columns={cols}
-                        data={teams}
-                        onRowClick={handleClick}
-                        filters={filters}
-                        emptyContent={emptyContent}
-                    />
+                    <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
+                    {showTeams ?
+                        <Table 
+                            title={team_title}
+                            options={{ search: true, paging: true }}
+                            columns={team_cols}
+                            data={teams}
+                            onRowClick={goToTeams}
+                            filters={team_filters}
+                            emptyContent={emptyTeamsContent}
+                        />
+                    :
+                        <Table 
+                            title={repo_title}
+                            options={{ search: true, paging: true }}
+                            columns={repo_cols}
+                            data={repos}
+                            onRowClick={() => alert('Picked a repo, undefined behavior')}
+                            filters={repo_filters}
+                            emptyContent={emptyReposContent}
+                        />
+                    }
+                    
                 </Grid>
             </Grid>
         </>
