@@ -1,8 +1,13 @@
 import React from 'react';
-import { DataView } from '../../DataView';
+import { Graphs } from '../../Graphs';
+import mockData from "../../../mock/data.json";
+import lineMockData from '../../../mock/lineMock_team.json';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
 import ReactLoading from "react-loading";
+import { Table } from '@backstage/core-components';
+import { SelectScope } from '../../Utility';
+import { Grid } from '@material-ui/core';
 
 const emptyContent = () => {
     return (
@@ -31,17 +36,28 @@ export const Team = ({} : {}) => {
 
     const cols = [{title: 'Repository Name', field: 'name'}]
     const filters: any[] = [];
-    const title = `Repositories under ${teamName}`;
+    const title = `${teamName}'s Repositories`;
     return (
         <>
-            <h1>Team</h1>
-            <DataView
-                columns={cols}
-                rows={repos}
-                filters={filters}
-                title={title}
-                onRowClick={goToRepo}
-                emptyContent={emptyContent}/>
+            <h1>{teamName}</h1>
+            <Grid container spacing={6} direction='column'>
+                <Grid item>
+                    <Graphs barData={mockData} lineData={lineMockData} />
+                </Grid>
+                {/* Used for spacing */}
+                <Grid item></Grid> 
+                <Grid item>
+                    <Table 
+                        title={title}
+                        options={{ search: true, paging: true }}
+                        columns={cols}
+                        data={repos}
+                        onRowClick={goToRepo}
+                        filters={filters}
+                        emptyContent={emptyContent}
+                    />  
+                </Grid>
+            </Grid>
         </>
     );
 };

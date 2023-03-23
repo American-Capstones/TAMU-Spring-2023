@@ -1,11 +1,14 @@
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
-import { DataView } from '../../DataView';
-import { SelectOrg } from '../../Utility';
-import { ErrorPage } from '@backstage/core-components';
+import mockData from "../../../mock/data.json";
+import lineMockData from '../../../mock/lineMock.json';
+import { SelectOrg, SelectScope } from '../../Utility';
+import { ErrorPage, Table } from '@backstage/core-components';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import ReactLoading from "react-loading";
+import { Graphs } from '../../Graphs';
+import { Grid } from '@material-ui/core';
 
 const emptyContent = () => {
     return (
@@ -39,17 +42,24 @@ export const Organization = ({} : {}) => {
 
         <>
             <SelectOrg defaultOption={orgName ?? ''}/>
-            {(teams && teams.length > 0) ?
-                <DataView
-                    columns={cols}
-                    rows={teams}
-                    filters={filters}
-                    title={title}
-                    onRowClick={handleClick}
-                    emptyContent={emptyContent}/>
-            :
-                <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
-            }
+
+            <Grid container spacing={2} direction='column'>
+                <Grid item>
+                    <Graphs barData={mockData} lineData={lineMockData} />
+                </Grid>
+                <Grid item>
+                    <SelectScope handleClick={() => alert('click')} title='Table Scope' />
+                    <Table 
+                        title={title}
+                        options={{ search: true, paging: true }}
+                        columns={cols}
+                        data={teams}
+                        onRowClick={handleClick}
+                        filters={filters}
+                        emptyContent={emptyContent}
+                    />
+                </Grid>
+            </Grid>
         </>
 
     );

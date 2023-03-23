@@ -6,6 +6,9 @@ import { Organization } from '.';
 import React from 'react';
 import { SelectOrg } from '../../Utility';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
+import { SelectScope } from '../../Utility';
+import { Table } from '@backstage/core-components';
+import { Graphs } from '../../Graphs';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
@@ -57,6 +60,21 @@ describe('Organization page test suite', () => {
         const wrapper = shallow(<Organization />);
         expect(wrapper.contains(<SelectOrg defaultOption='TEST ORG'/>)).toBeTruthy();
     });
+
+    it('should render the scope selector', async () => {
+        const wrapper = shallow(<Organization />);
+        expect(wrapper.find(SelectScope)).toHaveLength(1);
+    });
+    
+    it('should render a Graphs component', async () => {
+        const wrapper = shallow(<Organization />);
+        expect(wrapper.find(Graphs)).toHaveLength(1);
+    })
+
+    it('should render a table component', async () => {
+        const wrapper = shallow(<Organization />);
+        expect(wrapper.find(Table)).toHaveLength(1);
+    })
 
     it('should display a table when data is received from backend', async () => {
         await renderInTestApp(<Organization />);
