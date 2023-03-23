@@ -13,6 +13,7 @@ import { Grid } from '@material-ui/core';
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
 
+// todo: This needs to be an API call but that function hasn't been written yet. 
 const useGetAllRepos = () => ({ loading: false, repos: [{ name: 'Repo 1' }, { name: 'Repo 2' }]})
 
 export const Organization = ({} : {}) => {
@@ -38,7 +39,6 @@ export const Organization = ({} : {}) => {
 
     let changeScope = (newScope: string) => {
         setShowTeams(newScope == 'teams');
-        console.log(`newScope: ${newScope}`)
     }
 
     const team_cols = [{title: 'Team Name', field: 'name'}]
