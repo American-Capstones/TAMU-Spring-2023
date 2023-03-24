@@ -18,8 +18,8 @@ export function useGetOrgsForUser() {
         setLoading(true);
         try {
             const graphql = await getOctokit(auth)
-            const orgNames = await getOrgsForUser(graphql)
-            const orgNamesFormatted = formatOrgData(orgNames)
+            const result = await getOrgsForUser(graphql) //result also has an error message that can be handled
+            const orgNamesFormatted = formatOrgData(result.orgNodes)
             setOrgs(orgNamesFormatted)
         }
         catch {
