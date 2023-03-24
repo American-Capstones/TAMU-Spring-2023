@@ -1,6 +1,6 @@
-import {getVulnerabilityNodes} from "../getVulnerabilitiesFromRepo";
+import {getVulnerabilityNodes} from "../getVulnsFromRepo";
 
-const getVulnerabilitiesFromRepo = require('../getVulnerabilitiesFromRepo');
+const getVulnsFromRepo = require('../getVulnsFromRepo');
 const graphql = require('../useOctokitGraphQl');
 jest.mock('../useOctokitGraphQl');
 
