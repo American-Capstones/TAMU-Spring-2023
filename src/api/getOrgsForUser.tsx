@@ -14,21 +14,24 @@
 * limitations under the License.
 */
 
-import { Org, Orgs } from '../utils/types';
+import { Org, Orgs, Error } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_ORG_MAX_ITEMS } from '../utils/constants';
 
 export const getOrgsForUser = (graphql:any) => {
-    return getOrgNodes(graphql, GITHUB_ORG_MAX_ITEMS);;
+    return getOrgNodes(graphql, GITHUB_ORG_MAX_ITEMS);
 };
 
-async function getOrgNodes(graphql:any, organizationLimit: number): Promise<Org[]> {
+export async function getOrgNodes(graphql:any, organizationLimit: number): Promise<{"orgNodes": Org[], "error": Error}> {
     const orgNodes: Org[] = [];
+    let error: 
+        | Error
+        | undefined = undefined;
     let result:
         | Orgs<Org[]>
         | undefined = undefined;
 
     do {
-        result = await graphql(
+        result = await graphql( 
         `
         query($first: Int, $endCursor: String){
             viewer {
@@ -53,13 +56,20 @@ async function getOrgNodes(graphql:any, organizationLimit: number): Promise<Org[
         );
         
         if(result){
+            // result.viewer will be null if there is an error
+            if (!result.viewer){
+                if (result.errors){
+                    error = result.errors[0]
+                }
+                break
+            } 
             orgNodes.push(
                 ...result.viewer.organizations.nodes
             );
         }
 
-        if (orgNodes.length >= organizationLimit) return orgNodes;
+        if (orgNodes.length >= organizationLimit) return {orgNodes, error};
     } while (result?.viewer.organizations.pageInfo.hasNextPage);
 
-    return orgNodes;
+    return {orgNodes, error};
 }

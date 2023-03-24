@@ -19,8 +19,8 @@ import {
 } from '../utils/types';
 import { useOctokitGraphQl } from './useOctokitGraphQl';
 import { InputError } from '@backstage/errors'
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULN_MAX_ITEMS } from '../utils/constants';
 
-const GITHUB_GRAPHQL_MAX_ITEMS = 100;
 
 export const getVulnerabilitiesFromRepo = (
     repoName: string,
@@ -40,7 +40,7 @@ export const getVulnerabilitiesFromRepo = (
   
   };
 
-async function getVulnerabilityNodes(
+export async function getVulnerabilityNodes(
   graphql: (
     path: string,
     options?: any,
@@ -48,56 +48,68 @@ async function getVulnerabilityNodes(
   name: string,
   owner: string
 ): Promise<VulnInfoUnformatted[]> {
-  const repoRequestLimit = 10
+  const repoRequestLimit = GITHUB_VULN_MAX_ITEMS
   const vulnerabilityData : VulnInfoUnformatted[] = [];
   let result:
     | VulnInfoRepo<VulnInfoUnformatted[]>
     | undefined = undefined;
-
-  result = await graphql(
-    `
-    query ($name: String!, $owner:String!, $first: Int){
-      repository(name: $name, owner: $owner){
-        name
-        url
-        vulnerabilityAlerts(first: $first) {
-          nodes {
-            createdAt
-            dismissedAt
-            fixedAt
-            securityAdvisory {
-              summary
-              severity
-              classification
-              vulnerabilities {
-                totalCount
+  do{
+    result = await graphql(
+      `
+      query ($name: String!, $owner:String!, $first: Int, $endCursor: String){
+        repository(name: $name, owner: $owner){
+          name
+          url
+          vulnerabilityAlerts(first: $first, after: $endCursor) {
+            pageInfo {hasNextPage, endCursor}
+            nodes {
+              createdAt
+              dismissedAt
+              fixedAt
+              securityAdvisory {
+                summary
+                severity
+                classification
+                vulnerabilities {
+                  totalCount
+                }
               }
+              securityVulnerability {
+                package {
+                  name
+                }
+                firstPatchedVersion {
+                  identifier
+                }
+                vulnerableVersionRange
+              }
+              state
             }
-            securityVulnerability {
-              package {
-                name
-              }
-              firstPatchedVersion {
-                identifier
-              }
-              vulnerableVersionRange
-            }
-            state
           }
         }
       }
+      `,
+      {
+        name: name,
+        owner: owner,
+        first:
+          repoRequestLimit > GITHUB_GRAPHQL_MAX_ITEMS
+            ? GITHUB_GRAPHQL_MAX_ITEMS
+            : repoRequestLimit,
+        endCursor: result
+        ? result.repository.vulnerabilityAlerts.pageInfo.endCursor
+        : undefined,
+      },
+    );
+    if(result){
+      if(!result.repository || !result.repository.vulnerabilityAlerts){
+        break
+      }
+      vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
     }
-    `,
-    {
-      name: name,
-      owner: owner,
-      first:
-        repoRequestLimit > GITHUB_GRAPHQL_MAX_ITEMS
-          ? GITHUB_GRAPHQL_MAX_ITEMS
-          : repoRequestLimit,
-    },
-  );
-    
-  vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
+
+    if (vulnerabilityData.length >= repoRequestLimit) return vulnerabilityData;
+  } while(result?.repository.vulnerabilityAlerts.pageInfo.hasNextPage)
+
   return vulnerabilityData;
 }

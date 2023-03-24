@@ -61,9 +61,10 @@ export type VulnInfoRepo<T> = {
   repository : {
     name:string;
     url:string;
-    vulnerabilityAlerts : {
-      nodes : T
-    }
+    vulnerabilityAlerts: Connection<T>
+    // vulnerabilityAlerts : {
+    //   nodes : T
+    // }
   }
 }
 export type VulnInfoUnformatted = {
@@ -124,4 +125,16 @@ export type Orgs <T> = {
 
 export type Org = {
   name: string;
+}
+
+export type Error = {
+  message: string;
+  type: string; 
+  path: [string];
+  locations: [
+    {
+      "line": number,
+      "column": number
+    }
+  ]
 }

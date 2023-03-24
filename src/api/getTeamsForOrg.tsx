@@ -23,7 +23,7 @@ export const getTeamsForOrg = (graphql:any,  orgLogin: string) => {
   return getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
 };
 
-async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: number): Promise<Team[]> {
+export async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: number): Promise<Team[]> {
   const teamNodes: Team[] = [];
   let result:
     | Teams<Team[]>
@@ -56,6 +56,9 @@ async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: number): P
     );
     
     if(result) {
+      if (!result.organization){
+        break
+      }
       teamNodes.push(
         ...result.organization.teams.nodes
       );

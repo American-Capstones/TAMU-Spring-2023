@@ -31,7 +31,7 @@ export const getReposForTeam = (
   return getRepoNodes(graphql, orgLogin, teamLogin, GITHUB_REPO_MAX_ITEMS);;
 };
 
-async function getRepoNodes (
+export async function getRepoNodes (
     graphql: any,
     orgLogin: string,
     teamLogin: string,
@@ -73,14 +73,21 @@ async function getRepoNodes (
           : undefined,
       },
     );
-
     if(result) {
-      repoNodes.push(
-        ...result.organization.teams.nodes[0].repositories.nodes
-      );
+      if (result.organization){
+        // if there are no repositories returned, then there will be no nodes to insert into list
+        if (result.organization.teams.nodes.length == 0){
+          break
+        }
+        repoNodes.push(
+          ...result.organization.teams.nodes[0].repositories.nodes
+        );
+      } // should check the error message & then return it
     }
     if (repoNodes.length >= repoLimit) return repoNodes;
-  } while (result?.organization.teams.nodes[0].repositories.pageInfo.hasNextPage);
+
+    
+  } while (result?.organization?.teams.nodes[0].repositories.pageInfo.hasNextPage);
 
   return repoNodes;
 }
