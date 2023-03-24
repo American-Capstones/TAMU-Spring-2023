@@ -1,10 +1,11 @@
 import React from 'react';
-import { useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { DataView } from '../../DataView';
 import { SelectOrg } from '../../Utility';
-import { ErrorPage } from '@backstage/core-components';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
+
+// import { ErrorPage } from '@backstage/core-components';
+import { Error } from '../Error';
 import ReactLoading from "react-loading";
 
 const emptyContent = () => {
@@ -15,7 +16,7 @@ const emptyContent = () => {
 
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
-    const { loading, teams} = useGetTeamsForOrg(orgName);
+    const { loading, teams, error } = useGetTeamsForOrg(orgName);
     const navigate = useNavigate();
 
     if (loading) {
@@ -31,6 +32,12 @@ export const Organization = ({} : {}) => {
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
+
+    if (error) {
+        navigate(`../`, { replace: false });
+        // return <Error message={error.message}/>
+    }
+  
 
     const cols = [{title: 'Team Name', field: 'name'}]
     const filters: any[] = []
@@ -48,7 +55,8 @@ export const Organization = ({} : {}) => {
                     onRowClick={handleClick}
                     emptyContent={emptyContent}/>
             :
-                <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
+                // <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
+                <Error message=""/>
             }
         </>
 
