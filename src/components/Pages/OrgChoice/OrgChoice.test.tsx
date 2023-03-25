@@ -14,26 +14,19 @@ jest.mock('react-router-dom', () => ({
     useNavigate: () => mockedUsedNavigate,
 }));
 
-jest.mock('../../../api/useGetOrganizationsForUser');
-const useGetOrgs = require('../../../api/useGetOrganizationsForUser');
+jest.mock('../../../hooks/useGetOrgsForUser', () => ({
+    ...jest.requireActual('../../../hooks/useGetOrgsForUser'),
+    useGetOrgsForUser: jest.fn().mockReturnValue({ loading: false, orgs: ['test org', 'test org 2']})
+}));
 
 describe('OrgChoice test suite', () => {
-    let testData: any[];
-
-    beforeEach(() => {
-        testData = [{name: 'test org'}, {name: 'test org 2'}];
-        jest.spyOn(useGetOrgs, 'useGetOrgsForUser')
-            .mockImplementation(() => Promise.resolve(testData));
-    });
-
     afterEach(() => {
         jest.clearAllMocks();
     });
 
     it('should render', async () => {
         const wrapper = shallow(<OrgChoice />);
-        expect(wrapper.contains(<h1>Please select an organization to continue:</h1>))
-            .toBeTruthy();
+        expect(wrapper.contains(<h1>Please select an organization to continue:</h1>)).toBeTruthy();
     });
     
     it('should show an OrgSelect element', () => {

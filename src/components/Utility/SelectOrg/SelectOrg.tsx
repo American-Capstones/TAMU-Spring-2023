@@ -17,7 +17,7 @@ export const SelectOrg = ({ defaultOption = '' } : { defaultOption?: string }) =
         setSelectValue(newOrg);
         
         if (newOrg && newOrg != '') {
-            navigate(`./${newOrg}`, { replace: true });
+            navigate(`../${newOrg}`, { replace: true });
         }
     }
 
@@ -31,10 +31,10 @@ export const SelectOrg = ({ defaultOption = '' } : { defaultOption?: string }) =
             <InputLabel>Organization Name</InputLabel>
             <Select
                 label="Organization Name"
-                value={selectValue}
+                value={selectValue ?? ''}
                 onClick={handleClick}
             >
-            <MenuItem value={''} className={'item'}><em>None</em></MenuItem>
+            <MenuItem value={''} className={'item'} disabled={selectValue != ''}><em>None</em></MenuItem>
                 {orgs?.map((org, index) => {
                     return (
                         <MenuItem key={index} value={org} className={'item'}>{org}</MenuItem>

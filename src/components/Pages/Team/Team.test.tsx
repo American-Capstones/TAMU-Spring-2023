@@ -4,19 +4,21 @@ import { renderInTestApp } from "@backstage/test-utils";
 import { configure, shallow } from 'enzyme';
 import { Team } from '.';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // This is necessary to avoid issues testing components w/ hooks
 configure({adapter: new Adapter()});
-const useGetRepos = require('../../../api/useGetRepositoriesForTeam');
-const dom = require('react-router-dom');
 
-const mockedUseNav = jest.fn();
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedUseNav,
+    useNavigate: jest.fn(),
+    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG', teamName: 'TEST TEAM' })
 }));
 
-jest.mock('../../../api/useGetRepositoriesForTeam');
+jest.mock('../../../hooks/useGetReposFromTeam', () => ({
+    ...jest.requireActual('../../../hooks/useGetReposFromTeam'),
+    useGetReposFromTeam: jest.fn().mockReturnValue({ loading: false, repos: [{ id: 'test_id', name: 'test_name'}]})
+}));
 
 // Needed when fully rendering a Responsive element from Nivo
 class ResizeObserver {
@@ -28,33 +30,23 @@ class ResizeObserver {
 describe('Team page test suite', () => {
     window.ResizeObserver = ResizeObserver;
 
-    beforeEach(() => {
-        jest.spyOn(useGetRepos, 'useGetRepositoriesForTeam')
-            .mockImplementation((org, name, limit) => Promise.resolve([{ name: 'test'}]));
-        jest.spyOn(dom, 'useParams').mockImplementation(() => {
-            return { teamName: 'test_team' }
-        })
-    })
-
     it('should render', async () => {
         const wrapper = shallow(<Team />);
         expect(wrapper.contains(<h1>Team</h1>)).toBeTruthy();
     });
 
-    it('should display a table', async () => {
+    it('should display DataView component', async () => {
         await renderInTestApp(<Team />);
+        // easiest to detect DataView component by looking for table rows
         expect(await screen.findByText('Repository Name')).toBeVisible();
-        expect(await screen.findByText('test')).toBeVisible();
-    })
+        expect(await screen.findByText('test_name')).toBeVisible();
+    });
 
     it('should navigate to repo page when row is clicked in table', async () => {
         // todo: not sure how to click on a row; see Organization.test.tsx
     });
 
-    it('should redirect to organization page if teamName doesnt exist', async () => {
-        jest.spyOn(useGetRepos, 'useGetRepositoriesForTeam').mockImplementation(
-            () => Promise.reject(undefined));
-        await renderInTestApp(<Team />);
-        expect(mockedUseNav).toHaveBeenCalledWith('../', { replace: true });
+    it('should redirect to organization page and show error if teamName doesnt exist', async () => {
+        // todo: waiting on error component before finishing this test
     })
 });

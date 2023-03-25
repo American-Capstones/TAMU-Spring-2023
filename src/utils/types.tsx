@@ -113,7 +113,7 @@ export type RepoVulns = {
 }
 
 export type VulnListProps = {
-    vulns: VulnInfoFormatted[];
+    vulns: VulnInfoFormatted[] | undefined;
 }
 
 export type Orgs <T> = { 

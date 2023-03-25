@@ -5,25 +5,43 @@ import { configure, shallow } from 'enzyme';
 import { Organization } from '.';
 import React from 'react';
 import { SelectOrg } from '../../Utility';
+import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
 configure({adapter: new Adapter()});
 
-const mockedUsedNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedUsedNavigate,
+    useNavigate: jest.fn(),
+    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG' })
 }));
 
-// Mocks the internal API call with a test return object 
-jest.mock('../../../api/useGetTeamsForOrg', () => ({
-    useGetTeamsForOrg: jest.fn().mockImplementation((name, limit) => 
-        Promise.resolve([{ name: 'test'}]))
+jest.mock('../../../hooks/useGetOrgsForUser', () => ({
+    ...jest.requireActual('.../../../hooks/useGetOrgsForUser'),
+    useGetOrgsForUser: jest.fn().mockReturnValue(['TEST ORG'])
 }));
 
-jest.mock('../../../api/useGetOrganizationsForUser');
-const useGetOrgs = require('../../../api/useGetOrganizationsForUser');
+jest.mock('../../../hooks/useGetTeamsForOrg', () => ({
+    ...jest.requireActual('../../../hooks/useGetTeamsForOrg'),
+    useGetTeamsForOrg: jest.fn(orgName => ({
+        loading: false,
+        teams: [
+            {
+                id: 'test_id_1',
+                name: 'test team 1'
+            },
+            {
+                id: 'test_id_2',
+                name: 'test team 2'
+            },
+            {
+                id: 'test_id_3',
+                name: 'test team 3'
+            },
+        ]
+    }))
+}));
 
 // Needed when fully rendering a Responsive element from Nivo
 class ResizeObserver {
@@ -35,18 +53,16 @@ class ResizeObserver {
 describe('Organization page test suite', () => {
     window.ResizeObserver = ResizeObserver;
 
-    jest.spyOn(useGetOrgs, 'useGetOrgsForUser')
-        .mockImplementation(() => Promise.resolve([{name: 'test org'}, {name: 'test org 2'}]));
-
-    it('should render', async () => {
+    it('should render the organization selector', async () => {
         const wrapper = shallow(<Organization />);
-        expect(wrapper.contains(<SelectOrg defaultOption=''/>)).toBeTruthy();
+        expect(wrapper.contains(<SelectOrg defaultOption='TEST ORG'/>)).toBeTruthy();
     });
 
     it('should display a table when data is received from backend', async () => {
         await renderInTestApp(<Organization />);
+        expect(useGetTeamsForOrg).toHaveBeenCalledWith('TEST ORG');
         expect(await screen.findByText('Teams within this organization')).toBeVisible();
-        expect(await screen.findByText('test')).toBeVisible();
+        expect(await screen.findByText('test team 1')).toBeVisible();
     });
 
     it('should redirect to the teams page when table row is clicked', async () => {
