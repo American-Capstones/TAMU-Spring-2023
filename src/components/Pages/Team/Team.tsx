@@ -45,7 +45,7 @@ export const Team = () => {
             { location.state != undefined && 
                 <Alert severity='error'>{location.state}</Alert>
             }
-            <h1>Team</h1>
+            <h1>{teamName}</h1>
             <DataView
                 columns={cols}
                 rows={repos}

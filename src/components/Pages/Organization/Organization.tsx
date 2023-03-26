@@ -42,7 +42,7 @@ export const Organization = () => {
 
     const cols = [{title: 'Team Name', field: 'name'}]
     const filters: any[] = []
-    const title = 'Teams within this organization'
+    const title = 'Teams within ' + orgName;
     return (
 
         <>
