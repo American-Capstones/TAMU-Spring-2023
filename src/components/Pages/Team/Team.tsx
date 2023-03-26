@@ -29,7 +29,7 @@ export const Team = ({} : {}) => {
         </div>
     }
 
-    const cols = [{title: 'Repository Name', field: 'name'}]
+    const cols = [{title: 'Repository Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}]
     const filters: any[] = [];
     const title = `Repositories under ${teamName}`;
     return (

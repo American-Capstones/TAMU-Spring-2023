@@ -37,6 +37,10 @@ export type RepositoryNode = {
 export type Repository = {
   ID: string;
   name: string;
+  low: number;
+  moderate: number;
+  high: number;
+  critical: number;
 }
 
 export type RepoName = {
@@ -137,4 +141,9 @@ export type Error = {
       "column": number
     }
   ]
+}
+
+export type Severity = {
+   severity: string, 
+   count: number
 }

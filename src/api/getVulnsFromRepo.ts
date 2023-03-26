@@ -19,8 +19,8 @@ import {
 } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULNS_MAX_ITEMS } from '../utils/constants';
 
-export const getVulnsFromRepo = (graphql: any, repoName: string, orgLogin: string) => {  
-    return getVulnerabilityNodes(graphql, repoName, orgLogin);
+export const getVulnsFromRepo = (graphql: any, repoName: string, orgLogin: string, getAll: boolean) => {  
+    return getVulnerabilityNodes(graphql, repoName, orgLogin, getAll);
 };
 
 export async function getVulnerabilityNodes(
@@ -29,7 +29,8 @@ export async function getVulnerabilityNodes(
     options?: any,
   ) => Promise<VulnInfoRepo<VulnInfoUnformatted[]>>,
   name: string,
-  owner: string
+  owner: string,
+  getAll: boolean = false
 ): Promise<VulnInfoUnformatted[]> {
   const repoRequestLimit = GITHUB_VULNS_MAX_ITEMS
   const vulnerabilityData : VulnInfoUnformatted[] = [];
@@ -90,8 +91,8 @@ export async function getVulnerabilityNodes(
       }
       vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
     }
-
-    if (vulnerabilityData.length >= repoRequestLimit) return vulnerabilityData;
+    
+    if (vulnerabilityData.length >= repoRequestLimit && !getAll) return vulnerabilityData;
   } while(result?.repository.vulnerabilityAlerts.pageInfo.hasNextPage)
 
   return vulnerabilityData;
