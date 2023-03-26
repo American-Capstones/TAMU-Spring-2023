@@ -138,3 +138,10 @@ export type Error = {
     }
   ]
 }
+
+export type monthVulns = {
+  critical: number[];
+  high: number[];
+  moderate: number[];
+  low: number[];
+}
