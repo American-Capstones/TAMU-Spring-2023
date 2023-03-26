@@ -47,7 +47,7 @@ export const Repo = ({  }: { }) => {
     }
 
     if (error) {
-      navigate(`../${orgName}/${teamName}`, { replace: false });
+      navigate(`../${orgName}/${teamName}`, { state: error.message, replace: false });
       // return <Error message={error.message}/>
     }
 

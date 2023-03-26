@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { DataView } from '../../DataView';
 import { SelectOrg } from '../../Utility';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
@@ -7,6 +7,7 @@ import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 // import { ErrorPage } from '@backstage/core-components';
 import { Error } from '../Error';
 import ReactLoading from "react-loading";
+import { Alert } from '@mui/material';
 
 const emptyContent = () => {
     return (
@@ -14,10 +15,11 @@ const emptyContent = () => {
     )
 }
 
-export const Organization = ({} : {}) => {
+export const Organization = () => {
     const { orgName } = useParams();
     const { loading, teams, error } = useGetTeamsForOrg(orgName);
     const navigate = useNavigate();
+    const location = useLocation();
 
     if (loading) {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
@@ -34,8 +36,7 @@ export const Organization = ({} : {}) => {
     }
 
     if (error) {
-        navigate(`../`, { replace: false });
-        // return <Error message={error.message}/>
+        navigate(`../`, { state: error.message, replace: false });
     }
   
 
@@ -45,6 +46,9 @@ export const Organization = ({} : {}) => {
     return (
 
         <>
+            { location.state != undefined && 
+                <Alert severity='error'>{location.state}</Alert>
+            }
             <SelectOrg defaultOption={orgName ?? ''}/>
             {(teams && teams.length > 0) ?
                 <DataView
