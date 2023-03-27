@@ -6,7 +6,9 @@ import {
   githubAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { getTeamsForOrg } from "../api/getTeamsForOrg";
-import { Team } from "../utils/types";
+import { Team, VulnInfoUnformatted } from "../utils/types";
+import {useGetSeverityCountsForOrg} from "./useGetSeverityCountsForOrg";
+import { getVulnCountsForAllTeams } from "../api/getVulnCountsForAllTeams";
 
 export function useGetTeamsForOrg(orgName:string | undefined) {
     const [loading, setLoading] = useState<boolean>(true);
@@ -17,19 +19,25 @@ export function useGetTeamsForOrg(orgName:string | undefined) {
 
     const getOrgNames = useCallback(async () => {
         setLoading(true);
+        
+        let teamNames: Team[] = []
+        const graphql = await getOctokit(auth)
 
         if (orgName) {
             try {
-                const graphql = await getOctokit(auth)
-                const teamNames = await getTeamsForOrg(graphql, orgName)
-                setTeams(teamNames)
+                teamNames = await getTeamsForOrg(graphql, orgName)
             }
             catch {
                 setError(Error("Error in useGetTeamsForOrg"))
             }
+
+            setTeams(teamNames)
         }
 
+        teamNames = await getVulnCountsForAllTeams(graphql, teamNames, orgName);
+
         setLoading(false)
+
     }, [orgName])
 
     useEffect(() => {

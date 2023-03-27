@@ -41,7 +41,7 @@ export const Organization = ({} : {}) => {
         setShowTeams(newScope == 'teams');
     }
 
-    const team_cols = [{title: 'Team Name', field: 'name'}]
+    const team_cols = [{title: 'Team Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}]
     const team_filters: any[] = []
     const team_title = 'Teams within this organization'
     const repo_cols = [{title: 'Repo Name', field: 'name'}]

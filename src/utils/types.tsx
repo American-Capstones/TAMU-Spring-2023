@@ -39,6 +39,10 @@ export type RepositoryNode = {
 export type Repository = {
   ID: string;
   name: string;
+  low: number;
+  moderate: number;
+  high: number;
+  critical: number;
 }
 
 export type RepoName = {
@@ -169,4 +173,9 @@ export type BarGraphData = {
 export type GraphsProps = {
     lineData: LineGraphData[],
     barData: BarGraphData[]
+}
+
+export type Severity = {
+   severity: string, 
+   count: number
 }
