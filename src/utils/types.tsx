@@ -178,4 +178,12 @@ export type GraphsProps = {
 export type Severity = {
    severity: string, 
    count: number
+
+}
+
+export type monthVulns = {
+  critical: number[];
+  high: number[];
+  moderate: number[];
+  low: number[];
 }

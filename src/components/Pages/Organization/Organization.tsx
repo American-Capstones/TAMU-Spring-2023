@@ -9,6 +9,7 @@ import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import ReactLoading from "react-loading";
 import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
+import { useGetMonthlyVulns } from '../../../hooks/useGetMonthlyVulns';
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
@@ -18,6 +19,7 @@ const useGetAllRepos = () => ({ loading: false, repos: [{ name: 'Repo 1' }, { na
 
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
+    // const { loading, months,} = useGetMonthlyVulns(orgName);
     const { loading, teams } = useGetTeamsForOrg(orgName);
     const { loading: repoLoading, repos} = useGetAllRepos();
     const [ showTeams, setShowTeams ] = useState(true);
