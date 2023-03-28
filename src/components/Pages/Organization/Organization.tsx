@@ -1,14 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DataView } from '../../DataView';
-import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
-
-import { useGetTeamsForOrg } from '../../../api/useGetTeamsForOrg';
-import { Team } from '../../../utils/types';
-import { useGetOrgsForUser } from '../../../api/useGetOrganizationsForUser';
-import { formatOrgData } from '../../../utils/functions';
+import { SelectOrg } from '../../Utility';
 import { ErrorPage } from '@backstage/core-components';
+import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
+import ReactLoading from "react-loading";
 
 const emptyContent = () => {
     return (
@@ -17,51 +14,35 @@ const emptyContent = () => {
 }
 
 export const Organization = ({} : {}) => {
-    const defaultValues: string[] = [];
-    const [ orgs, setOrgs ] = useState<string[]>(defaultValues);
-
-    if (orgs == defaultValues){
-        useGetOrgsForUser(10).then((data) => {
-            setOrgs(formatOrgData(data));
-        })
-    }
-    //console.log("orgList2" , organizationList2);
-    const [tableData, setTableData] = useState<Team[]>([]);
+    const { orgName } = useParams();
+    const { loading, teams } = useGetTeamsForOrg(orgName);
     const navigate = useNavigate();
 
-    if (tableData.length == 0) {
-        useGetTeamsForOrg("baggage-claim-incorporated", 10)
-        .then((data: any) => {
-            setTableData(data);
-        });
+    if (loading) {
+        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+          type={"spin"}
+          color={"#8B0000"}
+          height={100}
+          width={100}
+        />
+        </div>
     }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
-        navigate(`./teams/${rowData.name}`, { replace: true });
+        navigate(`./${rowData.name}`, { replace: true });
     }
 
     const cols = [{title: 'Team Name', field: 'name'}]
-    const rows = tableData;
     const filters: any[] = []
     const title = 'Teams within this organization'
     return (
+
         <>
-            <FormControl style={{width: 200, paddingBottom: 30 }}>
-                <InputLabel>Organization Name</InputLabel>
-                <Select
-                    label="Organization Name"
-                >
-                    {orgs?.map(org => {
-                        return (
-                            <MenuItem value={org}>{org}</MenuItem>
-                        );
-                    })}
-                </Select>
-            </FormControl>
-            {(tableData && tableData.length > 0) ?
+            <SelectOrg defaultOption={orgName ?? ''}/>
+            {(teams && teams.length > 0) ?
                 <DataView
                     columns={cols}
-                    rows={rows}
+                    rows={teams}
                     filters={filters}
                     title={title}
                     onRowClick={handleClick}
@@ -70,5 +51,6 @@ export const Organization = ({} : {}) => {
                 <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
             }
         </>
+
     );
 };

@@ -1,8 +1,13 @@
+import { Octokit } from '@octokit/rest';
+import { OAuthApi } from '@backstage/core-plugin-api';
+
 import { Org } from "./types";
 import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
 
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
     const vdfArr : VulnInfoFormatted[] = []
+    console.log("unformatted ", VulnDataUnformatted); 
+    console.log(VulnDataUnformatted[0]);
     for (let vdu of VulnDataUnformatted) {
         console.log("inside loop");
         let vdf : VulnInfoFormatted = {
@@ -25,6 +30,7 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
 }
 
 export const sortVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) => {
+    console.log("allVulns inside sort", VulnDataUnformattedArr);
     const VulnDataFormattedArr = formatVulnData(VulnDataUnformattedArr)
     let critical : VulnInfoFormatted[] = []
     let high : VulnInfoFormatted[] = []
@@ -58,3 +64,12 @@ export const formatOrgData = (orgList:Org[]) => {
     let OrgNodes = orgList.map(a => a.name);
     return OrgNodes
 }
+
+export const getOctokit = async (auth:OAuthApi) => {
+    const baseUrl = "https://api.github.com"
+    const token = await auth.getAccessToken(['repo']);
+
+    let octokit:Octokit = new Octokit({ auth: token, ...(baseUrl && { baseUrl }) });
+
+    return octokit.graphql;
+};
