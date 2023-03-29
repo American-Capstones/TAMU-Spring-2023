@@ -18,6 +18,7 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                 },
                 "nodes": [
                   {
+                    "number": 1,
                     "createdAt": "2023-03-01T18:32:56Z",
                     "dismissedAt": null,
                     "fixedAt": null,
@@ -41,6 +42,7 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                     "state": "OPEN"
                   },
                   {
+                    "number": 1,
                     "createdAt": "2023-03-01T18:32:56Z",
                     "dismissedAt": "2023-03-10T18:46:04Z",
                     "fixedAt": null,
@@ -72,6 +74,7 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
     const Vulns = await getVulnerabilityNodes(mockedGraphQl, "validRepo", "validOrg");
     expect(Vulns).toEqual([
       {
+        "number": 1,
         "createdAt": "2023-03-01T18:32:56Z",
         "dismissedAt": null,
         "fixedAt": null,
@@ -93,8 +96,10 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
             "vulnerableVersionRange": "< 8.0.1",
        },
          "state": "OPEN",
+         "url": "https://github.com/validOrg/validRepo/security/dependabot/1",
     },
     {
+    "number": 1,
     "createdAt": "2023-03-01T18:32:56Z",
     "dismissedAt": "2023-03-10T18:46:04Z",
     "fixedAt": null,
@@ -116,6 +121,7 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
         "vulnerableVersionRange": "< 8.0.1",
     },
     "state": "DISMISSED",
+    "url": "https://github.com/validOrg/validRepo/security/dependabot/1",
     },
     ]);
   });

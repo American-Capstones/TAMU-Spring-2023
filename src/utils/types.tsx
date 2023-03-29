@@ -34,14 +34,31 @@ export type RepositoryNode = {
   repositories: Connection<Repository[]>;
 }
 
+export type RepositoryUnformatted = {
+  id: string;
+  name: string;
+  repositoryTopics: {
+    edges:{
+      node:{
+        id
+        topic:{
+          name: string;
+        }
+      }
+    }
+  }
+}
+
 export type Repository = {
-  ID: string;
+  id: string;
   name: string;
   low: number;
   moderate: number;
   high: number;
   critical: number;
+  repositoryTopics: string[];
 }
+
 
 export type RepoName = {
   name: string;
@@ -75,6 +92,7 @@ export type VulnInfoUnformatted = {
   createdAt : string;
   dismissedAt : string;
   fixedAt : string;
+  number: number;
   securityAdvisory : {
     summary : string;
     severity : string;
@@ -92,7 +110,8 @@ export type VulnInfoUnformatted = {
       identifier : string
     }
   }
-  state : string
+  state : string;
+  url: string;
 }
 
 export type VulnInfoFormatted = {
@@ -108,6 +127,7 @@ export type VulnInfoFormatted = {
   summary: string;
   vulnerabilityCount: number;
   state: string;
+  url: string;
 };
 
 export type RepoVulns = {

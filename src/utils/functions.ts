@@ -1,8 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { OAuthApi } from '@backstage/core-plugin-api';
-
-import { Org } from "./types";
-import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
+import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns, Org, RepositoryUnformatted, Repository } from "./types"
 
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
     const vdfArr : VulnInfoFormatted[] = []
@@ -19,7 +17,8 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
             "severity": vdu.securityAdvisory.severity,
             "summary": vdu.securityAdvisory.summary,
             "vulnerabilityCount": vdu.securityAdvisory.vulnerabilities.totalCount,
-            "state": vdu.state 
+            "state": vdu.state, 
+            "url": vdu.url
         }
         vdfArr.push(vdf)
     }
@@ -98,3 +97,24 @@ export const getOctokit = async (auth:OAuthApi) => {
 
     return octokit.graphql;
 };
+
+export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[]) => {
+    let RepositoryFormattedArr : Repository[] = []
+    for (let ru of RepositoryUnformattedArr){
+        let topics : String[] = [];
+        if (ru.repositoryTopics.edges.length != 0){
+            for (let topicNode of ru.repositoryTopics.edges){
+                topics.push(topicNode.node.topic.name);
+                topics.push(", ");
+            }
+            topics.pop();
+        }
+        let rf : Repository = {
+            "id": ru.id,
+            "name": ru.name, 
+            "repositoryTopics": topics
+        }
+        RepositoryFormattedArr.push(rf);
+    }
+    return RepositoryFormattedArr;
+}
