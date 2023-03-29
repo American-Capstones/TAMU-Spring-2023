@@ -1,11 +1,13 @@
 import React from 'react';
-import { useState } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { DataView } from '../../DataView';
 import { SelectOrg } from '../../Utility';
-import { ErrorPage } from '@backstage/core-components';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
+
+// import { ErrorPage } from '@backstage/core-components';
+import { Error } from '../Error';
 import ReactLoading from "react-loading";
+import { Alert } from '@mui/material';
 
 const emptyContent = () => {
     return (
@@ -13,10 +15,11 @@ const emptyContent = () => {
     )
 }
 
-export const Organization = ({} : {}) => {
+export const Organization = () => {
     const { orgName } = useParams();
-    const { loading, teams } = useGetTeamsForOrg(orgName);
+    const { loading, teams, error } = useGetTeamsForOrg(orgName);
     const navigate = useNavigate();
+    const location = useLocation();
 
     if (loading) {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
@@ -32,12 +35,20 @@ export const Organization = ({} : {}) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
 
+    if (error) {
+        navigate(`../`, { state: error.message, replace: false });
+    }
+  
+
     const cols = [{title: 'Team Name', field: 'name'}]
     const filters: any[] = []
-    const title = 'Teams within this organization'
+    const title = 'Teams within ' + orgName;
     return (
 
         <>
+            { location.state != undefined && 
+                <Alert severity='error'>{location.state}</Alert>
+            }
             <SelectOrg defaultOption={orgName ?? ''}/>
             {(teams && teams.length > 0) ?
                 <DataView
@@ -48,7 +59,8 @@ export const Organization = ({} : {}) => {
                     onRowClick={handleClick}
                     emptyContent={emptyContent}/>
             :
-                <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
+                // <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
+                <Error message=""/>
             }
         </>
 

@@ -3,10 +3,11 @@ import { useState } from 'react';
 import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
 import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 import { useNavigate } from "react-router-dom";
+import { Error } from '../../Pages/Error';
 
 export const SelectOrg = ({ defaultOption = '' } : { defaultOption?: string }) => {
     const [ selectValue, setSelectValue ] = useState<string>(defaultOption);
-    let { loading, orgs } = useGetOrgsForUser();
+    let { loading, orgs, error } = useGetOrgsForUser();
     const navigate = useNavigate();
 
     let handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -19,6 +20,11 @@ export const SelectOrg = ({ defaultOption = '' } : { defaultOption?: string }) =
             navigate(`../${newOrg}`, { replace: true });
         }
     }
+
+    if (error) {
+        return <Error message={error.message}/>
+    }
+  
 
     return (
         <FormControl style={{width: 200, paddingBottom: 30 }}>

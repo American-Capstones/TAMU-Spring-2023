@@ -1,8 +1,9 @@
 import React from 'react';
 import { DataView } from '../../DataView';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
 import ReactLoading from "react-loading";
+import { Alert } from '@mui/material';
 
 const emptyContent = () => {
     return (
@@ -10,14 +11,21 @@ const emptyContent = () => {
     )
 }
 
-export const Team = ({} : {}) => {
+export const Team = () => {
     const { orgName, teamName } = useParams();
     const {loading, repos, error } = useGetReposFromTeam(orgName, teamName);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
+
+    if (error) {
+        navigate(`../${orgName}`, { state: error.message, replace: false });
+        // return <Error message={error.message}/>
+    }
+  
 
     if (loading) {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
@@ -34,7 +42,10 @@ export const Team = ({} : {}) => {
     const title = `Repositories under ${teamName}`;
     return (
         <>
-            <h1>Team</h1>
+            { location.state != undefined && 
+                <Alert severity='error'>{location.state}</Alert>
+            }
+            <h1>{teamName}</h1>
             <DataView
                 columns={cols}
                 rows={repos}

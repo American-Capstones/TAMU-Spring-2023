@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FormControlLabel, Switch } from '@material-ui/core';
 import { RepoVulns, VulnInfoUnformatted } from '../../../utils/types';
 import { VulnList } from '../../VulnList';
+import { Error } from '../Error';
 import ReactLoading from "react-loading";
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 import { Skeleton } from '@material-ui/lab';
@@ -17,10 +18,11 @@ const columnStyle: React.CSSProperties = {
 }
 
 export const Repo = ({  }: { }) => {
-    const { orgName, repoName } = useParams();
+    const { orgName, repoName, teamName } = useParams();
     const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
     const [ shownRepoVulns, setShownRepoVulns ] = useState<RepoVulns>();
     const [ openVulns, setOpenVulns ] = useState<RepoVulns>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (vulns) {
@@ -35,13 +37,18 @@ export const Repo = ({  }: { }) => {
     }, [vulns]);
     
     const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
-        const target = event.target as HTMLInputElement;
-        
-        if (target.checked) {
-            setShownRepoVulns(openVulns);
-        } else if (!target.checked){
-            setShownRepoVulns(vulns);
-        }
+      const target = event.target as HTMLInputElement;
+      
+      if (target.checked) {
+          setShownRepoVulns(openVulns);
+      } else if (!target.checked){
+          setShownRepoVulns(vulns);
+      }
+    }
+
+    if (error) {
+      navigate(`../${orgName}/${teamName}`, { state: error.message, replace: false });
+      // return <Error message={error.message}/>
     }
 
     if (loading) {
