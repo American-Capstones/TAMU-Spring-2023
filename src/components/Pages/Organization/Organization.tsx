@@ -9,6 +9,7 @@ import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import ReactLoading from "react-loading";
 import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
+import { Team } from '../../../utils/types';
 import { useGetMonthlyVulns } from '../../../hooks/useGetMonthlyVulns';
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
@@ -35,8 +36,26 @@ export const Organization = ({} : {}) => {
         </div>
     }
 
-    let goToTeams = (event: React.MouseEvent | undefined, rowData: any) => {
-        navigate(`./${rowData.name}`, { replace: true });
+    let goToTeams = (event: React.MouseEvent | undefined, rowData: Team) => {
+        const severityCount = [
+            {
+                severity: "Critical",
+                count : rowData.critical
+            },
+            {
+                severity: "High",
+                count : rowData.high
+            },
+            {
+                severity: "Moderate",
+                count : rowData.moderate
+            },
+            {
+                severity: "Low",
+                count : rowData.low
+            }
+        ]
+        navigate(`./${rowData.name}`, { state: severityCount, replace: true });
     }
 
     let changeScope = (newScope: string) => {

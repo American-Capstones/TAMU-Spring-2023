@@ -2,7 +2,7 @@ import React from 'react';
 import { Graphs } from '../../Graphs';
 import mockData from "../../../mock/data.json";
 import lineMockData from '../../../mock/lineMock_team.json';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
 import ReactLoading from "react-loading";
 import { Table } from '@backstage/core-components';
@@ -19,6 +19,7 @@ export const Team = ({} : {}) => {
     const { orgName, teamName } = useParams();
     const {loading, repos, error } = useGetReposFromTeam(orgName, teamName);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
@@ -42,7 +43,7 @@ export const Team = ({} : {}) => {
             <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                    <Graphs barData={mockData} lineData={lineMockData} />
+                    <Graphs barData={location.state} lineData={lineMockData} />
                 </Grid>
                 {/* Used for spacing */}
                 <Grid item></Grid> 
