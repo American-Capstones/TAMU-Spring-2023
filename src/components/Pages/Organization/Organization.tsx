@@ -43,7 +43,7 @@ export const Organization = () => {
     }
 
     if (error) {
-        navigate(`../`, { state: error.message, replace: false });
+        navigate(`../`, { state: {error: error.message}, replace: false });
     }
 
 
@@ -51,19 +51,20 @@ export const Organization = () => {
     const filters: any[] = []
     const title = 'Teams within ' + orgName;
     const location = useLocation();
-    const { org_name, org_avatarUrl, org_url } = location.state as stateInterface;
-    console.log(org_name);
+    console.log(location.state.org_name);
     return (
 
         <>
-            {location.state != undefined &&
-                <Alert severity='error'>{location.state}</Alert>
+            {location.state != undefined && location.state.error != undefined &&
+                <Alert severity='error'>{location.state.error}</Alert>
             }
-            <SelectOrg defaultOption={{
-                name: org_name,
-                avatarUrl: org_avatarUrl,
-                url: org_url
-            }} />
+            <SelectOrg defaultOption={
+                {
+                    name: location.state.org_name,
+                    avatarUrl: location.state.avatarUrl,
+                    url: location.state.org_url,
+                }
+            } />
             {(teams && teams.length > 0) ?
                 <DataView
                     columns={cols}

@@ -12,8 +12,8 @@ export const OrgChoice = ({ }: {}) => {
             justifyContent: 'center',
             flexDirection: 'column'
         }}>
-            { location.state != undefined &&
-                <Alert severity='error'>{location.state}</Alert>
+            { location.state != undefined && location.state.error &&
+                <Alert severity='error'>{location.state.error}</Alert>
             }
             <SelectOrg/>
         </div>
