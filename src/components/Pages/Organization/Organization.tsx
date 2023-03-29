@@ -32,7 +32,7 @@ export const Organization = ({} : {}) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
 
-    const cols = [{title: 'Team Name', field: 'name'}]
+    const cols = [{title: 'Team Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}]
     const filters: any[] = []
     const title = 'Teams within this organization'
     return (

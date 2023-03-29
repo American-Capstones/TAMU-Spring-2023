@@ -6,10 +6,7 @@ import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
 
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
     const vdfArr : VulnInfoFormatted[] = []
-    console.log("unformatted ", VulnDataUnformatted); 
-    console.log(VulnDataUnformatted[0]);
     for (let vdu of VulnDataUnformatted) {
-        console.log("inside loop");
         let vdf : VulnInfoFormatted = {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
@@ -30,7 +27,6 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
 }
 
 export const sortVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) => {
-    console.log("allVulns inside sort", VulnDataUnformattedArr);
     const VulnDataFormattedArr = formatVulnData(VulnDataUnformattedArr)
     let critical : VulnInfoFormatted[] = []
     let high : VulnInfoFormatted[] = []
@@ -48,6 +44,35 @@ export const sortVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) => {
         }
         else if(vd.severity.toLowerCase() == "low"){
             low.push(vd)
+        }
+    }
+    let rv : RepoVulns = {
+        "critical": critical,
+        "high": high,
+        "moderate": moderate,
+        "low": low,
+    }
+    return rv 
+} 
+
+
+export const countOpenVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) => {
+    let critical : number = 0
+    let high : number = 0
+    let moderate : number = 0
+    let low : number = 0
+    for (let vdu of VulnDataUnformattedArr) {
+        if(vdu.securityAdvisory.severity.toLowerCase() == "critical" && vdu.state == "OPEN"){
+            critical += 1
+        }
+        else if(vdu.securityAdvisory.severity.toLowerCase() == "high"  && vdu.state == "OPEN"){
+            high += 1
+        }
+        else if(vdu.securityAdvisory.severity.toLowerCase() == "moderate"  && vdu.state == "OPEN"){
+            moderate += 1
+        }
+        else if(vdu.securityAdvisory.severity.toLowerCase() == "low"  && vdu.state == "OPEN"){
+            low += 1
         }
     }
     let rv : RepoVulns = {
