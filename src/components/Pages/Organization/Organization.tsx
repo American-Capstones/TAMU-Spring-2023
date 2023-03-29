@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { DataView } from '../../DataView';
@@ -6,6 +6,7 @@ import { SelectOrg } from '../../Utility';
 import { ErrorPage } from '@backstage/core-components';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import ReactLoading from "react-loading";
+import { DataContext } from '../../Root/Root';
 
 const emptyContent = () => {
     return (
@@ -16,6 +17,7 @@ const emptyContent = () => {
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
     const { loading, teams } = useGetTeamsForOrg(orgName);
+    const { data } = useContext(DataContext);
     const navigate = useNavigate();
 
     if (loading) {
@@ -38,6 +40,7 @@ export const Organization = ({} : {}) => {
     return (
 
         <>
+            <h1>{data}</h1>
             <SelectOrg defaultOption={orgName ?? ''}/>
             {(teams && teams.length > 0) ?
                 <DataView

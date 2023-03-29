@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { DataView } from '../../DataView';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
 import ReactLoading from "react-loading";
+import { DataContext } from '../../Root/Root';
 
 const emptyContent = () => {
     return (
@@ -13,6 +14,7 @@ const emptyContent = () => {
 export const Team = ({} : {}) => {
     const { orgName, teamName } = useParams();
     const {loading, repos, error } = useGetReposFromTeam(orgName, teamName);
+    const { data } = useContext(DataContext);
     const navigate = useNavigate();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
@@ -34,7 +36,7 @@ export const Team = ({} : {}) => {
     const title = `Repositories under ${teamName}`;
     return (
         <>
-            <h1>Team</h1>
+            <h1>Team - {data}</h1>
             <DataView
                 columns={cols}
                 rows={repos}
