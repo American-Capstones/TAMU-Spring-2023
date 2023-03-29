@@ -29,6 +29,7 @@ export const SelectScope = ({ handleClick, title, defaultOption = '' } : SelectS
                 onClick={onClick}
             >
                 <MenuItem value={'teams'} className={'item'}>Teams</MenuItem>
+                <MenuItem value={'topics'} className={'item'}>Topics</MenuItem>
                 <MenuItem value={'repositories'} className={'item'}>Repositories</MenuItem>
             </Select>
         </FormControl>

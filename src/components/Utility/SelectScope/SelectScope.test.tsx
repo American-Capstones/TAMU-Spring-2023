@@ -30,8 +30,8 @@ describe('SelectScope test suite', () => {
         await userEvent.click(Select);
         const Options = wrapper.getAllByRole('option');
 
-        // Extra item for None option, + orgs length
-        expect(Options.length).toEqual(2); 
+        // Teams, Topics, Repositories
+        expect(Options.length).toEqual(3); 
     });
 
     it('should select the correct value if defaultOption is given', async () => {
