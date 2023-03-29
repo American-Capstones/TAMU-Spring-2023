@@ -23,7 +23,7 @@ export const getOrgsForUser = (graphql:any) => {
 
 export async function getOrgNodes(graphql:any, organizationLimit: number): Promise<{"orgNodes": Org[], "error": Error}> {
     const orgNodes: Org[] = [];
-    let error: 
+    let error:
         | Error
         | undefined = undefined;
     let result:
@@ -31,7 +31,7 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
         | undefined = undefined;
 
     do {
-        result = await graphql( 
+        result = await graphql(
         `
         query($first: Int, $endCursor: String){
             viewer {
@@ -39,6 +39,8 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
                 pageInfo {hasNextPage, endCursor}
                 nodes {
                   name
+                  url
+                  avatarUrl
                 }
               }
             }
@@ -54,7 +56,7 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
             : undefined,
         },
         );
-        
+
         if(result){
             // result.viewer will be null if there is an error
             if (!result.viewer){
@@ -62,7 +64,7 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
                     error = result.errors[0]
                 }
                 break
-            } 
+            }
             orgNodes.push(
                 ...result.viewer.organizations.nodes
             );

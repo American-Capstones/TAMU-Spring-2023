@@ -1,46 +1,58 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
-import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
+import { InputLabel, FormControl, Select, MenuItem, Box, TextField } from '@material-ui/core';
 import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 import { useNavigate } from "react-router-dom";
 import { Error } from '../../Pages/Error';
+import { Autocomplete, Skeleton } from '@mui/material';
+import { Org } from '../../../utils/types';
 
-export const SelectOrg = ({ defaultOption = '' } : { defaultOption?: string }) => {
-    const [ selectValue, setSelectValue ] = useState<string>(defaultOption);
+export const SelectOrg = ({ defaultOption = null }: { defaultOption?: Org | null }) => {
+    const [selectValue, setSelectValue] = useState<Org | null>(defaultOption);
     let { loading, orgs, error } = useGetOrgsForUser();
     const navigate = useNavigate();
-
-    let handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        const target = event?.target as HTMLSelectElement;
-        const newOrg = target.value;
-        
-        setSelectValue(newOrg);
-        
-        if (newOrg && newOrg != '') {
-            navigate(`../${newOrg}`, { replace: true });
-        }
-    }
 
     if (error) {
         return <Error message={error.message}/>
     }
-  
 
     return (
-        <FormControl style={{width: 200, paddingBottom: 30 }}>
-            <InputLabel>Organization Name</InputLabel>
-            <Select
-                label="Organization Name"
-                value={selectValue ?? ''}
-                onClick={handleClick}
-            >
-            <MenuItem value={''} className={'item'} disabled={selectValue != ''}><em>None</em></MenuItem>
-                {orgs?.map((org, index) => {
-                    return (
-                        <MenuItem key={index} value={org} className={'item'}>{org}</MenuItem>
-                    );
-                })}
-            </Select>
-        </FormControl>
+        <>
+            <Autocomplete
+                autoHighlight
+                id="combo-box-demo"
+                options={orgs}
+                getOptionLabel={(option) => option.name}
+                onChange={(event: any, newValue) => {
+                    setSelectValue(newValue)
+                    if (newValue === null) {
+                        navigate('../');
+                    }
+                    if (newValue != null) {
+                        navigate(`../${newValue?.name}`, { replace: true, state: { org_name: newValue.name, org_url: newValue.url, org_avatarUrl: newValue.avatarUrl } });
+                    }
+                }}
+                value={selectValue}
+                loading={loading}
+                sx={{ minWidth: 60, maxWidth: 300 }}
+                renderOption={(props, option) => (
+                    <Box component="li"{...props}>
+                        <img
+                            loading="lazy"
+                            width="20"
+                            src={option.avatarUrl}
+                            srcSet={option.avatarUrl}
+                            alt={`${option.name} avatar`}
+                            style={{ marginRight: '1.24rem' }}
+                        />
+                        {option.name}
+                    </Box>
+                )}
+                renderInput={(params) => <>
+                    <TextField {...params} label="Organization" />
+
+                </>}
+            />
+        </>
     );
 };
