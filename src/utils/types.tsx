@@ -55,10 +55,12 @@ export type Teams<T> = {
 
 export type Team = { 
   name: string;
-  low: number;
-  moderate: number;
-  high: number;
-  critical: number;
+  vulnData: vulnData,
+  repos: Repository[]
+}
+
+export type TeamNode = { 
+  name: string
 }
 
 export type VulnInfoRepo<T> = {
@@ -129,6 +131,8 @@ export type Orgs <T> = {
 
 export type Org = {
   name: string;
+  vulnData: vulnData,
+  teams: Team[]
 }
 
 export type Error = {
@@ -143,14 +147,15 @@ export type Error = {
   ]
 }
 
-export type monthVulns = {
-  critical: number[];
-  high: number[];
-  moderate: number[];
-  low: number[];
-}
-
 export type Severity = {
    severity: string, 
    count: number
+}
+
+export type vulnData = {
+  startMonth: number | undefined,
+  critical: number[],
+  high: number[],
+  moderate: number[],
+  low: number[],
 }

@@ -86,8 +86,6 @@ export async function getRepoNodes (
       } // should check the error message & then return it
     }
     if (repoNodes.length >= repoLimit && !getAll) return repoNodes;
-
-    
   } while (result?.organization?.teams.nodes[0].repositories.pageInfo.hasNextPage);
 
   return repoNodes;
