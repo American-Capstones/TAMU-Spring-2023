@@ -7,6 +7,8 @@ import {
 } from '@backstage/core-plugin-api';
 import { getReposForTeam } from "../api/getReposForTeam";
 import { Repository } from "../utils/types";
+import { getVulnCountsForAllRepos } from "../api/getVulnCountsForAllRepos";
+
 
 export function useGetReposFromTeam(orgName:string|undefined, teamName:string|undefined) {
     const [loading, setLoading] = useState<boolean>(true);
@@ -17,17 +19,22 @@ export function useGetReposFromTeam(orgName:string|undefined, teamName:string|un
 
     const getOrgNames = useCallback(async () => {
         setLoading(true);
+        let repoNames: Repository[] = []
+        const graphql = await getOctokit(auth)
+
         try {
             if(teamName && orgName) {
-                const graphql = await getOctokit(auth)
-                const repoNames = await getReposForTeam(graphql, orgName, teamName)
+                repoNames = await getReposForTeam(graphql, orgName, teamName)
 
-                setRepos(repoNames)
             }
         }
         catch {
             setError(Error("Error in useGetReposFromTeam"))
         }
+
+        setRepos(repoNames)
+
+        repoNames = await getVulnCountsForAllRepos(graphql, repoNames, orgName);
         setLoading(false)
     }, [])
 

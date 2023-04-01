@@ -90,7 +90,7 @@ export async function getVulnerabilityNodes(
       }
       vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
     }
-
+    
     if (vulnerabilityData.length >= repoRequestLimit) return vulnerabilityData;
   } while(result?.repository.vulnerabilityAlerts.pageInfo.hasNextPage)
 
