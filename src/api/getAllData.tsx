@@ -67,6 +67,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
           if(vulns.severity == "CRITICAL"){
             newRepo.critical += 1
             teamData.vulnData.critical[createdDate.getMonth() - 1] += 1
+            teamData.vulnData.criticalNum += 1
             if(!seen.has(newRepo.ID)) {
               orgData.vulnData.critical[createdDate.getMonth() - 1] += 1
               orgData.vulnData.criticalNum += 1
