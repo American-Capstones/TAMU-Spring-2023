@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { OAuthApi } from '@backstage/core-plugin-api';
 
-import { Org } from "./types";
+import { Org, Repository } from "./types";
 import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
 
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
@@ -98,3 +98,18 @@ export const getOctokit = async (auth:OAuthApi) => {
 
     return octokit.graphql;
 };
+
+
+export const getReposForOrg = (orgData:Org) => {
+    let repoList:Repository[] = []
+    let seen = new Set<string>
+    for(let team of orgData.teams) {
+        for(let repo of team.repos) {
+            if(!seen.has(repo.ID)) {
+                repoList.push(repo)
+            }
+            seen.add(repo.ID)
+        }
+    }
+    return repoList
+}
