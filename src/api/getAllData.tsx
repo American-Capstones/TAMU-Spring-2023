@@ -74,6 +74,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
           else if(vulns.severity == "HIGH"){
             newRepo.high += 1
             teamData.vulnData.high[createdDate.getMonth() - 1] += 1
+            teamData.vulnData.highNum += 1
             if(!seen.has(newRepo.ID)) {
               orgData.vulnData.high[createdDate.getMonth() - 1] += 1
               orgData.vulnData.highNum += 1
@@ -82,6 +83,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
           else if(vulns.severity == "MODERATE"){
             newRepo.moderate += 1
             teamData.vulnData.moderate[createdDate.getMonth() - 1] += 1
+            teamData.vulnData.moderateNum += 1
             if(!seen.has(newRepo.ID)) {
               orgData.vulnData.moderate[createdDate.getMonth() - 1] += 1
               orgData.vulnData.moderateNum += 1
@@ -90,6 +92,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
           if(vulns.severity == "LOW"){
             newRepo.low += 1
             teamData.vulnData.low[createdDate.getMonth() - 1] += 1
+            teamData.vulnData.lowNum += 1
             if(!seen.has(newRepo.ID)) {
               orgData.vulnData.low[createdDate.getMonth() - 1] += 1
               orgData.vulnData.lowNum += 1
@@ -98,7 +101,6 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
         }
       }
       seen.add(newRepo.ID)
-      console.log(newRepo.ID)
       teamData.repos.push(newRepo)
     }
     orgData.teams.push(teamData)
