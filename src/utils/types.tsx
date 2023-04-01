@@ -158,4 +158,8 @@ export type vulnData = {
   high: number[],
   moderate: number[],
   low: number[],
+  criticalNum: number,
+  highNum: number,
+  moderateNum: number,
+  lowNum: number
 }

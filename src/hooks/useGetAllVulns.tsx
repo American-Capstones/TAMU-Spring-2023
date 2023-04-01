@@ -10,7 +10,7 @@ import { Org } from "../utils/types";
 
 export function useGetAllVulns(orgName:string|undefined) {
     const [loading, setLoading] = useState<boolean>(true);
-    const [orgData, setOrgData] = useState<Org[]>([]);
+    const [orgData, setOrgData] = useState<Org>();
     const [error, setError] = useState<Error>();
 
     const auth = useApi(githubAuthApiRef)
