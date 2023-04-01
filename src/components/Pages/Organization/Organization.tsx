@@ -1,4 +1,3 @@
-import React, { useContext, useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { DataContext } from '../../Root/Root';
 import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
@@ -12,24 +11,14 @@ import { Grid } from '@material-ui/core';
 import { getReposForOrg } from '../../../utils/functions';
 import { emptyOrg } from '../../../utils/constants';
 import { CollectionsBookmarkRounded } from '@material-ui/icons';
+import React, { useContext, useState } from "react";
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
 
 const useCachedAllVulns = (orgName: string|undefined) => {
-    const { data, setData } = useContext(DataContext);
-    const stringData = JSON.stringify(data);
-    const stringEmpty = JSON.stringify(emptyOrg);
-    const { loading, orgData, error } = useGetAllVulns(orgName);
-    
-    if (!loading && !error) {
-        console.log('in here')
-        console.log(orgData)
-        setData(orgData!);
-        setTimeout(() => {
-            console.log(data);
-        }, 3000)
-    }
+    const {data, setData} = useContext(DataContext);
+    const { loading, data: orgData, error } = useGetAllVulns(orgName)
     
     return {
         data,
@@ -47,9 +36,7 @@ export const Organization = ({} : {}) => {
     const [ showTeams, setShowTeams ] = useState(true);
     const navigate = useNavigate();
 
-    console.log(`orgData: ${JSON.stringify(orgData)}`);
-
-    if (loading) {
+    if (loading || orgData.name == "") {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
           type={"spin"}
           color={"#8B0000"}

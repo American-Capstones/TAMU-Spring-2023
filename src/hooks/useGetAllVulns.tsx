@@ -1,27 +1,31 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useContext, Dispatch, SetStateAction } from "react";
 import { getAllData } from "../api/getAllData";
 import { formatOrgData, getOctokit } from "../utils/functions";
+import { DataContext } from '../components/Root/Root';
 
 import {
   useApi,
   githubAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { Org } from "../utils/types";
-
+interface iDataContext {
+    data: Org,
+    setData: Dispatch<SetStateAction<Org>>
+}
 export function useGetAllVulns(orgName:string|undefined) {
     const [loading, setLoading] = useState<boolean>(true);
-    const [orgData, setOrgData] = useState<Org>();
+    const {data, setData} = useContext<iDataContext>(DataContext);
     const [error, setError] = useState<Error>();
 
     const auth = useApi(githubAuthApiRef)
-    console.log('INSIDE GET ALL VULNS')
-    const getMonthVulns = useCallback(async () => {
+    const getVulns = useCallback(async () => {
         setLoading(true);
-        if(orgName) {
+        if(orgName && data.name == "") {
+            console.log('GET ALL VULNS')
             try {
                 const graphql = await getOctokit(auth)
                 const result = await getAllData(graphql, orgName) //result also has an error message that can be handled
-                setOrgData(result)
+                setData(result)
             }
             catch {
                 setError(Error("Error in useGetOrgsForUser"))
@@ -31,12 +35,12 @@ export function useGetAllVulns(orgName:string|undefined) {
     }, [orgName])
 
     useEffect(() => {
-        getMonthVulns();
-    }, [getMonthVulns]);
+        getVulns();
+    }, [getVulns]);
 
     return {
         loading, 
-        orgData,
+        data,
         error
     };
 }

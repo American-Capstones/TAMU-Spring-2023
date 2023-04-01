@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
 import { Route } from 'react-router-dom';
 import {
   Header,
@@ -26,28 +26,15 @@ const emptyOrg:Org = {
     },
     teams: []
 }
-export const DataContext = createContext({ data: emptyOrg, setData: (data: Org) => {} });
-
-const setLanguage = (language) => {
-    setState({...state, language: language})
-  }
-
-  const initState = {
-    language: "en",
-    setLanguage: setLanguage
-  } 
-
-  const [state, setState] = useState(initState)
-
+interface iDataContext {
+    data: Org,
+    setData: Dispatch<SetStateAction<Org>>
+}
+export const DataContext = createContext<iDataContext>({data:emptyOrg, setData:()=>{}});
 
 export const Root = () => {
-    const setData = (data: Org) => { setData({...state, data: data }) }
-    const initState = {
-        data: emptyOrg,
-        setData: setData
-    }
-    const { data, setData } = useState(initState);
-
+    const [data, setData] = useState(emptyOrg);
+    const value = {data, setData}
     return (
         <Page themeId="tool">
             <Header title="Welcome to Dependabot Dashboard!" >
@@ -58,7 +45,7 @@ export const Root = () => {
             <div style={{
                 margin: '30px'
             }}>
-                <DataContext.Provider value={{ data, setData }}>
+                <DataContext.Provider value={value}>
                     <Breadcrumbs />
                     <FlatRoutes>
                     <Route 
