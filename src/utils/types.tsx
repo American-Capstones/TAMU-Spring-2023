@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+import { TableColumn, TableFilter } from "@backstage/core-components";
+
 export type Connection<T> = {
   nodes: T;
   pageInfo: {
@@ -162,4 +164,41 @@ export type vulnData = {
   highNum: number,
   moderateNum: number,
   lowNum: number
+}
+
+export type TableProps = {
+    columns: TableColumn[],
+    rows: any[],
+    filters: TableFilter[],
+    title: string,
+    onRowClick: (event: React.MouseEvent | undefined, rowData: any) => void,
+    emptyContent: React.ReactNode
+};
+
+export type Coords = {
+    x: string,
+    y: number
+}
+
+export type LineGraphData = {
+    id: string,
+    color?: string, // in the format hsl(num, %, %)
+    data: Coords[]
+}
+
+export type BarGraphData = {
+    severity: string,
+    count: number
+}
+
+export type GraphsProps = {
+    lineData: LineGraphData[],
+    barData: BarGraphData[]
+}
+
+export type monthVulns = {
+  critical: number[];
+  high: number[];
+  moderate: number[];
+  low: number[];
 }

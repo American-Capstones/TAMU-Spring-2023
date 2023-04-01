@@ -4,7 +4,10 @@ import { renderInTestApp } from "@backstage/test-utils";
 import { configure, shallow } from 'enzyme';
 import { Team } from '.';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
+import { Graphs } from '../../Graphs';
+import { SelectScope } from '../../Utility';
+import { Table } from '@backstage/core-components';
 
 // This is necessary to avoid issues testing components w/ hooks
 configure({adapter: new Adapter()});
@@ -32,13 +35,23 @@ describe('Team page test suite', () => {
 
     it('should render', async () => {
         const wrapper = shallow(<Team />);
-        expect(wrapper.contains(<h1>Team</h1>)).toBeTruthy();
+        expect(wrapper.contains(<h1>TEST TEAM</h1>)).toBeTruthy();
     });
+    
+    it('should render a Graphs component', async () => {
+        const wrapper = shallow(<Team />);
+        expect(wrapper.find(Graphs)).toHaveLength(1);
+    })
 
-    it('should display DataView component', async () => {
+    it('should render a table component', async () => {
+        const wrapper = shallow(<Team />);
+        expect(wrapper.find(Table)).toHaveLength(1);
+    })
+
+    it('should display a table when data is received from backend', async () => {
         await renderInTestApp(<Team />);
-        // easiest to detect DataView component by looking for table rows
-        expect(await screen.findByText('Repository Name')).toBeVisible();
+        expect(useGetReposFromTeam).toHaveBeenCalledWith('TEST ORG', 'TEST TEAM');
+        expect(await screen.findByText('TEST TEAM\'s Repositories')).toBeVisible();
         expect(await screen.findByText('test_name')).toBeVisible();
     });
 
