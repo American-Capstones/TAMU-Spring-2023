@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { DataView } from '../../DataView';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
 import ReactLoading from "react-loading";
 import { DataContext } from '../../Root/Root';
+import { Team } from '../../../utils/types';
 
 const emptyContent = () => {
     return (
@@ -11,10 +11,35 @@ const emptyContent = () => {
     )
 }
 
-export const Team = ({} : {}) => {
-    const { orgName, teamName } = useParams();
-    const {loading, repos, error } = useGetReposFromTeam(orgName, teamName);
+const useCachedTeamData = (teamName:string|undefined) => {
     const { data, setData } = useContext(DataContext);
+    let loading = false;
+    let teamData:Team|undefined = undefined;
+    let error: string|undefined = undefined;
+
+    for( let team of data.teams ) {
+        if (team.name == teamName) {
+            teamData = team;
+            break;
+        }
+    }
+
+    if (!teamData) {
+        error = "Error: Team not found";
+    }
+    
+    return {
+        teamData,
+        loading,
+        error
+    };
+}
+
+export const TeamPage = ({} : {}) => {
+    const { orgName, teamName } = useParams();
+    const { teamData, loading, error } = useCachedTeamData(teamName);
+
+    // const { data, setData } = useContext(DataContext);
     const navigate = useNavigate();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
@@ -36,10 +61,10 @@ export const Team = ({} : {}) => {
     const title = `Repositories under ${teamName}`;
     return (
         <>
-            <h1>Team - {data}</h1>
+            <h1>Team</h1>
             <DataView
                 columns={cols}
-                rows={repos}
+                rows={teamData!.repos}
                 filters={filters}
                 title={title}
                 onRowClick={goToRepo}

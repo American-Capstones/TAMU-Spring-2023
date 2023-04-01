@@ -1,10 +1,8 @@
 import React, { useContext } from 'react';
-import { useState } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { DataView } from '../../DataView';
 import { SelectOrg } from '../../Utility';
 import { ErrorPage } from '@backstage/core-components';
-import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import ReactLoading from "react-loading";
 import { DataContext } from '../../Root/Root';
 import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
@@ -17,10 +15,16 @@ const emptyContent = () => {
 
 const useCachedAllVulns = (orgName: string|undefined) => {
     const { data, setData } = useContext(DataContext);
-    const { loading, orgData, error } = useGetAllVulns(orgName);
+    const { loading, orgData, error } = data ? 
+        {
+            loading: false,
+            orgData: data,
+            error: undefined
+        }
+    : useGetAllVulns(orgName);
     
     if (!loading && !error) {
-        setData(orgData);
+        setData(orgData!);
     }
     
     return {
@@ -33,9 +37,6 @@ const useCachedAllVulns = (orgName: string|undefined) => {
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
     const { data:orgData, loading, error } = useCachedAllVulns(orgName);
-
-    // const { loading, orgData, error } = useGetAllVulns(orgName);
-    // const { data, setData } = useContext(DataContext);
     const navigate = useNavigate();
 
     if (loading) {
@@ -49,22 +50,20 @@ export const Organization = ({} : {}) => {
     }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
-        // setData(rowData.name);
         navigate(`./${rowData.name}`, { replace: true }); }
 
     const cols = [
         {title: 'Team Name', field: 'name'}, 
-        {title: 'critical', field: 'vulnData.critical'}, 
-        {title: 'high', field: 'vulnData.high'}, 
-        {title: 'moderate', field: 'vulnData.moderate'}, 
-        {title: 'low', field: 'vulnData.low'}
+        {title: 'critical', field: 'vulnData.criticalNum'}, 
+        {title: 'high', field: 'vulnData.highNum'}, 
+        {title: 'moderate', field: 'vulnData.moderateNum'}, 
+        {title: 'low', field: 'vulnData.lowNum'}
     ]
     const filters: any[] = []
     const title = 'Teams within this organization'
     return (
 
         <>
-            {/* <h1>{data}</h1> */}
             <SelectOrg defaultOption={orgName ?? ''}/>
             {(orgData?.teams && orgData.teams.length > 0) ?
                 <DataView
