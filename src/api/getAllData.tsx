@@ -45,6 +45,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
       },
       repos: []
     }
+    orgData.vulnData.startMonth = new Date().getMonth() + 1
     teamData.vulnData.startMonth = new Date().getMonth() + 1
 
     let newRepos:Repository[] = await getReposForTeam(graphql, orgLogin, teamNode.name)
