@@ -7,6 +7,7 @@ import { ErrorPage } from '@backstage/core-components';
 import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import ReactLoading from "react-loading";
 import { DataContext } from '../../Root/Root';
+import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
 
 const emptyContent = () => {
     return (
@@ -14,10 +15,27 @@ const emptyContent = () => {
     )
 }
 
+const useCachedAllVulns = (orgName: string|undefined) => {
+    const { data, setData } = useContext(DataContext);
+    const { loading, orgData, error } = useGetAllVulns(orgName);
+    
+    if (!loading && !error) {
+        setData(orgData);
+    }
+    
+    return {
+        data,
+        loading,
+        error
+    };
+}
+
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
-    const { loading, teams } = useGetTeamsForOrg(orgName);
-    const { data, setData } = useContext(DataContext);
+    const { data:orgData, loading, error } = useCachedAllVulns(orgName);
+
+    // const { loading, orgData, error } = useGetAllVulns(orgName);
+    // const { data, setData } = useContext(DataContext);
     const navigate = useNavigate();
 
     if (loading) {
@@ -31,22 +49,27 @@ export const Organization = ({} : {}) => {
     }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
-        setData(rowData.name);
-        navigate(`./${rowData.name}`, { replace: true });
-    }
+        // setData(rowData.name);
+        navigate(`./${rowData.name}`, { replace: true }); }
 
-    const cols = [{title: 'Team Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}]
+    const cols = [
+        {title: 'Team Name', field: 'name'}, 
+        {title: 'critical', field: 'vulnData.critical'}, 
+        {title: 'high', field: 'vulnData.high'}, 
+        {title: 'moderate', field: 'vulnData.moderate'}, 
+        {title: 'low', field: 'vulnData.low'}
+    ]
     const filters: any[] = []
     const title = 'Teams within this organization'
     return (
 
         <>
-            <h1>{data}</h1>
+            {/* <h1>{data}</h1> */}
             <SelectOrg defaultOption={orgName ?? ''}/>
-            {(teams && teams.length > 0) ?
+            {(orgData?.teams && orgData.teams.length > 0) ?
                 <DataView
                     columns={cols}
-                    rows={teams}
+                    rows={orgData.teams}
                     filters={filters}
                     title={title}
                     onRowClick={handleClick}
