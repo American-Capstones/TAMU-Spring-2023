@@ -14,7 +14,7 @@ export function useGetAllVulns(orgName:string|undefined) {
     const [error, setError] = useState<Error>();
 
     const auth = useApi(githubAuthApiRef)
-
+    console.log('INSIDE GET ALL VULNS')
     const getMonthVulns = useCallback(async () => {
         setLoading(true);
         if(orgName) {

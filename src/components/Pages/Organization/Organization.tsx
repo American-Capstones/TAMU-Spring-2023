@@ -6,30 +6,29 @@ import mockData from "../../../mock/data.json";
 import lineMockData from '../../../mock/lineMock.json';
 import { SelectOrg, SelectScope } from '../../Utility';
 import { ErrorPage, Table } from '@backstage/core-components';
-import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import ReactLoading from "react-loading";
 import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
-import { useGetMonthlyVulns } from '../../../hooks/useGetMonthlyVulns';
+import { getReposForOrg } from '../../../utils/functions';
+import { emptyOrg } from '../../../utils/constants';
+import { CollectionsBookmarkRounded } from '@material-ui/icons';
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
 
-// todo: This needs to be an API call but that function hasn't been written yet. 
-const useGetAllRepos = () => ({ loading: false, repos: [{ name: 'Repo 1' }, { name: 'Repo 2' }]})
-
 const useCachedAllVulns = (orgName: string|undefined) => {
     const { data, setData } = useContext(DataContext);
-    const { loading, orgData, error } = data ? 
-        {
-            loading: false,
-            orgData: data,
-            error: undefined
-        }
-    : useGetAllVulns(orgName);
+    const stringData = JSON.stringify(data);
+    const stringEmpty = JSON.stringify(emptyOrg);
+    const { loading, orgData, error } = useGetAllVulns(orgName);
     
     if (!loading && !error) {
+        console.log('in here')
+        console.log(orgData)
         setData(orgData!);
+        setTimeout(() => {
+            console.log(data);
+        }, 3000)
     }
     
     return {
@@ -44,9 +43,11 @@ export const Organization = ({} : {}) => {
     const { data:orgData, loading, error } = useCachedAllVulns(orgName);
     // const { loading, months,} = useGetMonthlyVulns(orgName);
     // const { loading, teams } = useGetTeamsForOrg(orgName);
-    // const { loading: repoLoading, repos} = getReposForOrg(orgData);
+    const repos = getReposForOrg(orgData);
     const [ showTeams, setShowTeams ] = useState(true);
     const navigate = useNavigate();
+
+    console.log(`orgData: ${JSON.stringify(orgData)}`);
 
     if (loading) {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
@@ -87,7 +88,7 @@ export const Organization = ({} : {}) => {
                     <Graphs barData={mockData} lineData={lineMockData} />
                 </Grid>
                 <Grid item>
-                    <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
+                    <SelectScope handleClick={() => changeScope} title='Table Scope' defaultOption='teams' />
                     {showTeams ?
                         <Table 
                             title={team_title}
