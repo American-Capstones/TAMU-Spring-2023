@@ -17,7 +17,7 @@ const emptyContent = () => {
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
     const { loading, teams } = useGetTeamsForOrg(orgName);
-    const { data } = useContext(DataContext);
+    const { data, setData } = useContext(DataContext);
     const navigate = useNavigate();
 
     if (loading) {
@@ -31,6 +31,7 @@ export const Organization = ({} : {}) => {
     }
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
+        setData(rowData.name);
         navigate(`./${rowData.name}`, { replace: true });
     }
 

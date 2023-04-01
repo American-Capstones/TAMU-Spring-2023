@@ -14,7 +14,7 @@ const emptyContent = () => {
 export const Team = ({} : {}) => {
     const { orgName, teamName } = useParams();
     const {loading, repos, error } = useGetReposFromTeam(orgName, teamName);
-    const { data } = useContext(DataContext);
+    const { data, setData } = useContext(DataContext);
     const navigate = useNavigate();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
