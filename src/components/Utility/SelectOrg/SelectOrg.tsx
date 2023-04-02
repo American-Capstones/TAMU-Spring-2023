@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useState } from 'react';
 import { InputLabel, FormControl, Select, MenuItem, Box, TextField } from '@material-ui/core';
 import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
@@ -7,10 +7,22 @@ import { Error } from '../../Pages/Error';
 import { Autocomplete, Skeleton } from '@mui/material';
 import { Org } from '../../../utils/types';
 
-export const SelectOrg = ({ defaultOption = null }: { defaultOption?: Org | null }) => {
-    const [selectValue, setSelectValue] = useState<Org | null>(defaultOption);
+export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) => {
+    const [selectValue, setSelectValue] = useState<Org | null>(null);
     let { loading, orgs, error } = useGetOrgsForUser();
     const navigate = useNavigate();
+
+    // We decided to pass the Organization name as a browser parameter, but there is nowhere to grab the rest of the Org
+    // object. The AutoComplete selectValue takes type Org | null, so to bypass, I created a useEffect hook that will
+    // attempt to map the Organization string name to the Org object. If found, it will set the default selectValue to such.
+    useEffect(() => {
+        if (!loading && orgs.length > 0) {
+            const org = orgs.find((org) => org.name === defaultOption);
+            if (org) {
+                setSelectValue(org);
+            }
+        }
+    }, [loading])
 
     if (error) {
         return <Error message={error.message}/>
@@ -29,12 +41,14 @@ export const SelectOrg = ({ defaultOption = null }: { defaultOption?: Org | null
                         navigate('../');
                     }
                     if (newValue != null) {
-                        navigate(`../${newValue?.name}`, { replace: true, state: { org_name: newValue.name, org_url: newValue.url, org_avatarUrl: newValue.avatarUrl } });
+                        navigate(`../${newValue?.name}`, { replace: true });
                     }
                 }}
                 value={selectValue}
                 loading={loading}
+                // Overriding component style to make scope dropdown somewhat repsonsive.
                 sx={{ minWidth: 60, maxWidth: 300 }}
+                // This is what allows the GitHub avatar to be displayed in the dropdown.
                 renderOption={(props, option) => (
                     <Box component="li"{...props}>
                         <img
@@ -49,8 +63,7 @@ export const SelectOrg = ({ defaultOption = null }: { defaultOption?: Org | null
                     </Box>
                 )}
                 renderInput={(params) => <>
-                    <TextField {...params} label="Organization" />
-
+                    <TextField variant='outlined' {...params} label="Organization" />
                 </>}
             />
         </>

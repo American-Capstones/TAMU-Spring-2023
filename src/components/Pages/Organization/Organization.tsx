@@ -37,6 +37,7 @@ export const Organization = () => {
         />
         </div>
     }
+    const location = useLocation();
 
     let handleClick = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
@@ -50,33 +51,31 @@ export const Organization = () => {
     const cols = [{ title: 'Team Name', field: 'name' }]
     const filters: any[] = []
     const title = 'Teams within ' + orgName;
-    const location = useLocation();
-    console.log(location.state.org_name);
+
     return (
 
         <>
             {location.state != undefined && location.state.error != undefined &&
                 <Alert severity='error'>{location.state.error}</Alert>
             }
-            <SelectOrg defaultOption={
-                {
-                    name: location.state.org_name,
-                    avatarUrl: location.state.avatarUrl,
-                    url: location.state.org_url,
+            <SelectOrg defaultOption={orgName}/>
+
+            <div style={{
+                marginTop: '2.48rem'
+            }}>
+                {(teams && teams.length > 0) ?
+                    <DataView
+                        columns={cols}
+                        rows={teams}
+                        filters={filters}
+                        title={title}
+                        onRowClick={handleClick}
+                        emptyContent={emptyContent} />
+                    :
+                    // <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
+                    <Error message="" />
                 }
-            } />
-            {(teams && teams.length > 0) ?
-                <DataView
-                    columns={cols}
-                    rows={teams}
-                    filters={filters}
-                    title={title}
-                    onRowClick={handleClick}
-                    emptyContent={emptyContent} />
-                :
-                // <ErrorPage status={'Empty data obj'} statusMessage={'No row data'} />
-                <Error message="" />
-            }
+            </div>
         </>
 
     );
