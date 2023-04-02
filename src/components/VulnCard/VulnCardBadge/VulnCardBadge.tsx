@@ -9,10 +9,29 @@ import React from 'react';
 *   Output: JSX/React Componenet
 */
 type VulnCardBadgeProps = {
-    state: string
+    state: string,
+    severity: string
 }
 
 export const VulnCardBadge = (props: VulnCardBadgeProps) => {
+
+    const severityColors = (severity: string) => {
+        switch (severity.toUpperCase()) {
+            case "CRITICAL":
+                return "#3B1F2B";
+            case "HIGH":
+                return "#C73E1D";
+            case "MODERATE":
+                return "#F18F01";
+            case "LOW":
+                return "#2A4F87";
+            case "UNKNOWN":
+                return grey[500];
+        }
+    }
+
+    const severityColor = severityColors(props.severity);
+
     if (props.state === undefined) {
         return (
             <></>
@@ -23,7 +42,7 @@ export const VulnCardBadge = (props: VulnCardBadgeProps) => {
             case "OPEN":
                 return (
                     <Tooltip title="Open Vulnerability">
-                        <SecurityOutlined style={{ color: grey[600] }} />
+                        <SecurityOutlined style={{ color: severityColor} } />
                     </Tooltip>
                 );
             case "FIXED":
