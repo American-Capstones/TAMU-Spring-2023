@@ -22,13 +22,13 @@ export const Team = () => {
     }
 
     if (error) {
-        navigate(`../${orgName}`, { state: error.message, replace: false });
+        navigate(`../${orgName}`, { state: { error: error.message }, replace: false });
         // return <Error message={error.message}/>
     }
-  
+
 
     if (loading) {
-        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
           type={"spin"}
           color={"#8B0000"}
           height={100}
@@ -42,8 +42,8 @@ export const Team = () => {
     const title = `Repositories under ${teamName}`;
     return (
         <>
-            { location.state != undefined && 
-                <Alert severity='error'>{location.state}</Alert>
+            { location.state.error != undefined &&
+                <Alert severity='error'>{location.state.error}</Alert>
             }
             <h1>{teamName}</h1>
             <DataView
