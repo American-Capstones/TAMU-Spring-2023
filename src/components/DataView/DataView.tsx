@@ -11,20 +11,20 @@ import { lightTheme, darkTheme } from './GraphThemes';
 export const DataView = ({ columns, rows, filters, title, onRowClick, emptyContent }: TableProps) => {
     const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
     const dataTheme = darkThemeMq ? darkTheme : lightTheme;
-    
+
     if (!rows || rows.length == 0 || !columns || columns.length == 0) {
         return (<ErrorPage status={'Invalid Input'} statusMessage={'Invalid data given to DataView'} />)
     }
 
     return (
         <Grid container spacing={8} direction='column'>
-            <Grid container item justifyContent='center' spacing={8}>
+            <Grid container item justifyContent='flex-start' spacing={8}>
                 <Grid item>
                     <InfoCard variant='flex'>
                         <Box
                             style={{
-                                width: "30rem",
-                                height: "15rem"
+                                width: "35rem",
+                                height:"20rem",
                             }}>
                             <ResponsiveBar
                                 colors={{scheme: 'red_blue'}}
@@ -124,15 +124,15 @@ export const DataView = ({ columns, rows, filters, title, onRowClick, emptyConte
                             height: "15rem"
                         }}
                         >
-                    
+
                         </Box>
                     </InfoCard>
                 </Grid> */}
                 <Grid item>
                     <InfoCard variant='flex'>
                         <Box style={{
-                            width:"30rem",
-                            height:"15rem"
+                            width: "35rem",
+                            height:"20rem",
                         }}>
                             <ResponsiveLine
                                 colors={{scheme: 'red_blue'}}
@@ -203,7 +203,7 @@ export const DataView = ({ columns, rows, filters, title, onRowClick, emptyConte
                     </InfoCard>
                 </Grid>
             </Grid>
-            <Table 
+            <Table
                 title={title}
                 options={{ search: true, paging: true }}
                 columns={columns}

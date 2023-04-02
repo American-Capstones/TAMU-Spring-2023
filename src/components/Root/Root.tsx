@@ -12,28 +12,30 @@ import { Breadcrumbs } from '../Utility';
 
 export const Root = () => (
   <Page themeId="tool">
-    <Header title="Welcome to Dependabot Dashboard!" >
-      <HeaderLabel label="Owner" value="Never Spirit Airlines" />
-      <HeaderLabel label="Lifecycle" value="Alpha" />
+    <Header title="Dependabot Dashboard" style={{
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      gap: '1.64rem',
+    }} >
+      <Breadcrumbs />
     </Header>
     <Content>
       <div style={{
-        margin: '30px'
+        padding: '2.48rem'
       }}>
-        <Breadcrumbs />
         <FlatRoutes>
-          <Route 
+          <Route
             path='/'
-            element={<OrgChoice />}/>
-          <Route 
+            element={<OrgChoice />} />
+          <Route
             path='/:orgName'
-            element={<Organization />}/>
-          <Route 
+            element={<Organization />} />
+          <Route
             path='/:orgName/:teamName'
-            element={<Team />}/>
-          <Route 
+            element={<Team />} />
+          <Route
             path='/:orgName/:teamName/:repoName'
-            element={<Repo />}/>
+            element={<Repo />} />
         </FlatRoutes>
       </div>
     </Content>
