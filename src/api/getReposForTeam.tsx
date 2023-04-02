@@ -100,8 +100,6 @@ export async function getRepoNodes (
       } 
     }
     if (repoNodes.length >= repoLimit && !getAll) return repoNodes;
-
-    
   } while (result?.organization?.teams.nodes[0].repositories.pageInfo.hasNextPage);
 
   return repoNodes;

@@ -117,4 +117,17 @@ export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[
         RepositoryFormattedArr.push(rf);
     }
     return RepositoryFormattedArr;
+
+export const getReposForOrg = (orgData:Org) => {
+    let repoList:Repository[] = []
+    let seen = new Set<string>
+    for(let team of orgData.teams) {
+        for(let repo of team.repos) {
+            if(!seen.has(repo.ID)) {
+                repoList.push(repo)
+            }
+            seen.add(repo.ID)
+        }
+    }
+    return repoList
 }

@@ -18,12 +18,6 @@ import {
   Team,
 } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_TEAM_MAX_ITEMS } from '../utils/constants';
-import { VulnInfoUnformatted } from '../utils/types';
-import { getReposForTeam } from "./getReposForTeam";
-import { getVulnsFromRepo } from "./getVulnsFromRepo";
-import { countVulnData } from '../utils/functions';
-
-
 
 export const getTeamsForOrg = (graphql:any,  orgLogin: string) => {
   let teams =  getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
