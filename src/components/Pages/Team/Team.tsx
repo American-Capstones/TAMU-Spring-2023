@@ -42,7 +42,7 @@ export const Team = () => {
     const title = `Repositories under ${teamName}`;
     return (
         <>
-            { location.state.error != undefined &&
+            { location.state != undefined && location.state.error != undefined &&
                 <Alert severity='error'>{location.state.error}</Alert>
             }
             <h1>{teamName}</h1>

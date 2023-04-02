@@ -8,8 +8,9 @@ import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 // import { ErrorPage } from '@backstage/core-components';
 import { Error } from '../Error';
 import ReactLoading from "react-loading";
-import { Alert } from '@mui/material';
+import { Alert, Breadcrumbs } from '@mui/material';
 import { Org } from '../../../utils/types';
+import { Header } from '@backstage/core-components';
 
 const emptyContent = () => {
     return (
@@ -44,7 +45,7 @@ export const Organization = () => {
     }
 
     if (error) {
-        navigate(`../`, { state: {error: error.message}, replace: false });
+        navigate(`../`, { state: { error: error.message }, replace: false });
     }
 
 
@@ -58,7 +59,7 @@ export const Organization = () => {
             {location.state != undefined && location.state.error != undefined &&
                 <Alert severity='error'>{location.state.error}</Alert>
             }
-            <SelectOrg defaultOption={orgName}/>
+            <SelectOrg defaultOption={orgName} />
 
             <div style={{
                 marginTop: '2.48rem'
