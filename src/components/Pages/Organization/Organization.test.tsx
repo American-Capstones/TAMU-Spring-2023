@@ -15,6 +15,7 @@ import { Org } from '../../../utils/types';
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
 configure({adapter: new Adapter()});
+
 const testOrg:Org = {
     name: 'TEST ORG',
     vulnData: {
@@ -50,6 +51,7 @@ const testOrg:Org = {
     url: '',
     avatarUrl: '',
 }
+
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: jest.fn(),
