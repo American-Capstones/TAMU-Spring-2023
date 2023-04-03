@@ -68,6 +68,9 @@ describe('Repo Test Suite', () => {
         expect(screen.getByText('Low', { exact: false })).toBeInTheDocument();
     });
 
+    it('should route to the correct page on error', async () => {
+    });
+
     /*it('render NotFoundScreen when goes to a wrong path', async () => {
         history.replaceState({}, 'WrongPath', '/wrongpath');
         expect(wrapper.find(NotFoundScreen).length).toEqual(1);

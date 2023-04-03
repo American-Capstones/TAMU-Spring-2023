@@ -8,6 +8,7 @@ import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
 import { Alert } from '@mui/material';
+import { useGetTopicVulns } from '../../../hooks/useGetTopicVulns';
 
 const emptyContent = () => {
     return (
@@ -15,33 +16,9 @@ const emptyContent = () => {
     )
 }
 
-const useCachedTeamData = (teamName:string|undefined) => {
-    const { data, setData } = useContext(DataContext);
-    let loading = false;
-    let teamData:Team|undefined = undefined;
-    let error: string|undefined = undefined;
-
-    for( let team of data.teams ) {
-        if (team.name == teamName) {
-            teamData = team;
-            break;
-        }
-    }
-
-    if (!teamData) {
-        error = "Error: Team not found";
-    }
-    
-    return {
-        teamData,
-        loading,
-        error
-    };
-}
-
 export const TopicPage = ({} : {}) => {
-    const { orgName, teamName } = useParams();
-    const { teamData, loading, error } = useCachedTeamData(teamName);
+    const { orgName, topicName } = useParams();
+    const { data: topicData, loading, error } = useGetTopicVulns(orgName, topicName);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -55,7 +32,7 @@ export const TopicPage = ({} : {}) => {
     }
 
 
-    if (loading) {
+    if (loading || !topicData) {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
           type={"spin"}
           color={"#8B0000"}
@@ -65,18 +42,24 @@ export const TopicPage = ({} : {}) => {
         </div>
     }
 
-    const cols = [{title: 'Repository Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}, {title: 'topics', field: 'repositoryTopics'}]
+    const cols = [
+        {title: 'Repository Name', field: 'name'},
+        {title: 'critical', field: 'critical'},
+        {title: 'high', field: 'high'},
+        {title: 'moderate', field: 'moderate'},
+        {title: 'low', field: 'low'},
+        {title: 'topics', field: 'repositoryTopics'}
+    ]
     const filters: any[] = [];
-    const title = `${teamName}'s Repositories`;
+    const title = `Repositories associated with ${topicName}`;
     return (
         <>
             { location.state != undefined && location.state.error != undefined &&
                 <Alert severity='error'>{location.state.error}</Alert>
             }
-            <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                    <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} />
+                    <Graphs barData={makeBarData(topicData)} lineData={makeLineData(topicData)} />
                 </Grid>
                 {/* Used for spacing */}
                 <Grid item></Grid> 
@@ -85,7 +68,7 @@ export const TopicPage = ({} : {}) => {
                         title={title}
                         options={{ search: true, paging: true }}
                         columns={cols}
-                        data={teamData!.repos}
+                        data={topicData!.repos}
                         onRowClick={goToRepo}
                         filters={filters}
                         emptyContent={emptyContent}

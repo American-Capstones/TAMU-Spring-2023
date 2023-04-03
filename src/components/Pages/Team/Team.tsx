@@ -26,7 +26,7 @@ export const TeamPage = ({} : {}) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
 
-    if (error) {
+    if (error || !teamData) {
         navigate(`../${orgName}`, { state: { error: error }, replace: false });
         // return <Error message={error.message}/>
     }
@@ -42,7 +42,14 @@ export const TeamPage = ({} : {}) => {
         </div>
     }
 
-    const cols = [{title: 'Repository Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}, {title: 'topics', field: 'repositoryTopics'}]
+    const cols = [
+        {title: 'Repository Name', field: 'name'},
+        {title: 'critical', field: 'critical'},
+        {title: 'high', field: 'high'},
+        {title: 'moderate', field: 'moderate'},
+        {title: 'low', field: 'low'},
+        {title: 'topics', field: 'repositoryTopics'}
+    ]
     const filters: any[] = [];
     const title = `${teamName}'s Repositories`;
     return (

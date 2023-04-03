@@ -12,6 +12,7 @@ import { Alert } from '@mui/material';
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
+const emptyTopicsContent = <h1>No Topics in this organization available.</h1>
 
 
 export interface stateInterface {
@@ -121,9 +122,9 @@ export const Organization = () => {
                             options={{ search: true, paging: true }}
                             columns={topic_cols}
                             data={orgData.topics}
-                            onRowClick={() => alert('Picked a topic, undefined behavior')}
+                            onRowClick={goToTopics}
                             filters={filters}
-                            emptyContent={<h1>No topics in this organization available.</h1>}
+                            emptyContent={emptyTopicsContent}
                         />
                     }
                 </Grid>

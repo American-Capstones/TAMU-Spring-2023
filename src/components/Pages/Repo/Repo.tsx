@@ -19,7 +19,7 @@ const columnStyle: React.CSSProperties = {
 }
 
 export const Repo = ({ }: {}) => {
-    const { orgName, repoName, teamName } = useParams();
+    const { orgName, repoName, teamName, topicName } = useParams();
     const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
     const [shownRepoVulns, setShownRepoVulns] = useState<RepoVulns>();
     const [openVulns, setOpenVulns] = useState<RepoVulns>();
@@ -48,7 +48,12 @@ export const Repo = ({ }: {}) => {
     }
 
     if (error) {
-        navigate(`../${orgName}/team/${teamName}`, { state: error.message, replace: false });
+        const currentLocation = window.location.href;
+        if (currentLocation.includes("team")) {
+            navigate(`../${orgName}/team/${teamName}`, { state: error.message, replace: false });
+        } else if (currentLocation.includes("topic")) {
+            navigate(`../${orgName}/topic/${topicName}`, { state: error.message, replace: false });
+        }
         // return <Error message={error.message}/>
     }
 

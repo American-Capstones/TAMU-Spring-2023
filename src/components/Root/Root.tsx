@@ -7,7 +7,7 @@ import {
   HeaderLabel,
 } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
-import { OrgChoice, Organization, TeamPage, Repo } from '../Pages';
+import { OrgChoice, Organization, TeamPage, TopicPage, Repo } from '../Pages';
 import { Breadcrumbs } from '../Utility';
 import { Org } from '../../utils/types';
 
@@ -66,6 +66,12 @@ export const Root = () => {
                             element={<TeamPage />}/>
                         <Route 
                             path='/:orgName/team/:teamName/:repoName'
+                            element={<Repo />}/>
+                        <Route 
+                            path='/:orgName/topic/:topicName'
+                            element={<TopicPage />}/>
+                        <Route 
+                            path='/:orgName/topic/:topicName/:repoName'
                             element={<Repo />}/>
                         </FlatRoutes>
                     </DataContext.Provider>
