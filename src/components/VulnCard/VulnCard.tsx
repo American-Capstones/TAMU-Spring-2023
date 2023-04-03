@@ -29,7 +29,7 @@ export const VulnCard = (props: VulnCardProps) => {
             >
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
                     <div style={{ marginRight: "1.72em", marginBottom: 0, marginTop: 0 }}>
-                        <VulnCardBadge state={props.vuln.state} />
+                        <VulnCardBadge state={props.vuln.state} severity={props.vuln.severity} />
                     </div>
                     <div style={{ marginRight: "1.72em", marginBottom: 0, marginTop: 0 }}>
                         <div>

@@ -1,15 +1,13 @@
 import React, { useContext } from 'react';
 import { Graphs } from '../../Graphs';
-import mockData from "../../../mock/data.json";
-import lineMockData from '../../../mock/lineMock_team.json';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation} from 'react-router-dom';
 import ReactLoading from "react-loading";
 import { DataContext } from '../../Root/Root';
 import { Team } from '../../../utils/types';
 import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
-import { makeBarData } from '../../../utils/functions';
-import { makeLineData } from '../../../utils/functions';
+import { makeBarData, makeLineData } from '../../../utils/functions';
+import { Alert } from '@mui/material';
 
 const emptyContent = () => {
     return (
@@ -47,13 +45,20 @@ export const TeamPage = ({} : {}) => {
 
     // const { data, setData } = useContext(DataContext);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
 
+    if (error) {
+        navigate(`../${orgName}`, { state: { error: error }, replace: false });
+        // return <Error message={error.message}/>
+    }
+
+
     if (loading) {
-        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
           type={"spin"}
           color={"#8B0000"}
           height={100}
@@ -67,6 +72,9 @@ export const TeamPage = ({} : {}) => {
     const title = `${teamName}'s Repositories`;
     return (
         <>
+            { location.state != undefined && location.state.error != undefined &&
+                <Alert severity='error'>{location.state.error}</Alert>
+            }
             <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
@@ -86,6 +94,7 @@ export const TeamPage = ({} : {}) => {
                     />  
                 </Grid>
             </Grid>
+
         </>
     );
 };

@@ -24,7 +24,11 @@ const emptyOrg:Org = {
         moderateNum: 0,
         lowNum: 0,
     },
-    teams: []
+    teams: [],
+    repos: [],
+    topics: [],
+    url: '',
+    avatarUrl: '',
 }
 interface iDataContext {
     data: Org,
@@ -34,35 +38,38 @@ export const DataContext = createContext<iDataContext>({data:emptyOrg, setData:(
 
 export const Root = () => {
     const [data, setData] = useState(emptyOrg);
-    const value = {data, setData}
+    const value = {data, setData};
+
     return (
         <Page themeId="tool">
-            <Header title="Welcome to Dependabot Dashboard!" >
-                <HeaderLabel label="Owner" value="Never Spirit Airlines" />
-                <HeaderLabel label="Lifecycle" value="Alpha" />
+            <Header title="Dependabot Dashboard" style={{
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: '1.64rem',
+            }} >
+                <Breadcrumbs />
             </Header>
             <Content>
-            <div style={{
-                margin: '30px'
-            }}>
-                <DataContext.Provider value={value}>
-                    <Breadcrumbs />
-                    <FlatRoutes>
-                    <Route 
-                        path='/'
-                        element={<OrgChoice />}/>
-                    <Route 
-                        path='/:orgName'
-                        element={<Organization />}/>
-                    <Route 
-                        path='/:orgName/:teamName'
-                        element={<TeamPage />}/>
-                    <Route 
-                        path='/:orgName/:teamName/:repoName'
-                        element={<Repo />}/>
-                    </FlatRoutes>
-                </DataContext.Provider>
-            </div>
+                <div style={{
+                    padding: '2.48rem'
+                }}>
+                    <DataContext.Provider value={value}>
+                        <FlatRoutes>
+                        <Route 
+                            path='/'
+                            element={<OrgChoice />}/>
+                        <Route 
+                            path='/:orgName'
+                            element={<Organization />}/>
+                        <Route 
+                            path='/:orgName/:teamName'
+                            element={<TeamPage />}/>
+                        <Route 
+                            path='/:orgName/:teamName/:repoName'
+                            element={<Repo />}/>
+                        </FlatRoutes>
+                    </DataContext.Provider>
+                </div>
             </Content>
         </Page>
     )

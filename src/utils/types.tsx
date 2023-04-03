@@ -23,7 +23,7 @@ export type Connection<T> = {
     endCursor?: string;
   };
 };
- 
+
 export type Repositories = {
   organization: {
     teams: {
@@ -74,7 +74,7 @@ export type Teams<T> = {
   };
 }
 
-export type Team = { 
+export type Team = {
   name: string;
   vulnData: vulnData,
   repos: Repository[]
@@ -123,7 +123,7 @@ export type VulnInfoUnformatted = {
 export type VulnInfoFormatted = {
   packageName: string;
   versionNum: string;
-  createdAt: string; 
+  createdAt: string;
   pullRequest: string;
   dismissedAt: string;
   fixedAt: string;
@@ -147,7 +147,7 @@ export type VulnListProps = {
     vulns: VulnInfoFormatted[] | undefined;
 }
 
-export type Orgs <T> = { 
+export type Orgs <T> = {
   viewer:{
     organizations:Connection<T>;
   }
@@ -159,11 +159,13 @@ export type Org = {
   teams: Team[],
   repos: Repository[],
   topics: Topic[]
+  url: string;
+  avatarUrl: string;
 }
 
 export type Error = {
   message: string;
-  type: string; 
+  type: string;
   path: [string];
   locations: [
     {

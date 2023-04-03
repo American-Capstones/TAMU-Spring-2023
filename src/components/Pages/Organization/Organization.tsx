@@ -1,28 +1,35 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { DataContext } from '../../Root/Root';
+import React, { useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
-import mockData from "../../../mock/data.json";
-import lineMockData from '../../../mock/lineMock.json';
 import { SelectOrg, SelectScope } from '../../Utility';
-import { ErrorPage, Table } from '@backstage/core-components';
+import { Table } from '@backstage/core-components';
 import ReactLoading from "react-loading";
 import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
-import { getReposForOrg, makeBarData, makeLineData } from '../../../utils/functions';
-import { emptyOrg } from '../../../utils/constants';
-import { CollectionsBookmarkRounded } from '@material-ui/icons';
-import React, { useContext, useState } from "react";
+import { makeBarData, makeLineData } from '../../../utils/functions';
+import { Error } from '../Error';
+import { Alert } from '@mui/material';
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
 
 
-export const Organization = ({} : {}) => {
+export interface stateInterface {
+    org_name: string,
+    org_avatarUrl: string,
+    org_url: string
+}
+
+export const Organization = () => {
     const { orgName } = useParams();
     const { loading, data: orgData, error } = useGetAllVulns(orgName)
     // const repos = getReposForOrg(orgData);
     const [ tableScope, setTableScope ] = useState("teams");
     const navigate = useNavigate();
+    const location = useLocation();
+
+    console.log('orgData', orgData)
+    console.log('loading', loading)
 
     if (loading || orgData.name == "") {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
@@ -41,6 +48,10 @@ export const Organization = ({} : {}) => {
     let changeScope = (newScope: string) => {
         console.log('here', newScope)
         setTableScope(newScope);
+    }
+
+    if (error) {
+        navigate(`../`, { state: { error: error.message }, replace: false });
     }
 
     const cols = [
@@ -64,8 +75,10 @@ export const Organization = ({} : {}) => {
     const topic_title = 'Topics within this organization';
     
     return (
-
         <>
+            {location.state && location.state.error &&
+                <Alert severity='error'>{location.state.error}</Alert>
+            }
             <SelectOrg defaultOption={orgName ?? ''}/>
             <Grid container spacing={2} direction='column'>
                 <Grid item>
@@ -110,6 +123,5 @@ export const Organization = ({} : {}) => {
                 </Grid>
             </Grid>
         </>
-
-    );
+    )
 };

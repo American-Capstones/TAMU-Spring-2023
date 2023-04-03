@@ -210,7 +210,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
     orgData.teams.push(teamData)
   }
   orgData.topics.push(...seenTopics.values());
-  // console.log("orgData", orgData);
+  console.log("orgData", orgData);
 
   return orgData 
 }

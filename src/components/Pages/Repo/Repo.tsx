@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FormControlLabel, Switch } from '@material-ui/core';
 import { RepoVulns, VulnInfoUnformatted } from '../../../utils/types';
 import { VulnList } from '../../VulnList';
+import { Error } from '../Error';
 import ReactLoading from "react-loading";
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 import { Skeleton } from '@material-ui/lab';
 import { HorizontalScrollGrid } from '@backstage/core-components';
+import CircleIcon from '@mui/icons-material/Circle';
 
 const columnStyle: React.CSSProperties = {
-  marginRight: "4em",
-  display: "flex",
-  flexDirection: "column",
-  minWidth: "25em",
-  maxWidth: "25em"
+    marginRight: "4em",
+    display: "flex",
+    flexDirection: "column",
+    minWidth: "25em",
+    maxWidth: "25em"
 }
 
-export const Repo = ({  }: { }) => {
-    const { orgName, repoName } = useParams();
+export const Repo = ({ }: {}) => {
+    const { orgName, repoName, teamName } = useParams();
     const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
-    const [ shownRepoVulns, setShownRepoVulns ] = useState<RepoVulns>();
-    const [ openVulns, setOpenVulns ] = useState<RepoVulns>();
+    const [shownRepoVulns, setShownRepoVulns] = useState<RepoVulns>();
+    const [openVulns, setOpenVulns] = useState<RepoVulns>();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (vulns) {
@@ -33,19 +36,24 @@ export const Repo = ({  }: { }) => {
             })
         }
     }, [vulns]);
-    
+
     const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
         const target = event.target as HTMLInputElement;
-        
+
         if (target.checked) {
             setShownRepoVulns(openVulns);
-        } else if (!target.checked){
+        } else if (!target.checked) {
             setShownRepoVulns(vulns);
         }
     }
 
+    if (error) {
+        navigate(`../${orgName}/${teamName}`, { state: error.message, replace: false });
+        // return <Error message={error.message}/>
+    }
+
     if (loading) {
-        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
+        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}> <ReactLoading
             type={"spin"}
             color={"#8B0000"}
             height={100}
@@ -53,50 +61,82 @@ export const Repo = ({  }: { }) => {
         />
         </div>
     }
-    
+
     return (
         <div style={{
             width: "100%",
             height: "100%"
-          }}>
+        }}>
             <h1>{repoName}</h1>
             <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
             <HorizontalScrollGrid>
                 <div style={{
-                padding: "1.24rem",
-                display: "flex",
-                flexDirection: "row"
+                    padding: "1.24rem",
+                    display: "flex",
+                    flexDirection: "row"
                 }}>
-                <div title="Critical" style={columnStyle}>
-                    <h3>Critical Vulnerabilities</h3>
-                    {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
-                    }
-                    <VulnList vulns={shownRepoVulns?.critical} />
-                </div>
-                <div title="High" style={columnStyle}>
-                    <h3>High Vulnerabilities</h3>
-                    {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
-                    }
-                    <VulnList vulns={shownRepoVulns?.high} />
-                </div>
-                <div title="Moderate" style={columnStyle}>
-                    <h3>Moderate Vulnerabilities</h3>
-                    {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
-                    }
-                    <VulnList vulns={shownRepoVulns?.moderate} />
-                </div>
-                <div title="Low" style={columnStyle}>
-                    <h3>Low Vulnerabilities</h3>
-                    {loading &&
-                    <Skeleton variant='rect' width={"100%"} height={"10em"} />
-                    }
-                    <VulnList vulns={shownRepoVulns?.low} />
-                </div>
+                    <div title="Critical" style={columnStyle}>
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: ".64rem"
+                        }}>
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#3B1F2B" }} />
+                            <h3>Critical Vulnerabilities</h3>
+                        </div>
+                        {loading &&
+                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                        }
+                        <VulnList vulns={shownRepoVulns?.critical} />
+                    </div>
+                    <div title="High" style={columnStyle}>
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: ".64rem"
+                        }}>
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#C73E1D" }} />
+                            <h3>High Vulnerabilities</h3>
+                        </div>
+                        {loading &&
+                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                        }
+                        <VulnList vulns={shownRepoVulns?.high} />
+                    </div>
+                    <div title="Moderate" style={columnStyle}>
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: ".64rem"
+                        }}>
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#F18F01" }} />
+                            <h3>Moderate Vulnerabilities</h3>
+                        </div>
+                        {loading &&
+                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                        }
+                        <VulnList vulns={shownRepoVulns?.moderate} />
+                    </div>
+                    <div title="Low" style={columnStyle}>
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: ".64rem"
+                        }}>
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#2A4F87" }} />
+                            <h3>Low Vulnerabilities</h3>
+                        </div>
+                        {loading &&
+                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                        }
+                        <VulnList vulns={shownRepoVulns?.low} />
+                    </div>
                 </div>
             </HorizontalScrollGrid>
-        </div> 
+        </div>
     );
 }
