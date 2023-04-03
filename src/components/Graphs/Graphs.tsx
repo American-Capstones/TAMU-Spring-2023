@@ -1,27 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsiveLine } from '@nivo/line';
 import { Box, Grid } from '@material-ui/core';
 import { InfoCard } from '@backstage/core-components';
 import { lightTheme, darkTheme } from './GraphThemes';
 import { GraphsProps } from '../../utils/types';
+import { Skeleton } from '@material-ui/lab';
 
-export const Graphs = ({ barData, lineData }: GraphsProps) => {
+export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) => {
+    const [loadingState, setLoadingState] = useState(isLoading);
     const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
     const dataTheme = darkThemeMq ? darkTheme : lightTheme;
-    
+
+    const cardStyle: React.CSSProperties = {
+        width: "30rem",
+        height: "15rem"
+    }
+
     return (
-        
+
         <Grid container item justifyContent='center' spacing={8}>
             <Grid item>
-                <InfoCard variant='flex'>
+                {isLoading &&
+                    <Skeleton variant='rect' style={cardStyle} animation='wave' />
+                }
+                {!isLoading && <InfoCard variant='flex'>
                     <Box
-                        style={{
-                            width: "30rem",
-                            height: "15rem"
-                        }}>
+                        style={cardStyle}>
                         <ResponsiveBar
-                            colors={{scheme: 'red_blue'}}
+                            colors={{ scheme: 'red_blue' }}
                             data={barData}
                             indexBy="severity"
                             keys={["count"]}
@@ -109,16 +116,16 @@ export const Graphs = ({ barData, lineData }: GraphsProps) => {
                             barAriaLabel={function (e) { return e.indexValue.toString() }}
                         />
                     </Box>
-                </InfoCard>
+                </InfoCard>}
             </Grid>
             <Grid item>
-                <InfoCard variant='flex'>
-                    <Box style={{
-                        width:"30rem",
-                        height:"15rem"
-                    }}>
+                {isLoading &&
+                    <Skeleton variant='rect' style={cardStyle} animation='wave' />
+                }
+                {!isLoading && <InfoCard variant='flex'>
+                    <Box style={cardStyle}>
                         <ResponsiveLine
-                            colors={{scheme: 'red_blue'}}
+                            colors={{ scheme: 'red_blue' }}
                             data={lineData}
                             margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                             xScale={{ type: 'point' }}
@@ -180,14 +187,12 @@ export const Graphs = ({ barData, lineData }: GraphsProps) => {
                                         }
                                     ]
                                 }
-                            ]}
-                        />
+                            ]} />
                     </Box>
-                </InfoCard>
+                </InfoCard>}
             </Grid>
         </Grid>
     );
 };
 
 
-                
