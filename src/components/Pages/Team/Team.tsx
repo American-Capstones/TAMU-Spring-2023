@@ -67,7 +67,7 @@ export const TeamPage = ({ }: {}) => {
     //     </div>
     // }
 
-    const cols = [{ title: 'Repository Name', field: 'name' }, { title: 'critical', field: 'critical' }, { title: 'high', field: 'high' }, { title: 'moderate', field: 'moderate' }, { title: 'low', field: 'low' }, { title: 'topics', field: 'repositoryTopics' }]
+    const cols = [{ title: 'Repository', field: 'name' }, { title: 'critical', field: 'critical' }, { title: 'high', field: 'high' }, { title: 'moderate', field: 'moderate' }, { title: 'low', field: 'low' }, { title: 'topics', field: 'repositoryTopics' }]
     const filters: any[] = [];
     const title = `${teamName}'s Repositories`;
     return (
@@ -91,7 +91,8 @@ export const TeamPage = ({ }: {}) => {
                         filters={filters}
                         emptyContent={emptyContent} /></Skeleton>}
                     {!loading && <Table
-                        title={title}
+                        title="Repositories"
+                        subtitle={teamName}
                         options={{ search: true, paging: true }}
                         columns={cols}
                         data={teamData!.repos}
