@@ -9,7 +9,7 @@ import { Org } from '../../../utils/types';
 
 export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) => {
     const [selectValue, setSelectValue] = useState<Org | null>(null);
-    let { loading, orgs, error } = useGetOrgsForUser();
+    const { loading, orgs, error } = useGetOrgsForUser();
     const navigate = useNavigate();
 
     // We decided to pass the Organization name as a browser parameter, but there is nowhere to grab the rest of the Org
