@@ -183,3 +183,19 @@ export type vulnData = {
   moderateNum: number,
   lowNum: number
 }
+
+
+// export type Topic = { 
+//   name: String, 
+//   critical: number, 
+//   high: number, 
+//   moderate: number, 
+//   low: number,
+// }
+
+
+export type Topic = { 
+  name: string;
+  vulnData: vulnData,
+  repos: Repository[]
+}

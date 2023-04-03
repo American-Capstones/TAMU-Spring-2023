@@ -5,6 +5,10 @@ import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns, Org, RepositoryUnfor
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
     const vdfArr : VulnInfoFormatted[] = []
     for (let vdu of VulnDataUnformatted) {
+        let vulnVersionRange: undefined; 
+        if (vdu.securityVulnerability.firstPatchedVersion){
+            vulnVersionRange = vdu.securityVulnerability.firstPatchedVersion.identifier
+        }
         let vdf : VulnInfoFormatted = {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
@@ -12,7 +16,7 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
             "pullRequest": "",
             "dismissedAt": vdu.dismissedAt,
             "fixedAt": vdu.fixedAt,
-            "vulnVersionRange": vdu.securityVulnerability.firstPatchedVersion.identifier,
+            "vulnVersionRange": vulnVersionRange,
             "classification": vdu.securityAdvisory.classification,
             "severity": vdu.securityAdvisory.severity,
             "summary": vdu.securityAdvisory.summary,
@@ -117,7 +121,7 @@ export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[
         RepositoryFormattedArr.push(rf);
     }
     return RepositoryFormattedArr;
-
+}
 export const getReposForOrg = (orgData:Org) => {
     let repoList:Repository[] = []
     let seen = new Set<string>
