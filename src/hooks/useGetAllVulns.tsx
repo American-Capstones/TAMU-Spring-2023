@@ -20,7 +20,7 @@ export function useGetAllVulns(orgName:string|undefined) {
     const auth = useApi(githubAuthApiRef)
     const getVulns = useCallback(async () => {
         setLoading(true);
-        if(orgName && data.name == "") {
+        if(orgName && data.name != orgName) {
             console.log('GET ALL VULNS')
             try {
                 const graphql = await getOctokit(auth)

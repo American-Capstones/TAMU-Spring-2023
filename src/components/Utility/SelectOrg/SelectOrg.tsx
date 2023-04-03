@@ -36,6 +36,7 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
                 options={orgs}
                 getOptionLabel={(option) => option.name}
                 onChange={(event: any, newValue) => {
+                    console.log(newValue)
                     setSelectValue(newValue)
                     if (newValue === null) {
                         navigate('../');
