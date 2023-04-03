@@ -78,4 +78,8 @@ describe('Breadcrumbs test suite', () => {
         expect(wrapper.find(Link).length).toEqual(0);
         expect(wrapper.find(Typography).length).toEqual(0);
     });
+
+    it('should not render a crumb for the literal variables in the url', () => {
+
+    });
 });

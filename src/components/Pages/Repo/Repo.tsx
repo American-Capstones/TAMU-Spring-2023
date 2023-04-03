@@ -17,8 +17,8 @@ const columnStyle: React.CSSProperties = {
   maxWidth: "25em"
 }
 
-export const Repo = ({  }: { }) => {
-    const { orgName, repoName, teamName } = useParams();
+export const Repo = ({ }: {}) => {
+    const { orgName, repoName, teamName, topicName } = useParams();
     const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
     const [ shownRepoVulns, setShownRepoVulns ] = useState<RepoVulns>();
     const [ openVulns, setOpenVulns ] = useState<RepoVulns>();
@@ -47,8 +47,13 @@ export const Repo = ({  }: { }) => {
     }
 
     if (error) {
-      navigate(`../${orgName}/${teamName}`, { state: error.message, replace: false });
-      // return <Error message={error.message}/>
+        const currentLocation = window.location.href;
+        if (currentLocation.includes("team")) {
+            navigate(`../${orgName}/team/${teamName}`, { state: error.message, replace: false });
+        } else if (currentLocation.includes("topic")) {
+            navigate(`../${orgName}/topic/${topicName}`, { state: error.message, replace: false });
+        }
+        // return <Error message={error.message}/>
     }
 
     if (loading) {
