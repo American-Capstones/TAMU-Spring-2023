@@ -8,7 +8,7 @@ import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
 import { Error } from '../Error';
-import { Alert } from '@mui/material';
+import { Alert, Skeleton } from '@mui/material';
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
@@ -24,23 +24,23 @@ export const Organization = () => {
     const { orgName } = useParams();
     const { loading, data: orgData, error } = useGetAllVulns(orgName)
     // const repos = getReposForOrg(orgData);
-    const [ tableScope, setTableScope ] = useState("teams");
+    const [tableScope, setTableScope] = useState("teams");
     const navigate = useNavigate();
     const location = useLocation();
 
     console.log('orgData', orgData)
     console.log('loading', loading)
 
-    if (loading || orgData.name == "") {
-        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
-          type={"spin"}
-          color={"#8B0000"}
-          height={100}
-          width={100}
-        />
-        </div>
-    }
-    
+    // if (loading || orgData.name == "") {
+    //     return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
+    //       type={"spin"}
+    //       color={"#8B0000"}
+    //       height={100}
+    //       width={100}
+    //     />
+    //     </div>
+    // }
+
     let goToTeams = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
@@ -55,39 +55,51 @@ export const Organization = () => {
     }
 
     const cols = [
-        {title: 'Team Name', field: 'name'}, 
-        {title: 'critical', field: 'vulnData.criticalNum'}, 
-        {title: 'high', field: 'vulnData.highNum'}, 
-        {title: 'moderate', field: 'vulnData.moderateNum'}, 
-        {title: 'low', field: 'vulnData.lowNum'}
+        { title: 'Team Name', field: 'name' },
+        { title: 'critical', field: 'vulnData.criticalNum' },
+        { title: 'high', field: 'vulnData.highNum' },
+        { title: 'moderate', field: 'vulnData.moderateNum' },
+        { title: 'low', field: 'vulnData.lowNum' }
     ]
     const repo_cols = [
-        {title: 'Team Name', field: 'name'}, 
-        {title: 'critical', field: 'critical'}, 
-        {title: 'high', field: 'high'}, 
-        {title: 'moderate', field: 'moderate'}, 
-        {title: 'low', field: 'low'}
+        { title: 'Team Name', field: 'name' },
+        { title: 'critical', field: 'critical' },
+        { title: 'high', field: 'high' },
+        { title: 'moderate', field: 'moderate' },
+        { title: 'low', field: 'low' }
     ]
     const filters: any[] = []
-    
+
     const team_title = 'Teams within this organization';
     const repo_title = 'Repos within this organization';
     const topic_title = 'Topics within this organization';
-    
+
     return (
         <>
             {location.state && location.state.error &&
                 <Alert severity='error'>{location.state.error}</Alert>
             }
-            <SelectOrg defaultOption={orgName ?? ''}/>
+            <div style={{marginBottom:'1.24rem'}}>
+                <SelectOrg defaultOption={orgName ?? ''} />
+            </div>
             <Grid container spacing={2} direction='column'>
                 <Grid item>
-                    <Graphs barData={makeBarData(orgData)} lineData={makeLineData(orgData)} />
+                    <Graphs barData={makeBarData(orgData)} lineData={makeLineData(orgData)} isLoading={loading} />
                 </Grid>
                 <Grid item>
                     <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
-                    {tableScope == "teams" &&
-                        <Table 
+                    {loading && <Skeleton variant="rectangular" width="100%">                        <Table
+                        title={team_title}
+                        options={{ search: true, paging: true }}
+                        columns={cols}
+                        data={orgData.teams}
+                        onRowClick={goToTeams}
+                        filters={filters}
+                        emptyContent={emptyTeamsContent}
+                        isLoading={loading}
+                    /></Skeleton>}
+                    {tableScope == "teams" && !loading &&
+                        <Table
                             title={team_title}
                             options={{ search: true, paging: true }}
                             columns={cols}
@@ -95,10 +107,11 @@ export const Organization = () => {
                             onRowClick={goToTeams}
                             filters={filters}
                             emptyContent={emptyTeamsContent}
+                            isLoading={loading}
                         />
                     }
-                    {tableScope == "repositories" &&
-                        <Table 
+                    {tableScope == "repositories" && !loading &&
+                        <Table
                             title={repo_title}
                             options={{ search: true, paging: true }}
                             columns={repo_cols}
@@ -106,9 +119,10 @@ export const Organization = () => {
                             onRowClick={() => alert('Picked a repo, undefined behavior')}
                             filters={filters}
                             emptyContent={emptyReposContent}
+                            isLoading={loading}
                         />
                     }
-                    {tableScope == "topics" &&
+                    {tableScope == "topics" && !loading &&
                         <Table
                             title={topic_title}
                             options={{ search: true, paging: true }}
@@ -117,9 +131,10 @@ export const Organization = () => {
                             onRowClick={() => alert('Picked a topic, undefined behavior')}
                             filters={filters}
                             emptyContent={<h1>No topics in this organization available.</h1>}
+                            isLoading={loading}
                         />
                     }
-                    
+
                 </Grid>
             </Grid>
         </>

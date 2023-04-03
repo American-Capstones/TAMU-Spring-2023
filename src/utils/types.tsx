@@ -80,7 +80,7 @@ export type Team = {
   repos: Repository[]
 }
 
-export type TeamNode = { 
+export type TeamNode = {
   name: string
 }
 
@@ -100,8 +100,8 @@ export type VulnInfoUnformatted = {
   fixedAt : string;
   number: number;
   dependabotUpdate:{
-    pullRequest: {	
-      number: number,		
+    pullRequest: {
+      number: number,
       permalink: string
     }
   }
@@ -182,7 +182,7 @@ export type Error = {
 }
 
 export type Severity = {
-   severity: string, 
+   severity: string,
    count: number
 }
 
@@ -225,7 +225,8 @@ export type BarGraphData = {
 
 export type GraphsProps = {
     lineData: LineGraphData[],
-    barData: BarGraphData[]
+    barData: BarGraphData[],
+    isLoading?: boolean
 }
 
 export type monthVulns = {
@@ -235,7 +236,7 @@ export type monthVulns = {
   low: number[];
 }
 
-export type Topic = { 
+export type Topic = {
   name: string;
   vulnData: vulnData,
   repos: Repository[]

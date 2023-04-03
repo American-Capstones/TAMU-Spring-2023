@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { Graphs } from '../../Graphs';
-import { useNavigate, useParams, useLocation} from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import ReactLoading from "react-loading";
 import { DataContext } from '../../Root/Root';
 import { Team } from '../../../utils/types';
 import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
-import { Alert } from '@mui/material';
+import { Alert, Skeleton } from '@mui/material';
 
 const emptyContent = () => {
     return (
@@ -15,13 +15,13 @@ const emptyContent = () => {
     )
 }
 
-const useCachedTeamData = (teamName:string|undefined) => {
+const useCachedTeamData = (teamName: string | undefined) => {
     const { data, setData } = useContext(DataContext);
     let loading = false;
-    let teamData:Team|undefined = undefined;
-    let error: string|undefined = undefined;
+    let teamData: Team | undefined = undefined;
+    let error: string | undefined = undefined;
 
-    for( let team of data.teams ) {
+    for (let team of data.teams) {
         if (team.name == teamName) {
             teamData = team;
             break;
@@ -31,7 +31,7 @@ const useCachedTeamData = (teamName:string|undefined) => {
     if (!teamData) {
         error = "Error: Team not found";
     }
-    
+
     return {
         teamData,
         loading,
@@ -39,7 +39,7 @@ const useCachedTeamData = (teamName:string|undefined) => {
     };
 }
 
-export const TeamPage = ({} : {}) => {
+export const TeamPage = ({ }: {}) => {
     const { orgName, teamName } = useParams();
     const { teamData, loading, error } = useCachedTeamData(teamName);
 
@@ -57,33 +57,40 @@ export const TeamPage = ({} : {}) => {
     }
 
 
-    if (loading) {
-        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
-          type={"spin"}
-          color={"#8B0000"}
-          height={100}
-          width={100}
-        />
-        </div>
-    }
+    // if (loading) {
+    //     return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
+    //       type={"spin"}
+    //       color={"#8B0000"}
+    //       height={100}
+    //       width={100}
+    //     />
+    //     </div>
+    // }
 
-    const cols = [{title: 'Repository Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}, {title: 'topics', field: 'repositoryTopics'}]
+    const cols = [{ title: 'Repository Name', field: 'name' }, { title: 'critical', field: 'critical' }, { title: 'high', field: 'high' }, { title: 'moderate', field: 'moderate' }, { title: 'low', field: 'low' }, { title: 'topics', field: 'repositoryTopics' }]
     const filters: any[] = [];
     const title = `${teamName}'s Repositories`;
     return (
         <>
-            { location.state != undefined && location.state.error != undefined &&
+            {location.state != undefined && location.state.error != undefined &&
                 <Alert severity='error'>{location.state.error}</Alert>
             }
             <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                    <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} />
+                    <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
                 </Grid>
                 {/* Used for spacing */}
-                <Grid item></Grid> 
+                <Grid item></Grid>
                 <Grid item>
-                    <Table 
+                    {loading && <Skeleton variant="rectangular"><Table title={title}
+                        options={{ search: true, paging: true }}
+                        columns={cols}
+                        data={teamData!.repos}
+                        onRowClick={goToRepo}
+                        filters={filters}
+                        emptyContent={emptyContent} /></Skeleton>}
+                    {!loading && <Table
                         title={title}
                         options={{ search: true, paging: true }}
                         columns={cols}
@@ -91,7 +98,7 @@ export const TeamPage = ({} : {}) => {
                         onRowClick={goToRepo}
                         filters={filters}
                         emptyContent={emptyContent}
-                    />  
+                    />}
                 </Grid>
             </Grid>
 
