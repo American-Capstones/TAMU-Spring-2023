@@ -82,12 +82,14 @@ export const Organization = () => {
             <div style={{marginBottom:'1.24rem'}}>
                 <SelectOrg defaultOption={orgName ?? ''} />
             </div>
-            <Grid container spacing={2} direction='column'>
+            <Grid container spacing={8} direction='column'>
                 <Grid item>
                     <Graphs barData={makeBarData(orgData)} lineData={makeLineData(orgData)} isLoading={loading} />
                 </Grid>
                 <Grid item>
-                    <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
+                    <div style={{marginBottom:'1.04rem'}}>
+                        <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
+                    </div>
                     {loading && <Skeleton variant="rectangular" width="100%">                        <Table
                         title={team_title}
                         options={{ search: true, paging: true }}
