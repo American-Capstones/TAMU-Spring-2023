@@ -10,7 +10,8 @@ type Link = {
 
 export const Breadcrumbs = ({} : {}) => {
     const pathname = useLocation().pathname;
-    const crumbs = pathname.split('/').slice(2);
+    let crumbs = pathname.split('/').slice(2).filter((crumb) => !['team', 'topic'].includes(crumb));
+
     const links = crumbs.slice(0, crumbs.length - 1);
     const current = crumbs.slice(-1)[0];
 
