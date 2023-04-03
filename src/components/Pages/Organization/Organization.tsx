@@ -55,14 +55,22 @@ export const Organization = () => {
     }
 
     const cols = [
-        { title: 'Team Name', field: 'name' },
+        { title: 'Team', field: 'name' },
         { title: 'critical', field: 'vulnData.criticalNum' },
         { title: 'high', field: 'vulnData.highNum' },
         { title: 'moderate', field: 'vulnData.moderateNum' },
         { title: 'low', field: 'vulnData.lowNum' }
     ]
     const repo_cols = [
-        { title: 'Team Name', field: 'name' },
+        { title: 'Repository', field: 'name' },
+        { title: 'critical', field: 'critical' },
+        { title: 'high', field: 'high' },
+        { title: 'moderate', field: 'moderate' },
+        { title: 'low', field: 'low' }
+    ]
+
+    const topic_cols = [
+        { title: 'GitHub Topic', field: 'name' },
         { title: 'critical', field: 'critical' },
         { title: 'high', field: 'high' },
         { title: 'moderate', field: 'moderate' },
@@ -129,7 +137,7 @@ export const Organization = () => {
                             title="Topics"
                             subtitle={orgName}
                             options={{ search: true, paging: true }}
-                            columns={cols}
+                            columns={topic_cols}
                             data={orgData.topics}
                             onRowClick={() => alert('Picked a topic, undefined behavior')}
                             filters={filters}
