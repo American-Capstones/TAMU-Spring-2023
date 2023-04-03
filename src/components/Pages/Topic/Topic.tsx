@@ -8,7 +8,6 @@ import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
 import { Alert } from '@mui/material';
-import { useGetTeamVulns } from '../../../hooks/useGetTeamVulns';
 
 const emptyContent = () => {
     return (
@@ -16,9 +15,33 @@ const emptyContent = () => {
     )
 }
 
-export const TeamPage = ({} : {}) => {
+const useCachedTeamData = (teamName:string|undefined) => {
+    const { data, setData } = useContext(DataContext);
+    let loading = false;
+    let teamData:Team|undefined = undefined;
+    let error: string|undefined = undefined;
+
+    for( let team of data.teams ) {
+        if (team.name == teamName) {
+            teamData = team;
+            break;
+        }
+    }
+
+    if (!teamData) {
+        error = "Error: Team not found";
+    }
+    
+    return {
+        teamData,
+        loading,
+        error
+    };
+}
+
+export const TopicPage = ({} : {}) => {
     const { orgName, teamName } = useParams();
-    const { data: teamData, loading, error } = useGetTeamVulns(orgName, teamName);
+    const { teamData, loading, error } = useCachedTeamData(teamName);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -32,7 +55,7 @@ export const TeamPage = ({} : {}) => {
     }
 
 
-    if (loading || !teamData) {
+    if (loading) {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
           type={"spin"}
           color={"#8B0000"}

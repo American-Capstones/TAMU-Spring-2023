@@ -20,16 +20,35 @@ export interface stateInterface {
     org_url: string
 }
 
+const team_cols = [
+    {title: 'Team Name', field: 'name'}, 
+    {title: 'critical', field: 'vulnData.criticalNum'}, 
+    {title: 'high', field: 'vulnData.highNum'}, 
+    {title: 'moderate', field: 'vulnData.moderateNum'}, 
+    {title: 'low', field: 'vulnData.lowNum'}
+]
+const topic_cols = [
+    {title: 'Topic Name', field: 'name'}, 
+    {title: 'critical', field: 'vulnData.criticalNum'}, 
+    {title: 'high', field: 'vulnData.highNum'}, 
+    {title: 'moderate', field: 'vulnData.moderateNum'}, 
+    {title: 'low', field: 'vulnData.lowNum'}
+]
+const repo_cols = [
+    {title: 'Repo Name', field: 'name'}, 
+    {title: 'critical', field: 'critical'}, 
+    {title: 'high', field: 'high'}, 
+    {title: 'moderate', field: 'moderate'}, 
+    {title: 'low', field: 'low'},
+    {title: 'topics', field: 'repositoryTopics'}
+]
+
 export const Organization = () => {
     const { orgName } = useParams();
     const { loading, data: orgData, error } = useGetAllVulns(orgName)
-    // const repos = getReposForOrg(orgData);
     const [ tableScope, setTableScope ] = useState("teams");
     const navigate = useNavigate();
     const location = useLocation();
-
-    console.log('orgData', orgData)
-    console.log('loading', loading)
 
     if (loading || orgData.name == "") {
         return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
@@ -42,11 +61,14 @@ export const Organization = () => {
     }
     
     let goToTeams = (event: React.MouseEvent | undefined, rowData: any) => {
-        navigate(`./${rowData.name}`, { replace: true });
+        navigate(`./team/${rowData.name}`, { replace: true });
+    }
+
+    let goToTopics = (event: React.MouseEvent | undefined, rowData: any) => {
+        navigate(`./topic/${rowData.name}`, { replace: true });
     }
 
     let changeScope = (newScope: string) => {
-        console.log('here', newScope)
         setTableScope(newScope);
     }
 
@@ -54,22 +76,7 @@ export const Organization = () => {
         navigate(`../`, { state: { error: error.message }, replace: false });
     }
 
-    const cols = [
-        {title: 'Team Name', field: 'name'}, 
-        {title: 'critical', field: 'vulnData.criticalNum'}, 
-        {title: 'high', field: 'vulnData.highNum'}, 
-        {title: 'moderate', field: 'vulnData.moderateNum'}, 
-        {title: 'low', field: 'vulnData.lowNum'}
-    ]
-    const repo_cols = [
-        {title: 'Team Name', field: 'name'}, 
-        {title: 'critical', field: 'critical'}, 
-        {title: 'high', field: 'high'}, 
-        {title: 'moderate', field: 'moderate'}, 
-        {title: 'low', field: 'low'}
-    ]
-    const filters: any[] = []
-    
+    const filters: any[] = []    
     const team_title = 'Teams within this organization';
     const repo_title = 'Repos within this organization';
     const topic_title = 'Topics within this organization';
@@ -90,7 +97,7 @@ export const Organization = () => {
                         <Table 
                             title={team_title}
                             options={{ search: true, paging: true }}
-                            columns={cols}
+                            columns={team_cols}
                             data={orgData.teams}
                             onRowClick={goToTeams}
                             filters={filters}
@@ -112,14 +119,13 @@ export const Organization = () => {
                         <Table
                             title={topic_title}
                             options={{ search: true, paging: true }}
-                            columns={cols}
+                            columns={topic_cols}
                             data={orgData.topics}
                             onRowClick={() => alert('Picked a topic, undefined behavior')}
                             filters={filters}
                             emptyContent={<h1>No topics in this organization available.</h1>}
                         />
                     }
-                    
                 </Grid>
             </Grid>
         </>

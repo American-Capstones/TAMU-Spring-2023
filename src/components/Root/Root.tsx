@@ -62,10 +62,10 @@ export const Root = () => {
                             path='/:orgName'
                             element={<Organization />}/>
                         <Route 
-                            path='/:orgName/:teamName'
+                            path='/:orgName/team/:teamName'
                             element={<TeamPage />}/>
                         <Route 
-                            path='/:orgName/:teamName/:repoName'
+                            path='/:orgName/team/:teamName/:repoName'
                             element={<Repo />}/>
                         </FlatRoutes>
                     </DataContext.Provider>
