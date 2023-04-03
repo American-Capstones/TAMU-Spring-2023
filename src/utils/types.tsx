@@ -58,6 +58,7 @@ export type Teams<T> = {
 export type Team = { 
   name: string;
   vulnData: vulnData,
+  offenses: number,
   repos: Repository[]
 }
 
