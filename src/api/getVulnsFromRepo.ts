@@ -50,6 +50,12 @@ export async function getVulnerabilityNodes(
               createdAt
               dismissedAt
               fixedAt
+              dependabotUpdate{
+                pullRequest{	
+                  number		
+                  permalink
+                }
+              }
               securityAdvisory {
                 summary
                 severity
@@ -86,6 +92,7 @@ export async function getVulnerabilityNodes(
       },
     );
     if(result){
+      console.log("result", result);
       if(!result.repository || !result.repository.vulnerabilityAlerts){
         break
       }
