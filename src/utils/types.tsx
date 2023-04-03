@@ -99,6 +99,12 @@ export type VulnInfoUnformatted = {
   dismissedAt : string;
   fixedAt : string;
   number: number;
+  dependabotUpdate:{
+    pullRequest: {	
+      number: number,		
+      permalink: string
+    }
+  }
   securityAdvisory : {
     summary : string;
     severity : string;

@@ -13,7 +13,7 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
             "createdAt": vdu.createdAt, 
-            "pullRequest": "",
+            "pullRequest": vdu.dependabotUpdate?.pullRequest,
             "dismissedAt": vdu.dismissedAt,
             "fixedAt": vdu.fixedAt,
             "vulnVersionRange": vulnVersionRange,
