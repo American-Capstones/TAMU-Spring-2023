@@ -24,7 +24,8 @@ jest.mock('../../../hooks/useGetVulnsFromRepo', () => ({
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG', teamName: 'TEST TEAM', repoName: 'TEST REPO' })
+    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG', teamName: 'TEST TEAM', repoName: 'TEST REPO' }),
+    useNavigate: jest.fn(),
 }));
 
 describe('Repo Test Suite', () => {
@@ -69,6 +70,7 @@ describe('Repo Test Suite', () => {
     });
 
     it('should route to the correct page on error', async () => {
+        // todo - figure out how to test this
     });
 
     /*it('render NotFoundScreen when goes to a wrong path', async () => {
