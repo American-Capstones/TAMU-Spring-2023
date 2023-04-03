@@ -92,7 +92,7 @@ export const VulnCard = (props: VulnCardProps) => {
 
             </AccordionDetails>
             <AccordionActions>
-                <Button href={props.vuln.url} color='primary'>View on GitHub </Button>
+                <Button target='_blank' href={props.vuln.url} color='primary'>View on GitHub </Button>
             </AccordionActions>
         </Accordion>
     )
