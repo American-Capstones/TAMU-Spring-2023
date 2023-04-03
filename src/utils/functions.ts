@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { OAuthApi } from '@backstage/core-plugin-api';
 
-import { Org, Repository } from "./types";
+import { Coords, Org, Repository } from "./types";
 import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
 
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
@@ -75,11 +75,11 @@ export const countOpenVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) 
             low += 1
         }
     }
-    let rv : RepoVulns = {
-        "critical": critical,
-        "high": high,
-        "moderate": moderate,
-        "low": low,
+    let rv : any = {
+        critical: critical,
+        high: high,
+        moderate: moderate,
+        low: low,
     }
     return rv 
 } 
@@ -112,4 +112,82 @@ export const getReposForOrg = (orgData:Org) => {
         }
     }
     return repoList
+}
+
+export const makeBarData = (orgData: any) => {
+    return [
+        {
+            severity: "Low",
+            count: orgData.vulnData.lowNum
+        },
+        {
+            severity: "Moderate",
+            count: orgData.vulnData.moderateNum
+        },
+        {
+            severity: "High",
+            count: orgData.vulnData.highNum
+        },
+        {
+            severity: "Critical",
+            count: orgData.vulnData.criticalNum
+        },
+    ];
+}
+
+export const makeLineData = (orgData: any) => {
+    let crit_vulns:Coords[] = [];
+    let high_vulns:Coords[] = [];
+    let mod_vulns:Coords[] = [];
+    let low_vulns:Coords[] = []; 
+    let calendar = new Map();
+    calendar.set(0, 'Jan');
+    calendar.set(1, 'Feb');
+    calendar.set(2, 'Mar');
+    calendar.set(3, 'Apr');
+    calendar.set(4, 'May');
+    calendar.set(5, 'Jun');
+    calendar.set(6, 'Jul');
+    calendar.set(7, 'Aug');
+    calendar.set(8, 'Sep');
+    calendar.set(9, 'Oct');
+    calendar.set(10, 'Nov');
+    calendar.set(11, 'Dec');    
+    console.log(orgData)
+    for (let m = 0; m < 12; m++) {
+        let startMonth:number = orgData.vulnData.startMonth;
+        let index:number = (m + startMonth) % 12;
+        console.log(index);
+        let x:string = calendar.get(index);
+        let crit:number = orgData.vulnData.critical[index];
+        let high:number = orgData.vulnData.high[index];
+        let mod:number = orgData.vulnData.moderate[index];
+        let low:number = orgData.vulnData.low[index];
+        crit_vulns.push({x, y:crit});
+        high_vulns.push({x, y:high});
+        mod_vulns.push({x, y:mod});
+        low_vulns.push({x, y:low});    
+    }
+
+    const return_val = [
+        {
+            id: "Critical",
+            data: crit_vulns
+        },
+        {
+            id: "High",
+            data: high_vulns
+        },
+        {
+            id: "Moderate",
+            data: mod_vulns
+        },
+        {
+            id: "Low",
+            data: low_vulns
+        }
+    ]
+
+    console.log(return_val);
+    return return_val;
 }

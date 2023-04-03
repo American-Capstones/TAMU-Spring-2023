@@ -137,7 +137,7 @@ export const Graphs = ({ barData, lineData }: GraphsProps) => {
                                 tickSize: 5,
                                 tickPadding: 5,
                                 tickRotation: 0,
-                                legend: 'transportation',
+                                legend: 'Month',
                                 legendOffset: 36,
                                 legendPosition: 'middle'
                             }}
@@ -145,7 +145,7 @@ export const Graphs = ({ barData, lineData }: GraphsProps) => {
                                 tickSize: 5,
                                 tickPadding: 5,
                                 tickRotation: 0,
-                                legend: 'count',
+                                legend: 'Count',
                                 legendOffset: -40,
                                 legendPosition: 'middle'
                             }}

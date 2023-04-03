@@ -8,7 +8,7 @@ import { ErrorPage, Table } from '@backstage/core-components';
 import ReactLoading from "react-loading";
 import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
-import { getReposForOrg } from '../../../utils/functions';
+import { getReposForOrg, makeBarData, makeLineData } from '../../../utils/functions';
 import { emptyOrg } from '../../../utils/constants';
 import { CollectionsBookmarkRounded } from '@material-ui/icons';
 import React, { useContext, useState } from "react";
@@ -16,22 +16,10 @@ import React, { useContext, useState } from "react";
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
 
-const useCachedAllVulns = (orgName: string|undefined) => {
-    const {data, setData} = useContext(DataContext);
-    const { loading, data: orgData, error } = useGetAllVulns(orgName)
-    
-    return {
-        data,
-        loading,
-        error
-    };
-}
 
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
-    const { data:orgData, loading, error } = useCachedAllVulns(orgName);
-    // const { loading, months,} = useGetMonthlyVulns(orgName);
-    // const { loading, teams } = useGetTeamsForOrg(orgName);
+    const { loading, data: orgData, error } = useGetAllVulns(orgName)
     const repos = getReposForOrg(orgData);
     const [ showTeams, setShowTeams ] = useState(true);
     const navigate = useNavigate();
@@ -72,7 +60,7 @@ export const Organization = ({} : {}) => {
             <SelectOrg defaultOption={orgName ?? ''}/>
             <Grid container spacing={2} direction='column'>
                 <Grid item>
-                    <Graphs barData={mockData} lineData={lineMockData} />
+                    <Graphs barData={makeBarData(orgData)} lineData={makeLineData(orgData)} />
                 </Grid>
                 <Grid item>
                     <SelectScope handleClick={() => changeScope} title='Table Scope' defaultOption='teams' />

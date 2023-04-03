@@ -7,8 +7,9 @@ import ReactLoading from "react-loading";
 import { DataContext } from '../../Root/Root';
 import { Team } from '../../../utils/types';
 import { Table } from '@backstage/core-components';
-import { SelectScope } from '../../Utility';
 import { Grid } from '@material-ui/core';
+import { makeBarData } from '../../../utils/functions';
+import { makeLineData } from '../../../utils/functions';
 
 const emptyContent = () => {
     return (
@@ -69,7 +70,7 @@ export const TeamPage = ({} : {}) => {
             <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                    <Graphs barData={mockData} lineData={lineMockData} />
+                    <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} />
                 </Grid>
                 {/* Used for spacing */}
                 <Grid item></Grid> 
