@@ -91,8 +91,6 @@ export const Organization = () => {
                         <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
                     </div>
                     {loading && <Skeleton variant="rectangular" width="100%">                        <Table
-                        title={team_title}
-                        options={{ search: true, paging: true }}
                         columns={cols}
                         data={orgData.teams}
                         onRowClick={goToTeams}
@@ -102,7 +100,8 @@ export const Organization = () => {
                     /></Skeleton>}
                     {tableScope == "teams" && !loading &&
                         <Table
-                            title={team_title}
+                            title="Subteams"
+                            subtitle={orgName}
                             options={{ search: true, paging: true }}
                             columns={cols}
                             data={orgData.teams}
@@ -114,7 +113,8 @@ export const Organization = () => {
                     }
                     {tableScope == "repositories" && !loading &&
                         <Table
-                            title={repo_title}
+                            title="Repositories"
+                            subtitle={orgName}
                             options={{ search: true, paging: true }}
                             columns={repo_cols}
                             data={orgData.repos}
@@ -126,7 +126,8 @@ export const Organization = () => {
                     }
                     {tableScope == "topics" && !loading &&
                         <Table
-                            title={topic_title}
+                            title="Topics"
+                            subtitle={orgName}
                             options={{ search: true, paging: true }}
                             columns={cols}
                             data={orgData.topics}
