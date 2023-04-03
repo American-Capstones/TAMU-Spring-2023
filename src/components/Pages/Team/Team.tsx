@@ -27,7 +27,7 @@ export const TeamPage = ({} : {}) => {
     }
 
     if (error) {
-        navigate(`../${orgName}`, { state: { error: error }, replace: false });
+        navigate(`../${orgName}`, { state: error, replace: false });
         // return <Error message={error.message}/>
     }
 
@@ -45,10 +45,11 @@ export const TeamPage = ({} : {}) => {
     const cols = [{title: 'Repository Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}, {title: 'topics', field: 'repositoryTopics'}]
     const filters: any[] = [];
     const title = `${teamName}'s Repositories`;
+    console.log("state,", location.state);
     return (
         <>
-            { location.state != undefined && location.state.error != undefined &&
-                <Alert severity='error'>{location.state.error}</Alert>
+            { location.state != undefined  &&
+                <Alert severity='error'>{location.state}</Alert>
             }
             <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
