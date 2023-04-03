@@ -1,12 +1,14 @@
 import { Octokit } from '@octokit/rest';
 import { OAuthApi } from '@backstage/core-plugin-api';
-
-import { Coords, Org, Repository } from "./types";
-import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns } from "./types"
+import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns, Org, RepositoryUnformatted, Repository, Coords } from "./types"
 
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
     const vdfArr : VulnInfoFormatted[] = []
     for (let vdu of VulnDataUnformatted) {
+        let vulnVersionRange: string = ""; 
+        if (vdu.securityVulnerability.firstPatchedVersion){
+            vulnVersionRange = vdu.securityVulnerability.firstPatchedVersion.identifier
+        }
         let vdf : VulnInfoFormatted = {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
@@ -14,12 +16,13 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
             "pullRequest": "",
             "dismissedAt": vdu.dismissedAt,
             "fixedAt": vdu.fixedAt,
-            "vulnVersionRange": vdu.securityVulnerability.firstPatchedVersion.identifier,
+            "vulnVersionRange": vulnVersionRange,
             "classification": vdu.securityAdvisory.classification,
             "severity": vdu.securityAdvisory.severity,
             "summary": vdu.securityAdvisory.summary,
             "vulnerabilityCount": vdu.securityAdvisory.vulnerabilities.totalCount,
-            "state": vdu.state 
+            "state": vdu.state, 
+            "url": vdu.url
         }
         vdfArr.push(vdf)
     }
@@ -99,16 +102,40 @@ export const getOctokit = async (auth:OAuthApi) => {
     return octokit.graphql;
 };
 
+export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[]) => {
+    let RepositoryFormattedArr : Repository[] = []
+    for (let ru of RepositoryUnformattedArr){
+        let topics : string[] = [];
+        if (ru.repositoryTopics.edges.length != 0){
+            for (let topicNode of ru.repositoryTopics.edges){
+                topics.push(topicNode.node.topic.name);
+                topics.push(", ");
+            }
+            topics.pop();
+        }
+        let rf : Repository = {
+            id: ru.id,
+            name: ru.name,
+            low: 0,
+            moderate: 0,
+            high: 0,
+            critical: 0,
+            repositoryTopics: topics
+        }
+        RepositoryFormattedArr.push(rf);
+    }
+    return RepositoryFormattedArr;
+}
 
 export const getReposForOrg = (orgData:Org) => {
     let repoList:Repository[] = []
     let seen = new Set<string>
     for(let team of orgData.teams) {
         for(let repo of team.repos) {
-            if(!seen.has(repo.ID)) {
+            if(!seen.has(repo.id)) {
                 repoList.push(repo)
             }
-            seen.add(repo.ID)
+            seen.add(repo.id)
         }
     }
     return repoList

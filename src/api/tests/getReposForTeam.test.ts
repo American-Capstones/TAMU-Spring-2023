@@ -88,11 +88,34 @@ describe("getRepoNodes Test Suite", () => {
                     "nodes": [
                       {
                         "name": "repo1",
-                        "id": "1"
+                        "id": "1",
+                        "repositoryTopics": {
+                          "edges": [
+                            {
+                              "node": {
+                                "id": "0",
+                                "topic": {
+                                  "name": "topic3"
+                                }
+                              }
+                            },
+                            {
+                              "node": {
+                                "id": "0",
+                                "topic": {
+                                  "name": "topic4"
+                                }
+                              }
+                            }
+                          ]
+                        }
                       }, 
                       {
                         "name": "repo2",
-                        "id": "2"
+                        "id": "2",
+                        "repositoryTopics": {
+                          "edges": []
+                        }
                       }
                     ]
                   }
@@ -108,10 +131,12 @@ describe("getRepoNodes Test Suite", () => {
       {
         "id": "1",
         "name": "repo1",
+        "repositoryTopics": ["topic3", ", ", "topic4"]
       },
       {
         "id": "2",
         "name": "repo2",
+        "repositoryTopics": []
       }
     ]);
   });

@@ -20,8 +20,8 @@ const emptyReposContent = <h1>No Repos in this organization available.</h1>
 export const Organization = ({} : {}) => {
     const { orgName } = useParams();
     const { loading, data: orgData, error } = useGetAllVulns(orgName)
-    const repos = getReposForOrg(orgData);
-    const [ showTeams, setShowTeams ] = useState(true);
+    // const repos = getReposForOrg(orgData);
+    const [ tableScope, setTableScope ] = useState("teams");
     const navigate = useNavigate();
 
     if (loading || orgData.name == "") {
@@ -39,7 +39,8 @@ export const Organization = ({} : {}) => {
     }
 
     let changeScope = (newScope: string) => {
-        setShowTeams(newScope == 'teams');
+        console.log('here', newScope)
+        setTableScope(newScope);
     }
 
     const cols = [
@@ -49,10 +50,18 @@ export const Organization = ({} : {}) => {
         {title: 'moderate', field: 'vulnData.moderateNum'}, 
         {title: 'low', field: 'vulnData.lowNum'}
     ]
+    const repo_cols = [
+        {title: 'Team Name', field: 'name'}, 
+        {title: 'critical', field: 'critical'}, 
+        {title: 'high', field: 'high'}, 
+        {title: 'moderate', field: 'moderate'}, 
+        {title: 'low', field: 'low'}
+    ]
     const filters: any[] = []
     
     const team_title = 'Teams within this organization';
     const repo_title = 'Repos within this organization';
+    const topic_title = 'Topics within this organization';
     
     return (
 
@@ -63,8 +72,8 @@ export const Organization = ({} : {}) => {
                     <Graphs barData={makeBarData(orgData)} lineData={makeLineData(orgData)} />
                 </Grid>
                 <Grid item>
-                    <SelectScope handleClick={() => changeScope} title='Table Scope' defaultOption='teams' />
-                    {showTeams ?
+                    <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
+                    {tableScope == "teams" &&
                         <Table 
                             title={team_title}
                             options={{ search: true, paging: true }}
@@ -74,15 +83,27 @@ export const Organization = ({} : {}) => {
                             filters={filters}
                             emptyContent={emptyTeamsContent}
                         />
-                    :
+                    }
+                    {tableScope == "repositories" &&
                         <Table 
                             title={repo_title}
                             options={{ search: true, paging: true }}
-                            columns={cols}
-                            data={repos}
+                            columns={repo_cols}
+                            data={orgData.repos}
                             onRowClick={() => alert('Picked a repo, undefined behavior')}
                             filters={filters}
                             emptyContent={emptyReposContent}
+                        />
+                    }
+                    {tableScope == "topics" &&
+                        <Table
+                            title={topic_title}
+                            options={{ search: true, paging: true }}
+                            columns={cols}
+                            data={orgData.topics}
+                            onRowClick={() => alert('Picked a topic, undefined behavior')}
+                            filters={filters}
+                            emptyContent={<h1>No topics in this organization available.</h1>}
                         />
                     }
                     

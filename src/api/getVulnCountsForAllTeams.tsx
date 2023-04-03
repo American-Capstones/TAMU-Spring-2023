@@ -3,12 +3,14 @@ import {
     Teams, 
     Team,
     VulnInfoUnformatted,
+    Repository
   } from '../utils/types';
 import { getReposForTeam } from './getReposForTeam';
 import { getVulnsFromRepo } from './getVulnsFromRepo';
 
 export async function getVulnCountsForAllTeams(graphql:any, teamNames: Team[], orgName: string): Promise<Team[]> {
     let CountedTeamVulns : Team;
+    let seen = new Map<string, VulnInfoUnformatted[] >(); 
 
     for (var team of teamNames){
         const TeamVulns: VulnInfoUnformatted[] = []; 
@@ -20,14 +22,20 @@ export async function getVulnCountsForAllTeams(graphql:any, teamNames: Team[], o
 
         //let vulns = await getVulnsFromRepos(graphql, repos.map(a => a.id), orgName, true);
         for (var repo of repos){
-            let vulns = await getVulnsFromRepo(graphql, repo.name, orgName, true);
-
-            if (vulns.length == 0){
-                continue
+            if(!seen.has(repo.id)){
+                let vulns = await getVulnsFromRepo(graphql, repo.name, orgName, true);
+                if (vulns.length == 0){
+                    continue
+                }
+                TeamVulns.push(...vulns);
+                seen.set(repo.id, vulns);
             }
-
-            for (var vulnInfo of vulns) {
-                TeamVulns.push(vulnInfo);
+            else{ 
+                let vulns = seen.get(repo.id);
+                if (vulns.length == 0){
+                    continue
+                }
+                TeamVulns.push(...vulns);
             }
         }
         

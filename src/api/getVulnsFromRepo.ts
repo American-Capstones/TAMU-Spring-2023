@@ -46,6 +46,7 @@ export async function getVulnerabilityNodes(
           vulnerabilityAlerts(first: $first, after: $endCursor) {
             pageInfo {hasNextPage, endCursor}
             nodes {
+              number
               createdAt
               dismissedAt
               fixedAt
@@ -88,7 +89,10 @@ export async function getVulnerabilityNodes(
       if(!result.repository || !result.repository.vulnerabilityAlerts){
         break
       }
-      vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
+      for (let vulnNode of result.repository.vulnerabilityAlerts.nodes){
+        vulnNode.url = result.repository.url + "/security/dependabot/" + vulnNode.number
+        vulnerabilityData.push(vulnNode);
+      }
     }
     
     if (vulnerabilityData.length >= repoRequestLimit) return vulnerabilityData;

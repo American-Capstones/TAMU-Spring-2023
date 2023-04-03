@@ -17,10 +17,15 @@ import {
   GITHUB_GRAPHQL_MAX_ITEMS,
   GITHUB_REPO_MAX_ITEMS 
 } from '../utils/constants';
+import { RepositoryUnformatted } from '../utils/types';
 import {
   Repositories, 
   Repository,
 } from '../utils/types';
+
+import {
+ formatRepoNodes,
+} from '../utils/functions';
 
 
 export const getReposForTeam = (
@@ -55,6 +60,16 @@ export async function getRepoNodes (
                   nodes {
                     name
                     id
+                    repositoryTopics(first:100) {
+                      edges {
+                        node {
+                          id
+                          topic {
+                            name
+                          }
+                        }
+                      }
+                    }            
                   }
                 }
               }  
@@ -76,14 +91,13 @@ export async function getRepoNodes (
     );
     if(result) {
       if (result.organization){
-        // if there are no repositories returned, then there will be no nodes to insert into list
         if (result.organization.teams.nodes.length == 0){
           break
         }
         repoNodes.push(
-          ...result.organization.teams.nodes[0].repositories.nodes
+          ...formatRepoNodes(result.organization.teams.nodes[0].repositories.nodes)
         );
-      } // should check the error message & then return it
+      } 
     }
     if (repoNodes.length >= repoLimit && !getAll) return repoNodes;
   } while (result?.organization?.teams.nodes[0].repositories.pageInfo.hasNextPage);
