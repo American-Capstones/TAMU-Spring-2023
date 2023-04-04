@@ -51,6 +51,7 @@ export const VulnCard = (props: VulnCardProps) => {
                     }>
 
                         {props.vuln.pullRequest &&
+                            <Button href={props.vuln.pullRequest}>
                             <Tooltip title='Pull Request'>
                                 <Chip
                                     clickable
@@ -60,6 +61,7 @@ export const VulnCard = (props: VulnCardProps) => {
                                         background: deepPurple[500]
                                     }} label={"PR"} />
                             </Tooltip>
+                            </Button>
                         }
 
 
