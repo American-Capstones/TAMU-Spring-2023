@@ -1,6 +1,7 @@
 import { getTeamsForOrg } from "./getTeamsForOrg";
 import { getReposForTeam } from "./getReposForTeam";
 import { getVulnsFromRepo } from "./getVulnsFromRepo";
+import { getReposForOrg } from "./getReposForOrg";
 
 import { Org, Team, Topic, Repository} from "../utils/types";
 import { formatVulnData } from "../utils/functions";
@@ -32,10 +33,18 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
     topics: [],
   }
 
-  let teamNodes: Team[] = await getTeamsForOrg(graphql, orgLogin)
+  // get all Repos in the org (in case a repo is not part of a team)
+  // still need to get vulnData (will be easier when the code below is in a function)
+  // let orgRepos:Repository[] = await getReposForOrg(graphql, orgLogin);
+  //   for (let orgRepo of orgRepos){
+  //     if (!seen.has(orgRepo.id)){
+  //       orgData.repos.push(orgRepo);
+  //     }
+  //     seen.add(orgRepo.id);
+  // }
 
+  let teamNodes: Team[] = await getTeamsForOrg(graphql, orgLogin)
   for(let teamNode of teamNodes) {
-    // console.log("team ", teamNode.name);
     let teamData:Team = {
       name: teamNode.name,
       vulnData: {
@@ -210,7 +219,5 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
     orgData.teams.push(teamData)
   }
   orgData.topics.push(...seenTopics.values());
-  console.log("orgData", orgData);
-
   return orgData 
 }
