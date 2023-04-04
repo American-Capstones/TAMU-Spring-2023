@@ -4,6 +4,7 @@ import { Typography } from "@material-ui/core";
 import React from 'react';
 import { configure, shallow } from 'enzyme';
 import { Link } from "@backstage/core-components";
+import { CribSharp } from '@mui/icons-material';
 
 configure({adapter: new Adapter()});
 
@@ -12,7 +13,7 @@ configure({adapter: new Adapter()});
 // So the first two elements are always sliced out
 const root = { pathname: '/dd' };
 const one = { pathname: '/dd/testOrg' }
-const loc = { pathname: '/dd/testOrg/testTeam/testRepo' };
+const loc = { pathname: '/dd/testOrg/team/testTeam/testRepo' };
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -30,14 +31,17 @@ describe('Breadcrumbs test suite', () => {
 
     it('should render the correct name for each crumb', () => {
         const wrapper = shallow(<Breadcrumbs />);
-        const crumbs = loc.pathname.split('/').slice(2);
+        const pathname = loc.pathname;
+        let crumbs = pathname.split('/').slice(2).filter((crumb) => !['team', 'topic'].includes(crumb));
         const links = wrapper.find(Link);
         const current = wrapper.find(Typography);
         
         links.forEach((link) => {
             expect(crumbs.includes(link.text())).toBeTruthy();
+            crumbs.splice(crumbs.indexOf(link.text()), 1);
         })
-
+        
+        expect(crumbs.length).toEqual(1); // The last crumb should be the current page, not a link
         expect(crumbs.includes(current.text())).toBeTruthy();
     });
 
@@ -58,9 +62,9 @@ describe('Breadcrumbs test suite', () => {
 
     it('should make the last crumb unclickable', () => {
         const wrapper = shallow(<Breadcrumbs />);
-        const crumbs = loc.pathname.split('/').slice(2);
+        const crumbs = loc.pathname.split('/').slice(2).filter((crumb) => !['team', 'topic'].includes(crumb));
         const current = wrapper.find(Typography);
-
+        console.log(crumbs, current.text())
         expect(current.text()).toEqual(crumbs.at(-1));
     });
 

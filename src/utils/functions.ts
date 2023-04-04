@@ -212,6 +212,6 @@ export const makeLineData = (orgData: any) => {
             data: low_vulns
         }
     ]
-
+    
     return return_val;
 }

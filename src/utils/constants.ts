@@ -18,5 +18,9 @@ export const emptyOrg:Org = {
         moderateNum: 0,
         lowNum: 0,
     },
-    teams: []
+    teams: [],
+    repos: [],
+    topics: [],
+    url: '',
+    avatarUrl: '',
 }

@@ -11,18 +11,18 @@ import { HorizontalScrollGrid } from '@backstage/core-components';
 import CircleIcon from '@mui/icons-material/Circle';
 
 const columnStyle: React.CSSProperties = {
-    marginRight: "4em",
-    display: "flex",
-    flexDirection: "column",
-    minWidth: "25em",
-    maxWidth: "25em"
+  marginRight: "4em",
+  display: "flex",
+  flexDirection: "column",
+  minWidth: "25em",
+  maxWidth: "25em"
 }
 
 export const Repo = ({ }: {}) => {
-    const { orgName, repoName, teamName } = useParams();
+    const { orgName, repoName, teamName, topicName } = useParams();
     const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
-    const [shownRepoVulns, setShownRepoVulns] = useState<RepoVulns>();
-    const [openVulns, setOpenVulns] = useState<RepoVulns>();
+    const [ shownRepoVulns, setShownRepoVulns ] = useState<RepoVulns>();
+    const [ openVulns, setOpenVulns ] = useState<RepoVulns>();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,44 +36,39 @@ export const Repo = ({ }: {}) => {
             })
         }
     }, [vulns]);
-
+    
     const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
-        const target = event.target as HTMLInputElement;
-
-        if (target.checked) {
-            setShownRepoVulns(openVulns);
-        } else if (!target.checked) {
-            setShownRepoVulns(vulns);
-        }
+      const target = event.target as HTMLInputElement;
+      
+      if (target.checked) {
+          setShownRepoVulns(openVulns);
+      } else if (!target.checked){
+          setShownRepoVulns(vulns);
+      }
     }
 
     if (error) {
-        navigate(`../${orgName}/${teamName}`, { state: error.message, replace: false });
+        const currentLocation = window.location.href;
+        if (currentLocation.includes("team")) {
+            navigate(`../${orgName}/team/${teamName}`, { state: error.message, replace: false });
+        } else if (currentLocation.includes("topic")) {
+            navigate(`../${orgName}/topic/${topicName}`, { state: error.message, replace: false });
+        }
         // return <Error message={error.message}/>
-    }
-
-    if (loading) {
-        return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}> <ReactLoading
-            type={"spin"}
-            color={"#8B0000"}
-            height={100}
-            width={100}
-        />
-        </div>
     }
 
     return (
         <div style={{
             width: "100%",
             height: "100%"
-        }}>
+          }}>
             <h1>{repoName}</h1>
             <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
             <HorizontalScrollGrid>
                 <div style={{
-                    padding: "1.24rem",
-                    display: "flex",
-                    flexDirection: "row"
+                padding: "1.24rem",
+                display: "flex",
+                flexDirection: "row"
                 }}>
                     <div title="Critical" style={columnStyle}>
                         <div style={{
@@ -86,7 +81,7 @@ export const Repo = ({ }: {}) => {
                             <h3>Critical Vulnerabilities</h3>
                         </div>
                         {loading &&
-                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                            <Skeleton variant='rect' width={"100%"} height={"60vh"} />
                         }
                         <VulnList vulns={shownRepoVulns?.critical} />
                     </div>
@@ -101,7 +96,7 @@ export const Repo = ({ }: {}) => {
                             <h3>High Vulnerabilities</h3>
                         </div>
                         {loading &&
-                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                            <Skeleton variant='rect' width={"100%"} height={"60vh"} />
                         }
                         <VulnList vulns={shownRepoVulns?.high} />
                     </div>
@@ -116,7 +111,7 @@ export const Repo = ({ }: {}) => {
                             <h3>Moderate Vulnerabilities</h3>
                         </div>
                         {loading &&
-                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                            <Skeleton variant='rect' width={"100%"} height={"60vh"} />
                         }
                         <VulnList vulns={shownRepoVulns?.moderate} />
                     </div>
@@ -131,12 +126,12 @@ export const Repo = ({ }: {}) => {
                             <h3>Low Vulnerabilities</h3>
                         </div>
                         {loading &&
-                            <Skeleton variant='rect' width={"100%"} height={"10em"} />
+                            <Skeleton variant='rect' width={"100%"} height={"60vh"} />
                         }
                         <VulnList vulns={shownRepoVulns?.low} />
                     </div>
                 </div>
             </HorizontalScrollGrid>
-        </div>
+        </div> 
     );
 }
