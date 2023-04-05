@@ -33,16 +33,16 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
             <Autocomplete
                 autoHighlight
                 id="combo-box-demo"
+                data-testid="autocomplete"
                 options={orgs}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.name || ""}
                 onChange={(event: any, newValue) => {
-                    console.log(newValue)
                     setSelectValue(newValue)
-                    if (newValue === null) {
+                    if (!newValue) {
                         navigate('../');
                     }
-                    if (newValue != null) {
-                        navigate(`../${newValue?.name}`, { replace: true });
+                    else {
+                        navigate(`../${newValue.name}`, { replace: true });
                     }
                 }}
                 value={selectValue}

@@ -83,7 +83,7 @@ export const Organization = () => {
                 </Grid>
                 <Grid item>
                     <div style={{marginBottom:'1.04rem'}}>
-                        <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
+                        <SelectScope handleClick={changeScope} defaultOption='teams' />
                     </div>
                     {loading && 
                         <Skeleton variant="rectangular" width="100%">                        <Table
