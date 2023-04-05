@@ -21,13 +21,14 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
 
         <Grid container item justifyContent='center' spacing={8}>
             <Grid item>
-                {isLoading &&
+                {(isLoading || barData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                {!isLoading && <InfoCard variant='flex'>
+                
+                {(!isLoading && barData.length > 0) && <InfoCard variant='flex'>
                 <h3 style={{margin: '0', textAlign: 'center'}}>Vulnerability Count by Severity</h3>
-                    <Box style={cardStyle}>
-                    
+                    <Box
+                        style={cardStyle}>
                         <ResponsiveBar
                             colors={ [ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ]}
                             data={barData}
@@ -120,10 +121,11 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 </InfoCard>}
             </Grid>
             <Grid item>
-                {isLoading &&
+                {(isLoading || lineData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                {!isLoading && <InfoCard variant='flex'>
+                
+                {(!isLoading && lineData.length > 0) && <InfoCard variant='flex'>
                 <h3 style={{margin: '0', textAlign: 'center'}}>Vulnerability Count by Severity over Time</h3>
                     <Box style={cardStyle}>
                         <ResponsiveLine

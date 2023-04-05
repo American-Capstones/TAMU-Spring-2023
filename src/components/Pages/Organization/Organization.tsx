@@ -95,7 +95,7 @@ export const Organization = () => {
                         <Skeleton variant="rectangular" width="100%">
                             <Table
                                 columns={team_cols}
-                                data={orgData.teams}
+                                data={[]}
                                 onRowClick={goToTeams}
                                 filters={filters}
                                 emptyContent={emptyTeamsContent}

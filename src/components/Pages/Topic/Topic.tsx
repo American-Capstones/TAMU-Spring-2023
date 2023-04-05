@@ -7,8 +7,8 @@ import { Team } from '../../../utils/types';
 import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
-import { Alert } from '@mui/material';
 import { useGetTopicVulns } from '../../../hooks/useGetTopicVulns';
+import { Alert, Skeleton } from '@mui/material';
 
 const emptyContent = () => {
     return (
@@ -29,17 +29,6 @@ export const TopicPage = ({} : {}) => {
     if (error) {
         navigate(`../${orgName}`, { state: { error: error }, replace: false });
         // return <Error message={error.message}/>
-    }
-
-
-    if (loading || !topicData) {
-        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
-          type={"spin"}
-          color={"#8B0000"}
-          height={100}
-          width={100}
-        />
-        </div>
     }
 
     const cols = [
@@ -64,15 +53,29 @@ export const TopicPage = ({} : {}) => {
                 {/* Used for spacing */}
                 <Grid item></Grid> 
                 <Grid item>
-                    <Table 
-                        title={title}
+                    {(loading || !topicData) ?
+                    <div style={ {display: 'flex', justifyContent: 'center'}}>
+                        <Skeleton variant="rectangular">
+                            <Table title={title}
+                                options={{ search: true, paging: true }}
+                                columns={cols}
+                                data={[]}
+                                onRowClick={goToRepo}
+                                filters={filters}
+                                emptyContent={emptyContent} />
+                        </Skeleton>
+                    </div>
+                    :
+                    <Table
+                        title="Repositories"
+                        subtitle={topicName}
                         options={{ search: true, paging: true }}
                         columns={cols}
                         data={topicData!.repos}
                         onRowClick={goToRepo}
                         filters={filters}
                         emptyContent={emptyContent}
-                    />  
+                    />}
                 </Grid>
             </Grid>
 
