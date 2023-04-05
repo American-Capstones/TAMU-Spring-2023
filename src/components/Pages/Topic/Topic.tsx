@@ -54,8 +54,8 @@ export const TopicPage = ({} : {}) => {
     const title = `Repositories associated with ${topicName}`;
     return (
         <>
-            { location.state != undefined && location.state.error != undefined &&
-                <Alert severity='error'>{location.state.error}</Alert>
+            { location.state &&
+                <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state}</Alert>
             }
             <Grid container spacing={6} direction='column'>
                 <Grid item>
