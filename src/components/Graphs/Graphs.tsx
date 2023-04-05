@@ -25,14 +25,15 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
                 {!isLoading && <InfoCard variant='flex'>
-                    <Box
-                        style={cardStyle}>
+                <h3 style={{margin: '0', textAlign: 'center'}}>Vulnerability Count by Severity</h3>
+                    <Box style={cardStyle}>
+                    
                         <ResponsiveBar
                             colors={ [ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ]}
                             data={barData}
                             indexBy="severity"
                             keys={["count"]}
-                            margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+                            margin={{ top: 20, right: 130, bottom: 50, left: 60 }}
                             theme={dataTheme}
                             padding={0.2}
                             valueScale={{ type: 'linear' }}
@@ -123,11 +124,12 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
                 {!isLoading && <InfoCard variant='flex'>
+                <h3 style={{margin: '0', textAlign: 'center'}}>Vulnerability Count by Severity over Time</h3>
                     <Box style={cardStyle}>
                         <ResponsiveLine
                             colors={[ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ].reverse()}
                             data={lineData}
-                            margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                            margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
                             xScale={{ type: 'point' }}
                             yScale={{
                                 type: 'linear',
