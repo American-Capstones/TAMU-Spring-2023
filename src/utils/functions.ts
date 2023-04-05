@@ -5,14 +5,14 @@ import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns, Org, RepositoryUnfor
 export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
     const vdfArr : VulnInfoFormatted[] = []
     for (let vdu of VulnDataUnformatted) {
-        let vulnVersionRange: string = ""; 
+        let vulnVersionRange: string = "";
         if (vdu.securityVulnerability.firstPatchedVersion){
             vulnVersionRange = vdu.securityVulnerability.firstPatchedVersion.identifier
         }
         let vdf : VulnInfoFormatted = {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
-            "createdAt": vdu.createdAt, 
+            "createdAt": vdu.createdAt,
             "pullRequest": vdu.dependabotUpdate?.pullRequest,
             "dismissedAt": vdu.dismissedAt,
             "fixedAt": vdu.fixedAt,
@@ -21,7 +21,7 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
             "severity": vdu.securityAdvisory.severity,
             "summary": vdu.securityAdvisory.summary,
             "vulnerabilityCount": vdu.securityAdvisory.vulnerabilities.totalCount,
-            "state": vdu.state, 
+            "state": vdu.state,
             "url": vdu.url
         }
         vdfArr.push(vdf)
@@ -55,8 +55,8 @@ export const sortVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) => {
         "moderate": moderate,
         "low": low,
     }
-    return rv 
-} 
+    return rv
+}
 
 
 export const countOpenVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) => {
@@ -84,8 +84,8 @@ export const countOpenVulnData = (VulnDataUnformattedArr:VulnInfoUnformatted[]) 
         moderate: moderate,
         low: low,
     }
-    return rv 
-} 
+    return rv
+}
 
 
 export const formatOrgData = (orgList:Org[]) => {
@@ -95,7 +95,7 @@ export const formatOrgData = (orgList:Org[]) => {
 
 export const getOctokit = async (auth:OAuthApi) => {
     const baseUrl = "https://api.github.com"
-    const token = await auth.getAccessToken(['repo']);
+    const token = await auth.getAccessToken(['repo', 'read:org', 'read:discussion']);
 
     let octokit:Octokit = new Octokit({ auth: token, ...(baseUrl && { baseUrl }) });
 
@@ -166,7 +166,7 @@ export const makeLineData = (orgData: any) => {
     let crit_vulns:Coords[] = [];
     let high_vulns:Coords[] = [];
     let mod_vulns:Coords[] = [];
-    let low_vulns:Coords[] = []; 
+    let low_vulns:Coords[] = [];
     let calendar = new Map();
     calendar.set(0, 'Jan');
     calendar.set(1, 'Feb');
@@ -179,7 +179,7 @@ export const makeLineData = (orgData: any) => {
     calendar.set(8, 'Sep');
     calendar.set(9, 'Oct');
     calendar.set(10, 'Nov');
-    calendar.set(11, 'Dec');    
+    calendar.set(11, 'Dec');
     let startMonth:number = orgData.vulnData.startMonth;
     for (let m = 1; m <= 12; m++) {
         let index:number = (m + startMonth) % 12;
@@ -191,7 +191,7 @@ export const makeLineData = (orgData: any) => {
         crit_vulns.push({x, y:crit});
         high_vulns.push({x, y:high});
         mod_vulns.push({x, y:mod});
-        low_vulns.push({x, y:low});    
+        low_vulns.push({x, y:low});
     }
 
     const return_val = [
@@ -212,6 +212,6 @@ export const makeLineData = (orgData: any) => {
             data: low_vulns
         }
     ]
-    
+
     return return_val;
 }
