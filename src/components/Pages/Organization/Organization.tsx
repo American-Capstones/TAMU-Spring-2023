@@ -78,7 +78,7 @@ export const Organization = () => {
     return (
         <>
             {location.state && location.state.error &&
-                <Alert severity='error'>{location.state.error}</Alert>
+                <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state.error}</Alert>
             }
             <div style={{marginBottom:'1.24rem'}}>
                 <SelectOrg defaultOption={orgName ?? ''} />

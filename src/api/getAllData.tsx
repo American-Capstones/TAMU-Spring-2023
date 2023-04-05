@@ -75,19 +75,17 @@ async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos:Reposi
       let createdIndex = createdDate.getMonth()
       let dismissedIndex = vulns.dismissedAt != null ? new Date(vulns.dismissedAt).getMonth() : -1
 
-      let today = new Date()
-      const vulnJSON = JSON.parse(JSON.stringify(vulns))
-      const vulnName = vulnJSON.packageName
-      if(vulns.dismissedAt){
-        offenses.add(vulnName)
-      }
-      else {
-        if(offenses.has(vulnName)) {
-          teamData.offenses += 1
+        let today = new Date()
+        const vulnJSON = JSON.parse(JSON.stringify(vulns))
+        const vulnName = vulnJSON.packageName
+        if(vulns.dismissedAt){
+          offenses.add(vulnName)
         }
-      }
-      if(today.getFullYear() - createdDate.getFullYear() == 0 || 
-        (today.getFullYear() - createdDate.getFullYear() == 1 && createdDate.getMonth() - today.getMonth() > 0)) {
+        else {
+          if(offenses.has(vulnName)) {
+            teamData.offenses += 1
+          }
+        }
         let severityCat:string = ""
         let severityCatNum:string = ""
 
@@ -108,10 +106,12 @@ async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos:Reposi
           severityCatNum = "lowNum"
         }
         
-        // @ts-ignore
-        newRepo[severityCat] += 1;
-        // @ts-ignore
-        teamData.vulnData[severityCatNum] += 1
+        if (vulns.state == "OPEN"){
+          // @ts-ignore
+          newRepo[severityCat] += 1;
+          // @ts-ignore
+          teamData.vulnData[severityCatNum] += 1
+        }
           
         let i = createdIndex
         do {
@@ -123,6 +123,7 @@ async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos:Reposi
 
         if(!seen.has(id)) {
           if (vulns.state == "OPEN"){
+            // @ts-ignore
             orgData.vulnData[severityCatNum] += 1
             // @ts-ignore
             topicVulnData[severityCatNum] += 1
@@ -131,25 +132,29 @@ async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos:Reposi
           let i = createdIndex
           do {
             i %= 12
-            orgData.vulnData[severityCat][i] += 1
+            if(today.getFullYear() - createdDate.getFullYear() == 0 || 
+              (today.getFullYear() - createdDate.getFullYear() == 1 && createdDate.getMonth() - today.getMonth() > 0)) {
+              orgData.vulnData[severityCat][i] += 1
+            }
             // @ts-ignore
             topicVulnData[severityCat][i] += 1
             i += 1
           } while(i != dismissedIndex && i != today.getMonth() + 1) 
         }
       }
-    }
-    if(!seen.has(id)) {
-      orgData.repos.push(newRepo);
-    }
-    if(!seen.has(id)){
-      for (let topic of newRepo.repositoryTopics){
-        if(topic != ", " && seenTopics.has(topic)){
-          // We can assume that the get statements will always return a value, based on the if statement above.
-          seenTopics.get(topic)!.vulnData.criticalNum += topicVulnData.criticalNum;
-          seenTopics.get(topic)!.vulnData.highNum += topicVulnData.highNum;
-          seenTopics.get(topic)!.vulnData.moderateNum += topicVulnData.moderateNum;
-          seenTopics.get(topic)!.vulnData.lowNum += topicVulnData.lowNum;
+
+      if(!seen.has(id)) {
+        orgData.repos.push(newRepo);
+      }
+
+      if(!seen.has(id)){
+        for (let topic of newRepo.repositoryTopics){
+          if(topic != ", " && seenTopics.has(topic)){
+            // We can assume that the get statements will always return a value, based on the if statement above.
+            seenTopics.get(topic)!.vulnData.criticalNum += topicVulnData.criticalNum;
+            seenTopics.get(topic)!.vulnData.highNum += topicVulnData.highNum;
+            seenTopics.get(topic)!.vulnData.moderateNum += topicVulnData.moderateNum;
+            seenTopics.get(topic)!.vulnData.lowNum += topicVulnData.lowNum;
 
           seenTopics.get(topic)!.vulnData.critical = seenTopics.get(topic)!.vulnData.critical.map((a, i) => a + topicVulnData.critical[i]);
           seenTopics.get(topic)!.vulnData.high = seenTopics.get(topic)!.vulnData.high.map((a, i) => a + topicVulnData.high[i]);
