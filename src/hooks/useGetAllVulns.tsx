@@ -28,14 +28,9 @@ export function useGetAllVulns(orgName:string|undefined) {
                 const graphql = await getOctokit(auth)
                 allData = await getAllData(graphql, orgName)
 
+                setData(allData)
             }catch(caughtError){
                 setError(Error(caughtError.message));
-            }
-            try {
-                setData(allData)
-            }
-            catch {                
-               setError(Error("Error in getAllData"))
             }
         }
         setLoading(false)
