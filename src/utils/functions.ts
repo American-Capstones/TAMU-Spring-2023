@@ -13,7 +13,7 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
             "createdAt": vdu.createdAt, 
-            "pullRequest": vdu.dependabotUpdate?.pullRequest.permalink,
+            "pullRequest": vdu.dependabotUpdate?.pullRequest?.permalink,
             "dismissedAt": vdu.dismissedAt,
             "fixedAt": vdu.fixedAt,
             "vulnVersionRange": vulnVersionRange,
@@ -127,19 +127,19 @@ export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[
     return RepositoryFormattedArr;
 }
 
-export const getReposForOrg = (orgData:Org) => {
-    let repoList:Repository[] = []
-    let seen = new Set<string>
-    for(let team of orgData.teams) {
-        for(let repo of team.repos) {
-            if(!seen.has(repo.id)) {
-                repoList.push(repo)
-            }
-            seen.add(repo.id)
-        }
-    }
-    return repoList
-}
+// export const getReposForOrg = (orgData:Org) => {
+//     let repoList:Repository[] = []
+//     let seen = new Set<string>
+//     for(let team of orgData.teams) {
+//         for(let repo of team.repos) {
+//             if(!seen.has(repo.id)) {
+//                 repoList.push(repo)
+//             }
+//             seen.add(repo.id)
+//         }
+//     }
+//     return repoList
+// }
 
 export const makeBarData = (orgData: any) => {
     return [

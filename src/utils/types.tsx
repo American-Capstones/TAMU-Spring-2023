@@ -230,13 +230,6 @@ export type GraphsProps = {
     isLoading?: boolean
 }
 
-export type monthVulns = {
-  critical: number[];
-  high: number[];
-  moderate: number[];
-  low: number[];
-}
-
 export type Topic = {
   name: string;
   vulnData: vulnData,
