@@ -8,7 +8,6 @@ import { GraphsProps } from '../../utils/types';
 import { Skeleton } from '@material-ui/lab';
 
 export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) => {
-    const [loadingState, setLoadingState] = useState(isLoading);
     const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
     const dataTheme = darkThemeMq ? darkTheme : lightTheme;
 
@@ -137,7 +136,7 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                                 type: 'linear',
                                 min: 'auto',
                                 max: 'auto',
-                                stacked: true,
+                                stacked: false,
                                 reverse: false
                             }}
                             theme={dataTheme}

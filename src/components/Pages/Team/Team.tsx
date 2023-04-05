@@ -1,9 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Graphs } from '../../Graphs';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import ReactLoading from "react-loading";
-import { DataContext } from '../../Root/Root';
-import { Team } from '../../../utils/types';
 import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
