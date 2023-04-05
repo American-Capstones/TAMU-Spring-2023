@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, useContext, Dispatch, SetStateAction } from "react";
 import { getAllData } from "../api/getAllData";
-import { formatOrgData, getOctokit } from "../utils/functions";
+import { getOctokit } from "../utils/functions";
 import { DataContext } from '../components/Root/Root';
 
 import {
@@ -8,7 +8,7 @@ import {
   githubAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { Org } from "../utils/types";
-import { ResponseError} from '@backstage/errors'
+import { EMPTY_ORG } from "../utils/constants";
 
 interface iDataContext {
     data: Org,
@@ -21,23 +21,20 @@ export function useGetAllVulns(orgName:string|undefined) {
 
     const auth = useApi(githubAuthApiRef)
     const getVulns = useCallback(async () => {
-        setLoading(true);
+
         if(orgName && data.name != orgName) {
             let allData: any;
+
             try {
                 const graphql = await getOctokit(auth)
                 allData = await getAllData(graphql, orgName)
 
-            }catch(caughtError){
-                setError(Error(caughtError.message));
-            }
-            try {
                 setData(allData)
-            }
-            catch {                
-               setError(Error("Error in getAllData"))
-            }
-        }
+            } catch(caughtError: any){
+                setError(Error(caughtError.message));
+                setData(EMPTY_ORG)
+            }  
+       }
         setLoading(false)
     }, [orgName])
 

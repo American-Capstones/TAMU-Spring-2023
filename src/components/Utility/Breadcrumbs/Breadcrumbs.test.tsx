@@ -49,11 +49,13 @@ describe('Breadcrumbs test suite', () => {
         // Find the link tags, test their "to" attr
         const wrapper = shallow(<Breadcrumbs />);
         const links = wrapper.find(Link);
+        const intermediates = ['team','topic','repo']
         let aggregate = '';
 
         links.forEach(async (link) => {
             const page = link.text();
             const to = link.prop('to');
+            if (page === "testTeam") { aggregate = `${aggregate}/team` }
             const expected = `${aggregate}/${page}`;
             expect(to).toEqual(`.${expected}`);
             aggregate = expected;

@@ -8,7 +8,6 @@ import { GraphsProps } from '../../utils/types';
 import { Skeleton } from '@material-ui/lab';
 
 export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) => {
-    const [loadingState, setLoadingState] = useState(isLoading);
     const darkThemeMq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
     const dataTheme = darkThemeMq ? darkTheme : lightTheme;
 
@@ -21,10 +20,12 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
 
         <Grid container item justifyContent='center' spacing={8}>
             <Grid item>
-                {isLoading &&
+                {(isLoading || barData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                {!isLoading && <InfoCard variant='flex'>
+                
+                {(!isLoading && barData.length > 0) && <InfoCard variant='flex'>
+                <h3 style={{margin: '0', textAlign: 'center'}}>Open Vulnerability Count by Severity</h3>
                     <Box
                         style={cardStyle}>
                         <ResponsiveBar
@@ -32,7 +33,7 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                             data={barData}
                             indexBy="severity"
                             keys={["count"]}
-                            margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+                            margin={{ top: 20, right: 130, bottom: 50, left: 60 }}
                             theme={dataTheme}
                             padding={0.2}
                             valueScale={{ type: 'linear' }}
@@ -99,8 +100,9 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                                     itemWidth: 100,
                                     itemHeight: 20,
                                     itemDirection: 'left-to-right',
+                                    symbolShape: 'circle',
                                     itemOpacity: 0.85,
-                                    symbolSize: 20,
+                                    symbolSize: 12,
                                     effects: [
                                         {
                                             on: 'hover',
@@ -119,21 +121,23 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 </InfoCard>}
             </Grid>
             <Grid item>
-                {isLoading &&
+                {(isLoading || lineData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                {!isLoading && <InfoCard variant='flex'>
+                
+                {(!isLoading && lineData.length > 0) && <InfoCard variant='flex'>
+                <h3 style={{margin: '0', textAlign: 'center'}}>Total Vulnerability Count by Severity over Time</h3>
                     <Box style={cardStyle}>
                         <ResponsiveLine
                             colors={[ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ].reverse()}
                             data={lineData}
-                            margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
+                            margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
                             xScale={{ type: 'point' }}
                             yScale={{
                                 type: 'linear',
                                 min: 'auto',
                                 max: 'auto',
-                                stacked: true,
+                                stacked: false,
                                 reverse: false
                             }}
                             theme={dataTheme}

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Box, TextField } from '@material-ui/core';
 import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 import { useNavigate } from "react-router-dom";
-import { Error } from '../../Pages/Error';
 import { Autocomplete, Alert } from '@mui/material';
 import { Org } from '../../../utils/types';
 
@@ -24,9 +23,6 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
         }
     }, [loading])
 
-    if (error) {
-        return <Error message={error.message}/>
-    }
 
     return (
         <>

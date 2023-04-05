@@ -1,9 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Graphs } from '../../Graphs';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import ReactLoading from "react-loading";
-import { DataContext } from '../../Root/Root';
-import { Team } from '../../../utils/types';
 import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
@@ -46,26 +43,26 @@ export const TeamPage = ({} : {}) => {
             {location.state && 
                 <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state}</Alert>
             }
-            <h1>{teamName}</h1>
+            <h1>{(teamData && !loading) ? teamName : ""}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                {!loading && teamData &&
                     <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
-                }
                 </Grid>
                 {/* Used for spacing */}
                 <Grid item></Grid>
                 <Grid item>
                     {(loading || !teamData) ?
+                    <div style={ {display: 'flex', justifyContent: 'center'}}>
                         <Skeleton variant="rectangular">
                             <Table title={title}
                                 options={{ search: true, paging: true }}
                                 columns={cols}
-                                data={teamData!.repos}
+                                data={[]}
                                 onRowClick={goToRepo}
                                 filters={filters}
                                 emptyContent={emptyContent} />
                         </Skeleton>
+                    </div>
                     :
                     <Table
                         title="Repositories"

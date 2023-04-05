@@ -27,8 +27,8 @@ describe("getOrgsForUser Test Suite", () => {
       }
     ));
 
-    const result = await getOrgNodes(mockedGraphQl, 10);
-    expect(result.orgNodes).toEqual([
+    const orgNodes = await getOrgNodes(mockedGraphQl, 10);
+    expect(orgNodes).toEqual([
       {
         "name": "ORG_ONE",
       },
@@ -36,7 +36,6 @@ describe("getOrgsForUser Test Suite", () => {
         "name": "ORG_TWO",
       }
     ]);
-    expect(result.error).toEqual(undefined);
   });
 
   test("Should return empty list when given a 'first' value that is too large", async () => {
@@ -61,20 +60,7 @@ describe("getOrgsForUser Test Suite", () => {
       }
     ));
 
-    const result = await getOrgNodes(mockedGraphQl, 101);
-    expect(result.orgNodes).toEqual([]);
-    expect(result.error).toEqual(
-      {
-        "locations": 
-            [
-              {
-                "column": 15, 
-                "line": 8
-              }
-            ], 
-        "message": "Requesting 101 records on the `organizations` connection exceeds the `first` limit of 100 records.",
-        "path": ["viewer", "organizations"], 
-        "type": "EXCESSIVE_PAGINATION"
-      });
+    const orgNodes = await getOrgNodes(mockedGraphQl, 101);
+    expect(orgNodes).toEqual([]);
   });
 })
