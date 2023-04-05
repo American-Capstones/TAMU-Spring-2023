@@ -54,14 +54,14 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
         },
         );
 
-        if(result){
+        if(result?.viewer){
             orgNodes.push(
                 ...result.viewer.organizations.nodes
             );
         }
 
         if (orgNodes.length >= organizationLimit) return orgNodes;
-    } while (result?.viewer.organizations.pageInfo.hasNextPage);
+    } while (result?.viewer?.organizations.pageInfo.hasNextPage);
 
     return orgNodes;
 }

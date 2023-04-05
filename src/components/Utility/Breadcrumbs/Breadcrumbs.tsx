@@ -10,7 +10,9 @@ type Link = {
 
 export const Breadcrumbs = ({} : {}) => {
     const pathname = useLocation().pathname;
-    let crumbs = pathname.split('/').slice(2).filter((crumb) => !['team', 'topic', 'repo'].includes(crumb));
+    let crumbs = pathname.split('/').slice(2);
+    const intermediate = crumbs.find(crumb => ['team','topic','repo'].includes(crumb))
+    // crumbs = crumbs.filter((crumb) => !['team', 'topic', 'repo'].includes(crumb));
 
     const links = crumbs.slice(0, crumbs.length - 1);
     const current = crumbs.slice(-1)[0];
@@ -18,10 +20,13 @@ export const Breadcrumbs = ({} : {}) => {
     let newLinks: Link[] = [];
     let aggregate = '';
     links.forEach((link) => {
-        newLinks.push({
-            url: `.${aggregate}/${link}`,
-            name: link
-        })
+        if (link != intermediate) {
+            newLinks.push({
+                url: `.${aggregate}/${link}`,
+                name: link
+            })
+        }
+        
         aggregate = `${aggregate}/${link}`
     })
 

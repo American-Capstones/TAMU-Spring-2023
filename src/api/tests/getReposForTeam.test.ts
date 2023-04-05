@@ -130,11 +130,19 @@ describe("getRepoNodes Test Suite", () => {
     expect(Repos).toEqual([
       {
         "id": "1",
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
         "name": "repo1",
         "repositoryTopics": ["topic3", ", ", "topic4"]
       },
       {
         "id": "2",
+        "critical": 0,
+        "high": 0,
+        "moderate": 0,
+        "low": 0,
         "name": "repo2",
         "repositoryTopics": []
       }
