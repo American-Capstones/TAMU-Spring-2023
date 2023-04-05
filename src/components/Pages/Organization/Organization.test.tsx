@@ -43,7 +43,8 @@ const testOrg:Org = {
                 moderateNum: 0,
                 lowNum: 0
             },
-            repos: []
+            repos: [],
+            offenses: 0
         }
     ],
     repos: [],
@@ -107,10 +108,10 @@ describe('Organization page test suite', () => {
     
         await userEvent.click(TeamsSelect);
         expect(await screen.findByText('Team Name')).toBeVisible();
-        await userEvent.click(ReposSelect);
-        expect(await screen.findByText('Repo Name')).toBeVisible();
         await userEvent.click(TopicsSelect);
         expect(await screen.findByText('Topic Name')).toBeVisible();
+        await userEvent.click(ReposSelect);
+        expect(await screen.findByText('Repo Name')).toBeVisible();
     });
     
     it('should render a Graphs component', async () => {

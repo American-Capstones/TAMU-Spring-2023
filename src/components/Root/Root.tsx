@@ -34,10 +34,17 @@ interface iDataContext {
     data: Org,
     setData: Dispatch<SetStateAction<Org>>
 }
+interface iTableContext {
+    scope: string,
+    setScope: Dispatch<SetStateAction<string>>
+}
 export const DataContext = createContext<iDataContext>({data:emptyOrg, setData:()=>{}});
+export const ScopeContext = createContext<iTableContext>({scope:'teams', setScope:()=>{}})
 
 export const Root = () => {
     const [data, setData] = useState(emptyOrg);
+    const [scope, setScope] = useState('teams');
+    const scopeValue = {scope, setScope};
     const value = {data, setData};
 
     return (
@@ -54,29 +61,31 @@ export const Root = () => {
                     padding: '2.48rem'
                 }}>
                     <DataContext.Provider value={value}>
-                        <FlatRoutes>
-                        <Route 
-                            path='/'
-                            element={<OrgChoice />}/>
-                        <Route 
-                            path='/:orgName'
-                            element={<Organization />}/>
-                        <Route 
-                            path='/:orgName/team/:teamName'
-                            element={<TeamPage />}/>
-                        <Route 
-                            path='/:orgName/team/:teamName/:repoName'
-                            element={<Repo />}/>
-                        <Route 
-                            path='/:orgName/topic/:topicName'
-                            element={<TopicPage />}/>
-                        <Route 
-                            path='/:orgName/topic/:topicName/:repoName'
-                            element={<Repo />}/>
-                        <Route 
-                            path='/:orgName/repo/:repoName'
-                            element={<Repo />}/>
-                        </FlatRoutes>
+                        <ScopeContext.Provider value={scopeValue}>
+                            <FlatRoutes>
+                                <Route 
+                                    path='/'
+                                    element={<OrgChoice />}/>
+                                <Route 
+                                    path='/:orgName'
+                                    element={<Organization />}/>
+                                <Route 
+                                    path='/:orgName/team/:teamName'
+                                    element={<TeamPage />}/>
+                                <Route 
+                                    path='/:orgName/team/:teamName/:repoName'
+                                    element={<Repo />}/>
+                                <Route 
+                                    path='/:orgName/topic/:topicName'
+                                    element={<TopicPage />}/>
+                                <Route 
+                                    path='/:orgName/topic/:topicName/:repoName'
+                                    element={<Repo />}/>
+                                <Route 
+                                    path='/:orgName/repo/:repoName'
+                                    element={<Repo />}/>
+                            </FlatRoutes>
+                        </ScopeContext.Provider>
                     </DataContext.Provider>
                 </div>
             </Content>

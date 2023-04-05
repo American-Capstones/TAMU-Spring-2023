@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
 import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 import { GroupIcon } from '@backstage/core-components';
 import TagIcon from '@mui/icons-material/Tag';
 import SourceIcon from '@mui/icons-material/Source';
+import { ScopeContext } from '../../Root/Root';
 
 type SelectScopeProps = {
     handleClick: (newScope: string) => void,
@@ -13,10 +14,12 @@ type SelectScopeProps = {
 
 export const SelectScope = ({ handleClick, defaultOption = '' }: SelectScopeProps) => {
     const [selectValue, setSelectValue] = useState<string>(defaultOption);
+    const { setScope } = useContext(ScopeContext);
 
     const handleSelect = (event: React.MouseEvent, newValue : string) => {
         if (newValue !== null) {
           setSelectValue(newValue);
+          setScope(newValue);
           handleClick(newValue);
         }
       };
