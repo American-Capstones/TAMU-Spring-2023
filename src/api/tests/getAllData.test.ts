@@ -3,6 +3,8 @@ import { formatVulnData } from "../../utils/functions";
 import { getVulnDataForRepos } from "../getAllData";
 import {Topic} from "../../utils/functions";
 import { EMPTY_ORG, EMPTY_TEAM, EMPTY_VULNDATA } from "../../utils/constants";
+import { getAllRawData } from "../getAllData";
+import { getReposForOrg } from "../getReposForOrg";
 jest.mock('../getVulnsFromRepo', () => ({
     ...jest.requireActual('../getVulnsFromRepo'),
     getVulnsFromRepo: jest.fn(),
@@ -11,6 +13,12 @@ jest.mock('../getVulnsFromRepo', () => ({
 jest.mock('../../utils/functions', () => ({
     ...jest.requireActual('../../utils/functions'),
     formatVulnData: jest.fn(),
+}));
+
+
+jest.mock('../getReposForOrg', () => ({
+    ...jest.requireActual('../getReposForOrg'),
+    getReposForOrg: jest.fn(),
 }));
 
 const mockedGraphQl = jest.fn().mock
@@ -204,7 +212,6 @@ describe ("getVulnDataForRepos Test Suite", () => {
            seenTopics
         )
     })
-
     //some reason this test retains the values from the previous test? but it works if it runs on its own
 
     // test("Should return a valid object when given all valid inputs (one vuln dismissed)", async () =>{

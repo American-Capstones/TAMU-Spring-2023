@@ -1,9 +1,5 @@
 import {getTeamNodes} from "../getTeamsForOrg";
 
-const getTeamsForOrg = require('../getTeamsForOrg');
-const graphql = require('../useOctokitGraphQl');
-jest.mock('../useOctokitGraphQl');
-
 describe("getTeamsForOrg Test Suite", () => {
   test("Should return a valid list of teams when given all valid inputs", async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) => Promise.resolve(
