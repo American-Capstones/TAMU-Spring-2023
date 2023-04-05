@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Error } from '../../Pages/Error';
 import { Autocomplete } from '@mui/material';
 import { Org } from '../../../utils/types';
+import { Alert } from '@mui/material';
 
 export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) => {
     const [selectValue, setSelectValue] = useState<Org | null>(null);
@@ -24,12 +25,15 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
         }
     }, [loading])
 
-    if (error) {
+    /*if (error) {
         return <Error message={error.message}/>
-    }
+    }*/
 
     return (
         <>
+            {error &&
+                <Alert severity='error' style={{marginBottom: '1rem'}}>{error.message}</Alert>
+            }
             <Autocomplete
                 autoHighlight
                 id="combo-box-demo"
