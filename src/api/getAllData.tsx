@@ -167,7 +167,7 @@ async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos:Reposi
           let newTopic: Topic = {
             name: topic,
             vulnData: {
-              startMonth: new Date().getMonth() + 1,
+              startMonth: new Date().getMonth(),
               critical: topicVulnData.critical, 
               high: topicVulnData.high, 
               moderate: topicVulnData.moderate,
