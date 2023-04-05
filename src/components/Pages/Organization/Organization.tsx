@@ -3,11 +3,9 @@ import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
 import { SelectOrg, SelectScope } from '../../Utility';
 import { Table } from '@backstage/core-components';
-import ReactLoading from "react-loading";
 import { Graphs } from '../../Graphs';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
-import { Error } from '../Error';
 import { Alert, Skeleton } from '@mui/material';
 import { ScopeContext } from "../../Root/Root";
 
@@ -137,7 +135,7 @@ export const Organization = () => {
                             data={orgData.topics}
                             onRowClick={goToTopics}
                             filters={filters}
-                            emptyContent={<h1>No topics in this organization available.</h1>}
+                            emptyContent={emptyTopicsContent}
                             isLoading={loading}
                         />
                     }
