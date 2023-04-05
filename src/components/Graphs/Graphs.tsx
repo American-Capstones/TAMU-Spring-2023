@@ -17,8 +17,6 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
         height: "15rem"
     }
 
-    console.log(lineData);
-
     return (
 
         <Grid container item justifyContent='center' spacing={8}>
