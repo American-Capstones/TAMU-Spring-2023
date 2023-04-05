@@ -59,6 +59,10 @@ export const Organization = () => {
         navigate(`./topic/${rowData.name}`, { replace: true });
     }
 
+    let goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
+        navigate(`./repo/${rowData.name}`, { replace: true });
+    }
+
     let changeScope = (newScope: string) => {
         setTableScope(newScope);
     }
@@ -86,13 +90,14 @@ export const Organization = () => {
                         <SelectScope handleClick={changeScope} defaultOption='teams' />
                     </div>
                     {loading && 
-                        <Skeleton variant="rectangular" width="100%">                        <Table
-                            columns={team_cols}
-                            data={orgData.teams}
-                            onRowClick={goToTeams}
-                            filters={filters}
-                            emptyContent={emptyTeamsContent}
-                            isLoading={loading}
+                        <Skeleton variant="rectangular" width="100%">
+                            <Table
+                                columns={team_cols}
+                                data={orgData.teams}
+                                onRowClick={goToTeams}
+                                filters={filters}
+                                emptyContent={emptyTeamsContent}
+                                isLoading={loading}
                         /></Skeleton>
                     }
                     {tableScope == "teams" && !loading &&
@@ -115,7 +120,7 @@ export const Organization = () => {
                             options={{ search: true, paging: true }}
                             columns={repo_cols}
                             data={orgData.repos}
-                            onRowClick={() => alert('Picked a repo, undefined behavior')}
+                            onRowClick={goToRepo}
                             filters={filters}
                             emptyContent={emptyReposContent}
                             isLoading={loading}

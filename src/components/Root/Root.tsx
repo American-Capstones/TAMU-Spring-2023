@@ -73,6 +73,9 @@ export const Root = () => {
                         <Route 
                             path='/:orgName/topic/:topicName/:repoName'
                             element={<Repo />}/>
+                        <Route 
+                            path='/:orgName/repo/:repoName'
+                            element={<Repo />}/>
                         </FlatRoutes>
                     </DataContext.Provider>
                 </div>

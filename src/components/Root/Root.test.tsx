@@ -53,5 +53,9 @@ describe('Root test suite', () => {
 
     it('should show Repo page for /:orgName/topic/:topicName/:repoName route', () => {
         expect(pathMap.get('/:orgName/topic/:topicName/:repoName')).toBe(Repo);
-    })
+    });
+
+    it('should show Repo page for /:orgName/repo/:repoName route', () => {
+        expect(pathMap.get('/:orgName/repo/:repoName')).toBe(Repo);
+    });
 });
