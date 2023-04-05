@@ -10,10 +10,11 @@ type Link = {
 
 export const Breadcrumbs = ({} : {}) => {
     const pathname = useLocation().pathname;
-    const crumbs = pathname.split('/').slice(2);
+    let crumbs = pathname.split('/').slice(2).filter((crumb) => !['team', 'topic', 'repo'].includes(crumb));
+
     const links = crumbs.slice(0, crumbs.length - 1);
     const current = crumbs.slice(-1)[0];
-    
+
     let newLinks: Link[] = [];
     let aggregate = '';
     links.forEach((link) => {
@@ -23,14 +24,16 @@ export const Breadcrumbs = ({} : {}) => {
         })
         aggregate = `${aggregate}/${link}`
     })
-    
+
     return (
         <>
         {current &&
             <BC style={{
-                marginBottom: '1em'
-            }} separator={'>'}>
-                {newLinks?.map((link, i) => 
+                color: 'white',
+                marginLeft: 16,
+                marginBottom: '1.28rem'
+            }} separator={'/'}>
+                {newLinks?.map((link, i) =>
                     <Link key={i} to={link.url} >{decodeURI(link.name)}</Link>
                 )}
                 <Typography>{decodeURI(current)}</Typography>

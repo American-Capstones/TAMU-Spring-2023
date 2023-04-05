@@ -17,28 +17,11 @@ import {
   VulnInfoRepo,
   VulnInfoUnformatted
 } from '../utils/types';
-import { useOctokitGraphQl } from './useOctokitGraphQl';
-import { InputError } from '@backstage/errors'
-import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULN_MAX_ITEMS } from '../utils/constants';
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULNS_MAX_ITEMS } from '../utils/constants';
 
-
-export const getVulnerabilitiesFromRepo = (
-    repoName: string,
-    orgLogin: string,
-  ) => {
-    if (orgLogin == "" || !orgLogin){
-      throw new InputError("Invalid orgLogin");
-    }
-  
-    if (repoName == "" || !repoName){
-        throw new InputError("Invalid orgLogin");
-      }
-  
-    const graphql = useOctokitGraphQl<VulnInfoRepo<VulnInfoUnformatted[]>>();
-  
+export const getVulnsFromRepo = (graphql: any, repoName: string, orgLogin: string) => {  
     return getVulnerabilityNodes(graphql, repoName, orgLogin);
-  
-  };
+};
 
 export async function getVulnerabilityNodes(
   graphql: (
@@ -48,7 +31,7 @@ export async function getVulnerabilityNodes(
   name: string,
   owner: string
 ): Promise<VulnInfoUnformatted[]> {
-  const repoRequestLimit = GITHUB_VULN_MAX_ITEMS
+  const repoRequestLimit = GITHUB_VULNS_MAX_ITEMS
   const vulnerabilityData : VulnInfoUnformatted[] = [];
   let result:
     | VulnInfoRepo<VulnInfoUnformatted[]>
@@ -63,9 +46,16 @@ export async function getVulnerabilityNodes(
           vulnerabilityAlerts(first: $first, after: $endCursor) {
             pageInfo {hasNextPage, endCursor}
             nodes {
+              number
               createdAt
               dismissedAt
               fixedAt
+              dependabotUpdate{
+                pullRequest{	
+                  number		
+                  permalink
+                }
+              }
               securityAdvisory {
                 summary
                 severity
@@ -105,9 +95,12 @@ export async function getVulnerabilityNodes(
       if(!result.repository || !result.repository.vulnerabilityAlerts){
         break
       }
-      vulnerabilityData.push(...result.repository.vulnerabilityAlerts.nodes)
+      for (let vulnNode of result.repository.vulnerabilityAlerts.nodes){
+        vulnNode.url = result.repository.url + "/security/dependabot/" + vulnNode.number
+        vulnerabilityData.push(vulnNode);
+      }
     }
-
+    
     if (vulnerabilityData.length >= repoRequestLimit) return vulnerabilityData;
   } while(result?.repository.vulnerabilityAlerts.pageInfo.hasNextPage)
 

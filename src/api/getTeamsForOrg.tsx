@@ -20,10 +20,11 @@ import {
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_TEAM_MAX_ITEMS } from '../utils/constants';
 
 export const getTeamsForOrg = (graphql:any,  orgLogin: string) => {
-  return getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
+  let teams =  getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
+  return teams;
 };
 
-export async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: number): Promise<Team[]> {
+export async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: number, getAll: boolean = false): Promise<Team[]> {
   const teamNodes: Team[] = [];
   let result:
     | Teams<Team[]>
@@ -64,7 +65,7 @@ export async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: num
       );
     }
 
-    if (teamNodes.length >= teamLimit) return teamNodes;
+    if (teamNodes.length >= teamLimit && !getAll) return teamNodes;
   } while (result?.organization.teams.pageInfo.hasNextPage);
 
   return teamNodes;

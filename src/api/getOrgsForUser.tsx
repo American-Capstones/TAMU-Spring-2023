@@ -21,17 +21,14 @@ export const getOrgsForUser = (graphql:any) => {
     return getOrgNodes(graphql, GITHUB_ORG_MAX_ITEMS);
 };
 
-export async function getOrgNodes(graphql:any, organizationLimit: number): Promise<{"orgNodes": Org[], "error": Error}> {
+export async function getOrgNodes(graphql:any, organizationLimit: number): Promise<Org[]> {
     const orgNodes: Org[] = [];
-    let error: 
-        | Error
-        | undefined = undefined;
     let result:
         | Orgs<Org[]>
         | undefined = undefined;
 
     do {
-        result = await graphql( 
+        result = await graphql(
         `
         query($first: Int, $endCursor: String){
             viewer {
@@ -39,6 +36,8 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
                 pageInfo {hasNextPage, endCursor}
                 nodes {
                   name
+                  url
+                  avatarUrl
                 }
               }
             }
@@ -54,22 +53,15 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
             : undefined,
         },
         );
-        
+
         if(result){
-            // result.viewer will be null if there is an error
-            if (!result.viewer){
-                if (result.errors){
-                    error = result.errors[0]
-                }
-                break
-            } 
             orgNodes.push(
                 ...result.viewer.organizations.nodes
             );
         }
 
-        if (orgNodes.length >= organizationLimit) return {orgNodes, error};
+        if (orgNodes.length >= organizationLimit) return orgNodes;
     } while (result?.viewer.organizations.pageInfo.hasNextPage);
 
-    return {orgNodes, error};
+    return orgNodes;
 }

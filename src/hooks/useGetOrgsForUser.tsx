@@ -6,20 +6,26 @@ import {
   useApi,
   githubAuthApiRef,
 } from '@backstage/core-plugin-api';
+import { Org } from "../utils/types";
 
 export function useGetOrgsForUser() {
     const [loading, setLoading] = useState<boolean>(true);
-    const [orgs, setOrgs] = useState<string[]>([]);
+    const [orgs, setOrgs] = useState<Org[]>([]);
+    const [error, setError] = useState<Error>();
+
     const auth = useApi(githubAuthApiRef)
 
     const getOrgNames = useCallback(async () => {
         setLoading(true);
+        try {
+            const graphql = await getOctokit(auth)
+            const orgNodes = await getOrgsForUser(graphql) //result also has an error message that can be handled
+            setOrgs(orgNodes)
+        }
+        catch (caughtError) {
+            setError(Error(caughtError.message));
+        }
 
-        const graphql = await getOctokit(auth)
-        const result = await getOrgsForUser(graphql) //result also has an error message that can be handled
-        const orgNamesFormatted = formatOrgData(result.orgNodes)
-
-        setOrgs(orgNamesFormatted)
         setLoading(false)
     }, [])
 
@@ -28,7 +34,8 @@ export function useGetOrgsForUser() {
     }, [getOrgNames]);
 
     return {
-        loading, 
+        loading,
         orgs,
+        error
     };
 }

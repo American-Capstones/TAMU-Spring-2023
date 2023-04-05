@@ -1,16 +1,21 @@
 import React from 'react';
 import { SelectOrg } from '../../Utility';
+import { useLocation } from "react-router-dom";
+import { Alert } from '@mui/material';
 
-export const OrgChoice = ({} : {}) => {
+export const OrgChoice = ({ }: {}) => {
+    const location = useLocation();
+
     return (
         <div style={{
             display: 'flex',
             justifyContent: 'center',
-            alignItems: 'center',
             flexDirection: 'column'
         }}>
-            <h1>Please select an organization to continue:</h1>
-            <SelectOrg />
+            { location.state && location.state.error &&
+                <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state.error}</Alert>
+            }
+            <SelectOrg/>
         </div>
     );
 };

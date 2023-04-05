@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
 import { Graphs } from '../../Graphs';
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation} from 'react-router-dom';
 import ReactLoading from "react-loading";
 import { DataContext } from '../../Root/Root';
 import { Team } from '../../../utils/types';
 import { Table } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
-import { Alert, Skeleton } from '@mui/material';
-import { useGetTeamVulns } from '../../../hooks/useGetTeamVulns';
+import { Alert } from '@mui/material';
+import { useGetTopicVulns } from '../../../hooks/useGetTopicVulns';
 
 const emptyContent = () => {
     return (
@@ -16,9 +16,9 @@ const emptyContent = () => {
     )
 }
 
-export const TeamPage = ({} : {}) => {
-    const { orgName, teamName } = useParams();
-    const { data: teamData, loading, error } = useGetTeamVulns(orgName, teamName);
+export const TopicPage = ({} : {}) => {
+    const { orgName, topicName } = useParams();
+    const { data: topicData, loading, error } = useGetTopicVulns(orgName, topicName);
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -28,6 +28,18 @@ export const TeamPage = ({} : {}) => {
 
     if (error) {
         navigate(`../${orgName}`, { state: { error: error }, replace: false });
+        // return <Error message={error.message}/>
+    }
+
+
+    if (loading || !topicData) {
+        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading
+          type={"spin"}
+          color={"#8B0000"}
+          height={100}
+          width={100}
+        />
+        </div>
     }
 
     const cols = [
@@ -39,44 +51,28 @@ export const TeamPage = ({} : {}) => {
         {title: 'topics', field: 'repositoryTopics'}
     ]
     const filters: any[] = [];
-    const title = `${teamName}'s Repositories`;
-    
+    const title = `Repositories associated with ${topicName}`;
     return (
         <>
-            {location.state && 
+            { location.state &&
                 <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state}</Alert>
             }
-            <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                {!loading && teamData &&
-                    <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
-                }
+                    <Graphs barData={makeBarData(topicData)} lineData={makeLineData(topicData)} />
                 </Grid>
                 {/* Used for spacing */}
-                <Grid item></Grid>
+                <Grid item></Grid> 
                 <Grid item>
-                    {(loading || !teamData) ?
-                        <Skeleton variant="rectangular">
-                            <Table title={title}
-                                options={{ search: true, paging: true }}
-                                columns={cols}
-                                data={teamData!.repos}
-                                onRowClick={goToRepo}
-                                filters={filters}
-                                emptyContent={emptyContent} />
-                        </Skeleton>
-                    :
-                    <Table
-                        title="Repositories"
-                        subtitle={teamName}
+                    <Table 
+                        title={title}
                         options={{ search: true, paging: true }}
                         columns={cols}
-                        data={teamData!.repos}
+                        data={topicData!.repos}
                         onRowClick={goToRepo}
                         filters={filters}
                         emptyContent={emptyContent}
-                    />}
+                    />  
                 </Grid>
             </Grid>
 
