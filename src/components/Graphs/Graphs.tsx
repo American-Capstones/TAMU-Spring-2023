@@ -100,8 +100,9 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                                     itemWidth: 100,
                                     itemHeight: 20,
                                     itemDirection: 'left-to-right',
+                                    symbolShape: 'circle',
                                     itemOpacity: 0.85,
-                                    symbolSize: 20,
+                                    symbolSize: 12,
                                     effects: [
                                         {
                                             on: 'hover',
