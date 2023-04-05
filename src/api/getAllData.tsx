@@ -59,57 +59,60 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
             teamData.offenses += 1
           }
         }
-        if(today.getFullYear() - createdDate.getFullYear() == 0 || 
-          (today.getFullYear() - createdDate.getFullYear() == 1 && createdDate.getMonth() - today.getMonth() > 0)) {
-          let severityCat:string = ""
-          let severityCatNum:string = ""
+        let severityCat:string = ""
+        let severityCatNum:string = ""
 
-          if(vulns.severity == "CRITICAL"){
-            severityCat = "critical"
-            severityCatNum = "criticalNum"
-          }
-          else if (vulns.severity == "HIGH") {
-            severityCat = "high"
-            severityCatNum = "highNum"
-          }
-          else if (vulns.severity == "MODERATE") {
-            severityCat = "moderate"
-            severityCatNum = "moderateNum"
-          }
-          else if (vulns.severity == "LOW") {
-            severityCat = "low"
-            severityCatNum = "lowNum"
-          }
-          
+        if(vulns.severity == "CRITICAL"){
+          severityCat = "critical"
+          severityCatNum = "criticalNum"
+        }
+        else if (vulns.severity == "HIGH") {
+          severityCat = "high"
+          severityCatNum = "highNum"
+        }
+        else if (vulns.severity == "MODERATE") {
+          severityCat = "moderate"
+          severityCatNum = "moderateNum"
+        }
+        else if (vulns.severity == "LOW") {
+          severityCat = "low"
+          severityCatNum = "lowNum"
+        }
+        
+        if (vulns.state == "OPEN"){
           // @ts-ignore
           newRepo[severityCat] += 1;
           // @ts-ignore
           teamData.vulnData[severityCatNum] += 1
-            
+        }
+          
+        let i = createdIndex
+        do {
+          i %= 12
+          // @ts-ignore
+          teamData.vulnData[severityCat][i] += 1
+          i += 1
+        } while(i != dismissedIndex && i != today.getMonth() + 1)
+
+        if(!seen.has(id)) {
+          if (vulns.state == "OPEN"){
+            // @ts-ignore
+            orgData.vulnData[severityCatNum] += 1
+            // @ts-ignore
+            topicVulnData[severityCatNum] += 1
+          }
+
           let i = createdIndex
           do {
             i %= 12
-            // @ts-ignore
-            teamData.vulnData[severityCat][i] += 1
-            i += 1
-          } while(i != dismissedIndex && i != today.getMonth() + 1)
-
-          if(!seen.has(id)) {
-            if (vulns.state == "OPEN"){
-              orgData.vulnData[severityCatNum] += 1
-              // @ts-ignore
-              topicVulnData[severityCatNum] += 1
-            }
-
-            let i = createdIndex
-            do {
-              i %= 12
+            if(today.getFullYear() - createdDate.getFullYear() == 0 || 
+              (today.getFullYear() - createdDate.getFullYear() == 1 && createdDate.getMonth() - today.getMonth() > 0)) {
               orgData.vulnData[severityCat][i] += 1
-              // @ts-ignore
-              topicVulnData[severityCat][i] += 1
-              i += 1
-            } while(i != dismissedIndex && i != today.getMonth() + 1) 
-          }
+            }
+            // @ts-ignore
+            topicVulnData[severityCat][i] += 1
+            i += 1
+          } while(i != dismissedIndex && i != today.getMonth() + 1) 
         }
       }
 
@@ -162,7 +165,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
     
     orgData.teams.push(teamData)
   }
-  // console.log(orgData)
+  //console.log(orgData)
   orgData.topics.push(...seenTopics.values());
 
   return orgData 
