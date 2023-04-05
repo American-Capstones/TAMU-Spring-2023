@@ -17,16 +17,14 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
         height: "15rem"
     }
 
-    console.log(lineData);
-
     return (
 
         <Grid container item justifyContent='center' spacing={8}>
             <Grid item>
-                {isLoading &&
+                {(isLoading || barData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                {!isLoading && <InfoCard variant='flex'>
+                {(!isLoading && barData.length > 0) && <InfoCard variant='flex'>
                     <Box
                         style={cardStyle}>
                         <ResponsiveBar
@@ -121,10 +119,10 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 </InfoCard>}
             </Grid>
             <Grid item>
-                {isLoading &&
+                {(isLoading || lineData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                {!isLoading && <InfoCard variant='flex'>
+                {(!isLoading && lineData.length > 0) && <InfoCard variant='flex'>
                     <Box style={cardStyle}>
                         <ResponsiveLine
                             colors={[ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ].reverse()}

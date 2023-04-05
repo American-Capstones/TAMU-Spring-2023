@@ -46,26 +46,26 @@ export const TeamPage = ({} : {}) => {
             {location.state && location.state.error &&
                 <Alert severity='error'>{location.state.error}</Alert>
             }
-            <h1>{teamName}</h1>
+            <h1>{(teamData && !loading) ? teamName : ""}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                {!loading && teamData &&
                     <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
-                }
                 </Grid>
                 {/* Used for spacing */}
                 <Grid item></Grid>
                 <Grid item>
                     {(loading || !teamData) ?
+                    <div style={ {display: 'flex', justifyContent: 'center'}}>
                         <Skeleton variant="rectangular">
                             <Table title={title}
                                 options={{ search: true, paging: true }}
                                 columns={cols}
-                                data={teamData!.repos}
+                                data={[]}
                                 onRowClick={goToRepo}
                                 filters={filters}
                                 emptyContent={emptyContent} />
                         </Skeleton>
+                    </div>
                     :
                     <Table
                         title="Repositories"

@@ -142,6 +142,7 @@ export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[
 // }
 
 export const makeBarData = (orgData: any) => {
+    if (!orgData) return []
     return [
         {
             severity: "Critical",
@@ -163,6 +164,7 @@ export const makeBarData = (orgData: any) => {
 }
 
 export const makeLineData = (orgData: any) => {
+    if (!orgData) return []
     let crit_vulns:Coords[] = [];
     let high_vulns:Coords[] = [];
     let mod_vulns:Coords[] = [];
