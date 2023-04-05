@@ -9,6 +9,7 @@ import {
 } from '@backstage/core-plugin-api';
 import { Org } from "../utils/types";
 import { ResponseError} from '@backstage/errors'
+import { EMPTY_ORG } from "../utils/constants";
 
 interface iDataContext {
     data: Org,
@@ -21,9 +22,10 @@ export function useGetAllVulns(orgName:string|undefined) {
 
     const auth = useApi(githubAuthApiRef)
     const getVulns = useCallback(async () => {
-        setLoading(true);
+
         if(orgName && data.name != orgName) {
             let allData: any;
+
             try {
                 const graphql = await getOctokit(auth)
                 allData = await getAllData(graphql, orgName)
@@ -31,8 +33,9 @@ export function useGetAllVulns(orgName:string|undefined) {
                 setData(allData)
             }catch(caughtError){
                 setError(Error(caughtError.message));
-            }
-        }
+                setData(EMPTY_ORG)
+            }  
+       }
         setLoading(false)
     }, [orgName])
 
