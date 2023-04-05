@@ -17,6 +17,8 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
         height: "15rem"
     }
 
+    console.log(lineData);
+
     return (
 
         <Grid container item justifyContent='center' spacing={8}>
@@ -28,7 +30,7 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                     <Box
                         style={cardStyle}>
                         <ResponsiveBar
-                            colors={{ scheme: 'red_blue' }}
+                            colors={ [ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ]}
                             data={barData}
                             indexBy="severity"
                             keys={["count"]}
@@ -125,7 +127,7 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 {!isLoading && <InfoCard variant='flex'>
                     <Box style={cardStyle}>
                         <ResponsiveLine
-                            colors={{ scheme: 'red_blue' }}
+                            colors={[ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ].reverse()}
                             data={lineData}
                             margin={{ top: 50, right: 110, bottom: 50, left: 60 }}
                             xScale={{ type: 'point' }}

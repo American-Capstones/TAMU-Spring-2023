@@ -91,7 +91,7 @@ export const Organization = () => {
                     <div style={{marginBottom:'1.04rem'}}>
                         <SelectScope handleClick={changeScope} defaultOption={scope} />
                     </div>
-                    {loading && 
+                    {(loading || !orgData) && 
                         <Skeleton variant="rectangular" width="100%">
                             <Table
                                 columns={team_cols}

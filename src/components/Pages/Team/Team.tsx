@@ -26,7 +26,7 @@ export const TeamPage = ({} : {}) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
 
-    if (error || !teamData) {
+    if (error) {
         navigate(`../${orgName}`, { state: { error: error }, replace: false });
     }
 
@@ -49,19 +49,25 @@ export const TeamPage = ({} : {}) => {
             <h1>{teamName}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
+                {!loading && teamData &&
                     <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
+                }
                 </Grid>
                 {/* Used for spacing */}
                 <Grid item></Grid>
                 <Grid item>
-                    {loading && <Skeleton variant="rectangular"><Table title={title}
-                        options={{ search: true, paging: true }}
-                        columns={cols}
-                        data={teamData!.repos}
-                        onRowClick={goToRepo}
-                        filters={filters}
-                        emptyContent={emptyContent} /></Skeleton>}
-                    {!loading && <Table
+                    {(loading || !teamData) ?
+                        <Skeleton variant="rectangular">
+                            <Table title={title}
+                                options={{ search: true, paging: true }}
+                                columns={cols}
+                                data={teamData!.repos}
+                                onRowClick={goToRepo}
+                                filters={filters}
+                                emptyContent={emptyContent} />
+                        </Skeleton>
+                    :
+                    <Table
                         title="Repositories"
                         subtitle={teamName}
                         options={{ search: true, paging: true }}

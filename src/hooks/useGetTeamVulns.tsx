@@ -20,7 +20,7 @@ export function useGetTeamVulns(orgName:string|undefined, teamName:string|undefi
     if (!orgData) {
         return {
             loading: true,
-            data: undefined,
+            data: orgData,
             error: "Error: Org not found"
         }
     }
@@ -29,7 +29,7 @@ export function useGetTeamVulns(orgName:string|undefined, teamName:string|undefi
     if (!teamData) {
         return {
             loading: false,
-            data: undefined,
+            data: orgData,
             error: "Error: Team not found"
         }
     }
