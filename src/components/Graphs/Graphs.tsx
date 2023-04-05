@@ -25,7 +25,7 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 }
                 
                 {(!isLoading && barData.length > 0) && <InfoCard variant='flex'>
-                <h3 style={{margin: '0', textAlign: 'center'}}>Vulnerability Count by Severity</h3>
+                <h3 style={{margin: '0', textAlign: 'center'}}>Open Vulnerability Count by Severity</h3>
                     <Box
                         style={cardStyle}>
                         <ResponsiveBar
@@ -125,7 +125,7 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 }
                 
                 {(!isLoading && lineData.length > 0) && <InfoCard variant='flex'>
-                <h3 style={{margin: '0', textAlign: 'center'}}>Vulnerability Count by Severity over Time</h3>
+                <h3 style={{margin: '0', textAlign: 'center'}}>Total Vulnerability Count by Severity over Time</h3>
                     <Box style={cardStyle}>
                         <ResponsiveLine
                             colors={[ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ].reverse()}
