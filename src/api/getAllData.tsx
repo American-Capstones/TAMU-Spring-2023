@@ -21,16 +21,9 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<{"org
 
   // get all Repos in the org (in case a repo is not part of a team)
   // getReposForOrg should throw an error
-  let ReposForOrgResult = await getReposForOrg(graphql, orgLogin);
-  if (ReposForOrgResult.error){
-    let error = ReposForOrgResult.error
-    return {orgData, error}; 
-  }
-
-  let orgRepos:Repository[] = ReposForOrgResult.repoNodes;
+  let orgRepos:Repository[] = await getReposForOrg(graphql, orgLogin);
   let teamData:Team = JSON.parse(JSON.stringify(EMPTY_TEAM))
 
-  // getVulnDataForRepos should return an error
   let vulnDataResult = await getVulnDataForRepos(graphql, orgLogin, orgRepos, teamData, orgData, seen, seenTopics);
   orgData = vulnDataResult.orgData
   seen = vulnDataResult.seen

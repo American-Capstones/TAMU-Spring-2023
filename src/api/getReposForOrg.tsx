@@ -32,17 +32,13 @@ import {formatRepoNodes,} from '../utils/functions';
       orgLogin: string,
       repoLimit: number,
       getAll: boolean = false,
-    ): Promise<{"repoNodes": Repository[], "error": string}> { 
+    ): Promise<Repository[]> { 
     const repoNodes: Repository[] = [];
-    let error:
-        | Error
-        | undefined = undefined;
     let result:
       | Repositories
       | undefined = undefined;
   
     do {
-      try{
         result = await graphql(
             `
             query($login: String!, $first: Int, $endCursor: String){
@@ -77,11 +73,7 @@ import {formatRepoNodes,} from '../utils/functions';
                 ? result.organization.repositories.pageInfo.endCursor
                 : undefined,
             },
-        );}
-        catch (error){
-            error = error.message;
-            return {repoNodes, error};
-        }
+        );
       if(result) {
         if (result.organization){
           repoNodes.push(
@@ -89,8 +81,8 @@ import {formatRepoNodes,} from '../utils/functions';
           );
         } 
       }
-      if (repoNodes.length >= repoLimit && !getAll) return {repoNodes, error};
+      if (repoNodes.length >= repoLimit && !getAll) return repoNodes;
     } while (result?.organization?.repositories.pageInfo.hasNextPage);
   
-    return {repoNodes, error};
+    return repoNodes;
   }

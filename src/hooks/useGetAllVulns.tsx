@@ -23,16 +23,16 @@ export function useGetAllVulns(orgName:string|undefined) {
     const getVulns = useCallback(async () => {
         setLoading(true);
         if(orgName && data.name == "") {
-            const graphql = await getOctokit(auth)
-
-            const result = await getAllData(graphql, orgName) //result also has an error message that can be handled
-
-            if (result.error){
-                setError(Error(result.error));
+            let allData: any;
+            try{
+                const graphql = await getOctokit(auth)
+                allData = await getAllData(graphql, orgName)
+                 
+            }catch(caughtError){
+                setError(Error(caughtError.message));
             }
-
             try {
-                setData(result)
+                setData(allData)
             }
             catch {                
                setError(Error("Error in getAllData"))
