@@ -13,7 +13,7 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
             "createdAt": vdu.createdAt, 
-            "pullRequest": vdu.dependabotUpdate?.pullRequest.permalink,
+            "pullRequest": vdu.dependabotUpdate?.pullRequest?.permalink,
             "dismissedAt": vdu.dismissedAt,
             "fixedAt": vdu.fixedAt,
             "vulnVersionRange": vulnVersionRange,
@@ -180,11 +180,9 @@ export const makeLineData = (orgData: any) => {
     calendar.set(9, 'Oct');
     calendar.set(10, 'Nov');
     calendar.set(11, 'Dec');    
-    console.log(orgData)
-    for (let m = 0; m < 12; m++) {
-        let startMonth:number = orgData.vulnData.startMonth;
+    let startMonth:number = orgData.vulnData.startMonth;
+    for (let m = 1; m <= 12; m++) {
         let index:number = (m + startMonth) % 12;
-        console.log(index);
         let x:string = calendar.get(index);
         let crit:number = orgData.vulnData.critical[index];
         let high:number = orgData.vulnData.high[index];
@@ -214,7 +212,6 @@ export const makeLineData = (orgData: any) => {
             data: low_vulns
         }
     ]
-
-    console.log(return_val);
+    
     return return_val;
 }

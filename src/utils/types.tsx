@@ -77,6 +77,7 @@ export type Teams<T> = {
 export type Team = {
   name: string;
   vulnData: vulnData,
+  offenses: number,
   repos: Repository[]
 }
 
@@ -227,13 +228,6 @@ export type GraphsProps = {
     lineData: LineGraphData[],
     barData: BarGraphData[],
     isLoading?: boolean
-}
-
-export type monthVulns = {
-  critical: number[];
-  high: number[];
-  moderate: number[];
-  low: number[];
 }
 
 export type Topic = {
