@@ -9,15 +9,18 @@ import {
 } from '@backstage/core-plugin-api';
 import { Org } from "../utils/types";
 import { useGetAllVulns } from "./useGetAllVulns";
+import { EMPTY_ORG } from "../utils/constants";
 interface iDataContext {
     data: Org,
     setData: Dispatch<SetStateAction<Org>>
 }
 export function useGetTeamVulns(orgName:string|undefined, teamName:string|undefined) {
-    const { loading, data: orgData, error } = useGetAllVulns(orgName)
+    const { loading, data, error } = useGetAllVulns(orgName)
     // Filter now
+
+    console.log(`in tema vulns :${JSON.stringify(data)}`)
     
-    if (!orgData) {
+    if (!data) {
         return {
             loading: true,
             data: undefined,
@@ -25,12 +28,12 @@ export function useGetTeamVulns(orgName:string|undefined, teamName:string|undefi
         }
     }
 
-    const teamData = orgData.teams.find(team => team.name == teamName)
+    const teamData = data.teams.find(team => team.name == teamName)
     if (!teamData) {
         return {
             loading: false,
             data: undefined,
-            error: "Error: Team not found"
+            error: `Error: Team "${teamName}" not found`
         }
     }
 

@@ -54,6 +54,9 @@ export const OrgChoice = ({ }: {}) => {
 
     return (
         <>
+            { location.state && location.state.error &&
+                <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state.error}</Alert>
+            }
             <div style={divStyle}>
                 <Typography variant='h4' style={{ marginBottom: "1.2rem", fontSize: '3.96em' }}>Let's roll up our sleeves,<br />and get to work!</Typography>
                 <Typography variant='h4' style={{ marginBottom: "4rem", fontSize: '1.72em', color: '#777d87', maxWidth: '40ch' }}>Select an organization and squash those nasty dependency vulnerabilities</Typography>
@@ -89,6 +92,5 @@ export const OrgChoice = ({ }: {}) => {
                 </div>
             </div>
         </>
-
     );
 };

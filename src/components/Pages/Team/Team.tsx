@@ -26,7 +26,7 @@ export const TeamPage = ({} : {}) => {
         navigate(`./${rowData.name}`, { replace: true });
     }
 
-    if (error || !teamData) {
+    if (error) {
         navigate(`../${orgName}`, { state: { error: error }, replace: false });
     }
 
@@ -43,10 +43,10 @@ export const TeamPage = ({} : {}) => {
     
     return (
         <>
-            {location.state && location.state.error &&
-                <Alert severity='error'>{location.state.error}</Alert>
+            {location.state && 
+                <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state}</Alert>
             }
-            <h1>{teamName}</h1>
+            <h1>{(teamData && !loading) ? teamName : ""}</h1>
             <Grid container spacing={6} direction='column'>
                 <Grid item>
                     <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
@@ -54,14 +54,20 @@ export const TeamPage = ({} : {}) => {
                 {/* Used for spacing */}
                 <Grid item></Grid>
                 <Grid item>
-                    {loading && <Skeleton variant="rectangular"><Table title={title}
-                        options={{ search: true, paging: true }}
-                        columns={cols}
-                        data={teamData!.repos}
-                        onRowClick={goToRepo}
-                        filters={filters}
-                        emptyContent={emptyContent} /></Skeleton>}
-                    {!loading && <Table
+                    {(loading || !teamData) ?
+                    <div style={ {display: 'flex', justifyContent: 'center'}}>
+                        <Skeleton variant="rectangular">
+                            <Table title={title}
+                                options={{ search: true, paging: true }}
+                                columns={cols}
+                                data={[]}
+                                onRowClick={goToRepo}
+                                filters={filters}
+                                emptyContent={emptyContent} />
+                        </Skeleton>
+                    </div>
+                    :
+                    <Table
                         title="Repositories"
                         subtitle={teamName}
                         options={{ search: true, paging: true }}

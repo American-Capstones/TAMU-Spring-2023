@@ -8,6 +8,9 @@ import {
   githubAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { Org } from "../utils/types";
+import { ResponseError} from '@backstage/errors'
+import { EMPTY_ORG } from "../utils/constants";
+
 interface iDataContext {
     data: Org,
     setData: Dispatch<SetStateAction<Org>>
@@ -19,18 +22,20 @@ export function useGetAllVulns(orgName:string|undefined) {
 
     const auth = useApi(githubAuthApiRef)
     const getVulns = useCallback(async () => {
-        setLoading(true);
+
         if(orgName && data.name != orgName) {
-            console.log('GET ALL VULNS')
+            let allData: any;
+
             try {
                 const graphql = await getOctokit(auth)
-                const result = await getAllData(graphql, orgName) //result also has an error message that can be handled
-                setData(result)
-            }
-            catch {
-                setError(Error("Error in useGetOrgsForUser"))
-            }
-        }
+                allData = await getAllData(graphql, orgName)
+
+                setData(allData)
+            }catch(caughtError){
+                setError(Error(caughtError.message));
+                setData(EMPTY_ORG)
+            }  
+       }
         setLoading(false)
     }, [orgName])
 

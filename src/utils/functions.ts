@@ -12,8 +12,8 @@ export const formatVulnData = (VulnDataUnformatted:VulnInfoUnformatted[]) => {
         let vdf : VulnInfoFormatted = {
             "packageName": vdu.securityVulnerability.package.name,
             "versionNum": vdu.securityVulnerability.vulnerableVersionRange,
-            "createdAt": vdu.createdAt,
-            "pullRequest": vdu.dependabotUpdate?.pullRequest,
+            "createdAt": vdu.createdAt, 
+            "pullRequest": vdu.dependabotUpdate?.pullRequest?.permalink,
             "dismissedAt": vdu.dismissedAt,
             "fixedAt": vdu.fixedAt,
             "vulnVersionRange": vulnVersionRange,
@@ -127,42 +127,44 @@ export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[
     return RepositoryFormattedArr;
 }
 
-export const getReposForOrg = (orgData:Org) => {
-    let repoList:Repository[] = []
-    let seen = new Set<string>
-    for(let team of orgData.teams) {
-        for(let repo of team.repos) {
-            if(!seen.has(repo.id)) {
-                repoList.push(repo)
-            }
-            seen.add(repo.id)
-        }
-    }
-    return repoList
-}
+// export const getReposForOrg = (orgData:Org) => {
+//     let repoList:Repository[] = []
+//     let seen = new Set<string>
+//     for(let team of orgData.teams) {
+//         for(let repo of team.repos) {
+//             if(!seen.has(repo.id)) {
+//                 repoList.push(repo)
+//             }
+//             seen.add(repo.id)
+//         }
+//     }
+//     return repoList
+// }
 
 export const makeBarData = (orgData: any) => {
+    if (!orgData) return []
     return [
         {
-            severity: "Low",
-            count: orgData.vulnData.lowNum
-        },
-        {
-            severity: "Moderate",
-            count: orgData.vulnData.moderateNum
+            severity: "Critical",
+            count: orgData.vulnData.criticalNum
         },
         {
             severity: "High",
             count: orgData.vulnData.highNum
         },
         {
-            severity: "Critical",
-            count: orgData.vulnData.criticalNum
+            severity: "Moderate",
+            count: orgData.vulnData.moderateNum
+        },
+        {
+            severity: "Low",
+            count: orgData.vulnData.lowNum
         },
     ];
 }
 
 export const makeLineData = (orgData: any) => {
+    if (!orgData) return []
     let crit_vulns:Coords[] = [];
     let high_vulns:Coords[] = [];
     let mod_vulns:Coords[] = [];
@@ -184,10 +186,10 @@ export const makeLineData = (orgData: any) => {
     for (let m = 1; m <= 12; m++) {
         let index:number = (m + startMonth) % 12;
         let x:string = calendar.get(index);
-        let crit:number = orgData.vulnData.critical[index];
-        let high:number = orgData.vulnData.high[index];
-        let mod:number = orgData.vulnData.moderate[index];
-        let low:number = orgData.vulnData.low[index];
+        let crit:number = orgData.vulnData.critical[index]?.toFixed(2);
+        let high:number = orgData.vulnData.high[index]?.toFixed(2);
+        let mod:number = orgData.vulnData.moderate[index]?.toFixed(2);
+        let low:number = orgData.vulnData.low[index]?.toFixed(2);
         crit_vulns.push({x, y:crit});
         high_vulns.push({x, y:high});
         mod_vulns.push({x, y:mod});
@@ -211,7 +213,7 @@ export const makeLineData = (orgData: any) => {
             id: "Low",
             data: low_vulns
         }
-    ]
-
+    ].reverse();
+    
     return return_val;
 }
