@@ -23,8 +23,8 @@ export function useGetOrgsForUser() {
             // const orgNamesFormatted = formatOrgData(result.orgNodes)
             setOrgs(result.orgNodes)
         }
-        catch {
-            setError(Error("Error in useGetOrgsForUser"))
+        catch (CaughtError) {
+            setError(Error(CaughtError.message))
         }
 
         setLoading(false)
