@@ -17,17 +17,9 @@ import {
     GITHUB_GRAPHQL_MAX_ITEMS,
     GITHUB_REPO_MAX_ITEMS 
   } from '../utils/constants';
-  import { RepositoryUnformatted } from '../utils/types';
-  import {
-    Repositories, 
-    Repository,
-  } from '../utils/types';
-  
-  import {
-   formatRepoNodes,
-  } from '../utils/functions';
-  
-  
+import {Repositories, Repository,} from '../utils/types';
+import {formatRepoNodes,} from '../utils/functions';
+
   export const getReposForOrg = (
     graphql: any,
     orgLogin: string,
@@ -40,48 +32,56 @@ import {
       orgLogin: string,
       repoLimit: number,
       getAll: boolean = false,
-    ): Promise<Repository[]> { 
+    ): Promise<{"repoNodes": Repository[], "error": string}> { 
     const repoNodes: Repository[] = [];
+    let error:
+        | Error
+        | undefined = undefined;
     let result:
       | Repositories
       | undefined = undefined;
   
     do {
-      result = await graphql(
-        `
-          query($login: String!, $first: Int, $endCursor: String){
-            organization(login: $login) {
-                repositories(first:$first, after: $endCursor) {
-                pageInfo {hasNextPage, endCursor}
-                nodes {
-                    name
-                    id
-                    repositoryTopics(first:100) {
-                    edges {
-                        node {
+      try{
+        result = await graphql(
+            `
+            query($login: String!, $first: Int, $endCursor: String){
+                organization(login: $login) {
+                    repositories(first:$first, after: $endCursor) {
+                    pageInfo {hasNextPage, endCursor}
+                    nodes {
+                        name
                         id
-                        topic {
-                            name
+                        repositoryTopics(first:100) {
+                        edges {
+                            node {
+                            id
+                            topic {
+                                name
+                                }
                             }
                         }
-                    }
-                    }            
-                }  
-              } 
-            }
-          }      
-        `,
-        {
-            login: orgLogin,
-            first:
-            repoLimit > GITHUB_GRAPHQL_MAX_ITEMS
-                ? GITHUB_GRAPHQL_MAX_ITEMS
-                : repoLimit,
-            endCursor: result
-            ? result.organization.repositories.pageInfo.endCursor
-            : undefined,
-        },
-      );
+                        }            
+                    }  
+                } 
+                }
+            }      
+            `,
+            {
+                login: orgLogin,
+                first:
+                repoLimit > GITHUB_GRAPHQL_MAX_ITEMS
+                    ? GITHUB_GRAPHQL_MAX_ITEMS
+                    : repoLimit,
+                endCursor: result
+                ? result.organization.repositories.pageInfo.endCursor
+                : undefined,
+            },
+        );}
+        catch (error){
+            error = error.message;
+            return {repoNodes, error};
+        }
       if(result) {
         if (result.organization){
           repoNodes.push(
@@ -89,8 +89,8 @@ import {
           );
         } 
       }
-      if (repoNodes.length >= repoLimit && !getAll) return repoNodes;
+      if (repoNodes.length >= repoLimit && !getAll) return {repoNodes, error};
     } while (result?.organization?.repositories.pageInfo.hasNextPage);
   
-    return repoNodes;
+    return {repoNodes, error};
   }

@@ -127,19 +127,19 @@ export const formatRepoNodes = (RepositoryUnformattedArr: RepositoryUnformatted[
     return RepositoryFormattedArr;
 }
 
-export const getReposForOrg = (orgData:Org) => {
-    let repoList:Repository[] = []
-    let seen = new Set<string>
-    for(let team of orgData.teams) {
-        for(let repo of team.repos) {
-            if(!seen.has(repo.id)) {
-                repoList.push(repo)
-            }
-            seen.add(repo.id)
-        }
-    }
-    return repoList
-}
+// export const getReposForOrg = (orgData:Org) => {
+//     let repoList:Repository[] = []
+//     let seen = new Set<string>
+//     for(let team of orgData.teams) {
+//         for(let repo of team.repos) {
+//             if(!seen.has(repo.id)) {
+//                 repoList.push(repo)
+//             }
+//             seen.add(repo.id)
+//         }
+//     }
+//     return repoList
+// }
 
 export const makeBarData = (orgData: any) => {
     return [

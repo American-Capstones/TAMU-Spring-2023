@@ -11,31 +11,40 @@ export const getAllData = (graphql:any,  orgLogin: string) => {
   return getAllRawData(graphql, orgLogin)
 };
 
-export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> {
+export async function getAllRawData(graphql:any, orgLogin:string): Promise<{"orgData": any, "error": string}> {
   let seen = new Set<string>
-  let seenTopics =new Map<string, Topic >(); 
+  let seenTopics = new Map<string, Topic >(); 
 
   let orgData = JSON.parse(JSON.stringify(EMPTY_ORG))
   orgData.vulnData.startMonth = new Date().getMonth() 
   orgData.name = orgLogin
 
   // get all Repos in the org (in case a repo is not part of a team)
-  // still need to get vulnData
-  let orgRepos:Repository[] = await getReposForOrg(graphql, orgLogin);
+  // getReposForOrg should throw an error
+  let ReposForOrgResult = await getReposForOrg(graphql, orgLogin);
+  if (ReposForOrgResult.error){
+    let error = ReposForOrgResult.error
+    return {orgData, error}; 
+  }
+
+  let orgRepos:Repository[] = ReposForOrgResult.repoNodes;
   let teamData:Team = JSON.parse(JSON.stringify(EMPTY_TEAM))
+
+  // getVulnDataForRepos should return an error
   let vulnDataResult = await getVulnDataForRepos(graphql, orgLogin, orgRepos, teamData, orgData, seen, seenTopics);
   orgData = vulnDataResult.orgData
   seen = vulnDataResult.seen
   seenTopics = vulnDataResult.seenTopics
 
-  let count: Number = 0;
+  // getTeamsForOrg should return an error
   let teamNodes: Team[] = await getTeamsForOrg(graphql, orgLogin)
   for(let teamNode of teamNodes) {
     let teamData:Team = JSON.parse(JSON.stringify(EMPTY_TEAM))
     teamData.name = teamNode.name
 
     teamData.vulnData.startMonth = new Date().getMonth()
-
+    
+    // getReposForTeam should return an error
     let newRepos:Repository[] = await getReposForTeam(graphql, orgLogin, teamNode.name)
     
     let vulnDataResult = await getVulnDataForRepos(graphql, orgLogin, newRepos, teamData, orgData, seen, seenTopics);
@@ -53,6 +62,8 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
 async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos:Repository[], teamData:Team, orgData: any, seen:Set<string>, seenTopics:Map<string, Topic>): Promise<any> {
   for (let newRepo of newRepos){
     let offenses = new Set<string>
+
+    //getVulnsFromRepo should return an error
     let newVulns = await getVulnsFromRepo(graphql, newRepo.name, orgLogin)
     let newVulnsFormatted = formatVulnData(newVulns)
 
@@ -84,7 +95,6 @@ async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos:Reposi
       }
       if(today.getFullYear() - createdDate.getFullYear() == 0 || 
         (today.getFullYear() - createdDate.getFullYear() == 1 && createdDate.getMonth() - today.getMonth() > 0)) {
-        console.log("here");
         let severityCat:string = ""
         let severityCatNum:string = ""
 
