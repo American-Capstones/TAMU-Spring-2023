@@ -4,7 +4,7 @@ const getVulnsFromRepo = require('../getVulnsFromRepo');
 const graphql = require('../useOctokitGraphQl');
 jest.mock('../useOctokitGraphQl');
 
-describe("getVulnerabilitiesFromRepo Test Suite", () => {
+describe("getVulnsFromRepo Test Suite", () => {
   test("Should return a valid list of vulnerabilities when given all valid inputs", async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) => Promise.resolve(
         {
