@@ -43,7 +43,8 @@ const testOrg:Org = {
                 moderateNum: 0,
                 lowNum: 0
             },
-            repos: []
+            repos: [],
+            offenses: 0
         }
     ],
     repos: [],
@@ -101,18 +102,17 @@ describe('Organization page test suite', () => {
 
     it('should change the data in the table depending on the scope selected', async () => {
         const wrapper = await renderInTestApp(<Organization />);
-        const Select = await wrapper.findByRole('button', { name: 'Teams' });
-        await userEvent.click(Select);
-        const listbox1 = within(wrapper.getByRole('listbox'));
-        const repos = listbox1.getByText('Repositories');
-        await userEvent.click(repos);
-        expect(await screen.findByText('Repos within this organization')).toBeVisible();
-        await userEvent.click(Select);
-        const listbox2 = within(wrapper.getByRole('listbox'));
-        const teams = listbox2.getByText('Teams');
-        await userEvent.click(teams);
-        expect(await screen.findByText('Teams within this organization')).toBeVisible();
-    })
+        const TeamsSelect = await wrapper.findByLabelText('teams');
+        const TopicsSelect = await wrapper.findByLabelText('topics');
+        const ReposSelect = await wrapper.findByLabelText('repositories');
+    
+        await userEvent.click(TeamsSelect);
+        expect(await screen.findByText('Team Name')).toBeVisible();
+        await userEvent.click(TopicsSelect);
+        expect(await screen.findByText('Topic Name')).toBeVisible();
+        await userEvent.click(ReposSelect);
+        expect(await screen.findByText('Repo Name')).toBeVisible();
+    });
     
     it('should render a Graphs component', async () => {
         const wrapper = shallow(<Organization />);
@@ -126,7 +126,7 @@ describe('Organization page test suite', () => {
 
     it('should display a table when data is received from backend', async () => {
         await renderInTestApp(<Organization />);
-        expect(await screen.findByText('Teams within this organization')).toBeVisible();
+        expect(await screen.findByText('Teams')).toBeVisible();
         expect(await screen.findByText('test team 1')).toBeVisible();
     });
 

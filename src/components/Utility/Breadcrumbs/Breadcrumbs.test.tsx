@@ -32,7 +32,7 @@ describe('Breadcrumbs test suite', () => {
     it('should render the correct name for each crumb', () => {
         const wrapper = shallow(<Breadcrumbs />);
         const pathname = loc.pathname;
-        let crumbs = pathname.split('/').slice(2).filter((crumb) => !['team', 'topic'].includes(crumb));
+        let crumbs = pathname.split('/').slice(2).filter((crumb) => !['team', 'topic', 'repo'].includes(crumb));
         const links = wrapper.find(Link);
         const current = wrapper.find(Typography);
         
@@ -62,7 +62,7 @@ describe('Breadcrumbs test suite', () => {
 
     it('should make the last crumb unclickable', () => {
         const wrapper = shallow(<Breadcrumbs />);
-        const crumbs = loc.pathname.split('/').slice(2).filter((crumb) => !['team', 'topic'].includes(crumb));
+        const crumbs = loc.pathname.split('/').slice(2).filter((crumb) => !['team', 'topic', 'repo'].includes(crumb));
         const current = wrapper.find(Typography);
         console.log(crumbs, current.text())
         expect(current.text()).toEqual(crumbs.at(-1));

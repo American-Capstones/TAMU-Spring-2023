@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
 import { SelectOrg, SelectScope } from '../../Utility';
@@ -9,6 +9,7 @@ import { Grid } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
 import { Error } from '../Error';
 import { Alert, Skeleton } from '@mui/material';
+import { ScopeContext } from "../../Root/Root";
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
@@ -46,10 +47,11 @@ const repo_cols = [
 
 export const Organization = () => {
     const { orgName } = useParams();
-    const { loading, data: orgData, error } = useGetAllVulns(orgName);
-    const [tableScope, setTableScope] = useState("teams");
     const navigate = useNavigate();
     const location = useLocation();
+    const { loading, data: orgData, error } = useGetAllVulns(orgName);
+    const { scope } = useContext(ScopeContext);
+    const [ tableScope, setTableScope ] = useState<string>(scope);
 
     let goToTeams = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./team/${rowData.name}`, { replace: true });
@@ -57,6 +59,10 @@ export const Organization = () => {
 
     let goToTopics = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./topic/${rowData.name}`, { replace: true });
+    }
+
+    let goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
+        navigate(`./repo/${rowData.name}`, { replace: true });
     }
 
     let changeScope = (newScope: string) => {
@@ -83,16 +89,17 @@ export const Organization = () => {
                 </Grid>
                 <Grid item>
                     <div style={{marginBottom:'1.04rem'}}>
-                        <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
+                        <SelectScope handleClick={changeScope} defaultOption={scope} />
                     </div>
                     {loading && 
-                        <Skeleton variant="rectangular" width="100%">                        <Table
-                            columns={team_cols}
-                            data={orgData.teams}
-                            onRowClick={goToTeams}
-                            filters={filters}
-                            emptyContent={emptyTeamsContent}
-                            isLoading={loading}
+                        <Skeleton variant="rectangular" width="100%">
+                            <Table
+                                columns={team_cols}
+                                data={orgData.teams}
+                                onRowClick={goToTeams}
+                                filters={filters}
+                                emptyContent={emptyTeamsContent}
+                                isLoading={loading}
                         /></Skeleton>
                     }
                     {tableScope == "teams" && !loading &&
@@ -115,7 +122,7 @@ export const Organization = () => {
                             options={{ search: true, paging: true }}
                             columns={repo_cols}
                             data={orgData.repos}
-                            onRowClick={() => alert('Picked a repo, undefined behavior')}
+                            onRowClick={goToRepo}
                             filters={filters}
                             emptyContent={emptyReposContent}
                             isLoading={loading}

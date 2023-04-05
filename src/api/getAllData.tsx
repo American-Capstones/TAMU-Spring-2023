@@ -30,6 +30,8 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
     teams: [],
     repos: [],
     topics: [],
+    url: "",
+    avatarUrl: ""
   }
 
   let teamNodes: Team[] = await getTeamsForOrg(graphql, orgLogin)
@@ -49,20 +51,24 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
         moderateNum: 0,
         lowNum: 0,
       },
+      offenses: 0,
       repos: []
     }
-    orgData.vulnData.startMonth = new Date().getMonth() + 1
-    teamData.vulnData.startMonth = new Date().getMonth() + 1
+    orgData.vulnData.startMonth = new Date().getMonth() 
+    teamData.vulnData.startMonth = new Date().getMonth()
 
     let newRepos:Repository[] = await getReposForTeam(graphql, orgLogin, teamNode.name)
 
     for (let newRepo of newRepos){
+      let offenses = new Set<string>
       let newVulns = await getVulnsFromRepo(graphql, newRepo.name, orgLogin)
       let newVulnsFormatted = formatVulnData(newVulns)
       newRepo.critical = 0
       newRepo.high = 0
       newRepo.moderate = 0
       newRepo.low = 0
+      const repoJSON = JSON.parse(JSON.stringify(newRepo))
+      const id = repoJSON.id
 
       let topicsCriticalNum: number = 0;
       let topicsHighNum: number = 0;
@@ -76,8 +82,20 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
 
       for(let vulns of newVulnsFormatted){
         let createdDate = new Date(vulns.createdAt)
-        let today = new Date()
+        let createdIndex = createdDate.getMonth()
+        let dismissedIndex = vulns.dismissedAt != null ? new Date(vulns.dismissedAt).getMonth() : -1
 
+        let today = new Date()
+        const vulnJSON = JSON.parse(JSON.stringify(vulns))
+        const vulnName = vulnJSON.packageName
+        if(vulns.dismissedAt){
+          offenses.add(vulnName)
+        }
+        else {
+          if(offenses.has(vulnName)) {
+            teamData.offenses += 1
+          }
+        }
         if(today.getFullYear() - createdDate.getFullYear() == 0 || 
           (today.getFullYear() - createdDate.getFullYear() == 1 && createdDate.getMonth() - today.getMonth() > 0)) {
           if(vulns.severity == "CRITICAL"){
@@ -86,17 +104,27 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
               newRepo.critical += 1
               teamData.vulnData.criticalNum += 1
             }
+            
+            let i = createdIndex
+            do {
+              i %= 12
+              teamData.vulnData.critical[i] += 1
+              i += 1
+            } while(i != dismissedIndex && i != today.getMonth() + 1)
 
-            teamData.vulnData.critical[createdDate.getMonth() - 1] += 1
-
-            if(!seen.has(newRepo.id)) {
+            if(!seen.has(id)) {
               if (vulns.state == "OPEN"){
                 orgData.vulnData.criticalNum += 1
                 topicsCriticalNum += 1
               }
 
-              orgData.vulnData.critical[createdDate.getMonth() - 1] += 1
-              topicsCritical[createdDate.getMonth() - 1] += 1
+              let i = createdIndex
+              do {
+                i %= 12
+                orgData.vulnData.critical[i] += 1
+                topicsCritical[i] += 1
+                i += 1
+              } while(i != dismissedIndex && i != today.getMonth() + 1) 
             }
           }
           else if(vulns.severity == "HIGH"){
@@ -106,16 +134,25 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
               teamData.vulnData.highNum += 1
             }
 
-            teamData.vulnData.high[createdDate.getMonth() - 1] += 1
-            
-            if(!seen.has(newRepo.id)) {
+            let i = createdIndex
+            do{
+              i %= 12
+              teamData.vulnData.high[i] += 1
+              i += 1
+            } while(i != dismissedIndex && i != today.getMonth() + 1)
+
+            if(!seen.has(id)) {
               if (vulns.state == "OPEN"){
                 orgData.vulnData.highNum += 1
                 topicsHighNum += 1
               }
-
-              orgData.vulnData.high[createdDate.getMonth() - 1] += 1
-              topicsHigh[createdDate.getMonth() - 1] += 1
+              let i = createdIndex
+              do {
+                i %= 12
+                orgData.vulnData.high[i] += 1
+                topicsHigh[i] += 1
+                i += 1
+              } while(i != dismissedIndex && i != today.getMonth() + 1) 
             }
           }
           else if(vulns.severity == "MODERATE"){
@@ -125,16 +162,26 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
               teamData.vulnData.moderateNum += 1
             }
 
-            teamData.vulnData.moderate[createdDate.getMonth() - 1] += 1
-            if(!seen.has(newRepo.id)) {
+            let i = createdIndex
+            do {
+              i %= 12
+              teamData.vulnData.moderate[i] += 1
+              i += 1
+            } while(i != dismissedIndex && i != today.getMonth() + 1) 
 
+            if(!seen.has(id)) {
               if (vulns.state == "OPEN"){
                 orgData.vulnData.moderateNum += 1
                 topicsModerateNum += 1
               }
 
-              orgData.vulnData.moderate[createdDate.getMonth() - 1] += 1
-              topicsModerate[createdDate.getMonth() - 1] += 1
+              let i = createdIndex
+              do {
+                i %= 12
+                orgData.vulnData.moderate[i] += 1
+                topicsModerate[i] += 1
+                i += 1
+              } while(i != dismissedIndex && i != today.getMonth() + 1) 
             }
           }
           if(vulns.severity == "LOW"){
@@ -144,26 +191,37 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
               teamData.vulnData.lowNum += 1
             }
 
-            teamData.vulnData.low[createdDate.getMonth() - 1] += 1
-            if(!seen.has(newRepo.id)) {
+            let i = createdIndex
+            do {
+              i %= 12
+              teamData.vulnData.low[i] += 1
+              i += 1
+            } while(i != dismissedIndex && i != today.getMonth() + 1)
+
+            if(!seen.has(id)) {
 
               if (vulns.state == "OPEN"){
                 orgData.vulnData.lowNum += 1
                 topicsLowNum += 1
               }
 
-              orgData.vulnData.low[createdDate.getMonth() - 1] += 1
-              topicsLow[createdDate.getMonth() - 1] += 1
+              let i = createdIndex
+              do {
+                i %= 12
+                orgData.vulnData.low[i] += 1
+                topicsLow[i] += 1
+                i += 1
+              } while(i != dismissedIndex && i != today.getMonth() + 1) 
             }
           }
         }
       }
 
-      if(!seen.has(newRepo.id)) {
+      if(!seen.has(id)) {
         orgData.repos.push(newRepo);
       }
 
-      if(!seen.has(newRepo.id)){
+      if(!seen.has(id)){
         for (let topic of newRepo.repositoryTopics){
           if(topic != ", " && seenTopics.has(topic)){
             // We can assume that the get statements will always return a value, based on the if statement above.
@@ -180,7 +238,6 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
             seenTopics.get(topic)!.repos.push(newRepo);
           }
           else if (topic != ", " && !seenTopics.has(topic)){
-            console.log(topic);
             let newTopic: Topic = {
               name: topic,
               vulnData: {
@@ -202,7 +259,7 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
         }
       }
 
-      seen.add(newRepo.id)
+      seen.add(id)
       teamData.repos.push(newRepo)
 
     }
@@ -210,7 +267,6 @@ export async function getAllRawData(graphql:any, orgLogin:string): Promise<any> 
     orgData.teams.push(teamData)
   }
   orgData.topics.push(...seenTopics.values());
-  console.log("orgData", orgData);
 
   return orgData 
 }

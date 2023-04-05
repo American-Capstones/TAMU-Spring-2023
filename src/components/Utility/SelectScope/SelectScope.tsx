@@ -1,30 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useState } from 'react';
 import { InputLabel, FormControl, Select, MenuItem } from '@material-ui/core';
 import { ToggleButtonGroup, ToggleButton } from '@material-ui/lab';
 import { GroupIcon } from '@backstage/core-components';
 import TagIcon from '@mui/icons-material/Tag';
 import SourceIcon from '@mui/icons-material/Source';
+import { ScopeContext } from '../../Root/Root';
 
 type SelectScopeProps = {
     handleClick: (newScope: string) => void,
-    title: string,
     defaultOption?: string
 }
 
-export const SelectScope = ({ handleClick, title, defaultOption = '' }: SelectScopeProps) => {
+export const SelectScope = ({ handleClick, defaultOption = '' }: SelectScopeProps) => {
     const [selectValue, setSelectValue] = useState<string>(defaultOption);
-
-    let onClick = (event: React.MouseEvent<HTMLDivElement>) => {
-        const target = event?.target as HTMLSelectElement;
-        const newScope = target.value;
-        setSelectValue(newScope);
-        handleClick(newScope);
-    }
+    const { setScope } = useContext(ScopeContext);
 
     const handleSelect = (event: React.MouseEvent, newValue : string) => {
         if (newValue !== null) {
           setSelectValue(newValue);
+          setScope(newValue);
           handleClick(newValue);
         }
       };

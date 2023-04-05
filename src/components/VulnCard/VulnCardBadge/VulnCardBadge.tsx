@@ -48,13 +48,13 @@ export const VulnCardBadge = (props: VulnCardBadgeProps) => {
             case "FIXED":
                 return (
                     <Tooltip title="Fixed">
-                        <VerifiedUserOutlined style={{ color: green[600] }} />
+                        <VerifiedUserOutlined style={{ color: severityColor }} />
                     </Tooltip>
                 );
             case "DISMISSED":
                 return (
                     <Tooltip title="Dismissed">
-                        <VerifiedUserIcon style={{ color: grey[600] }} />
+                        <VerifiedUserIcon style={{ color: severityColor }} />
                     </Tooltip>
                 );
         }

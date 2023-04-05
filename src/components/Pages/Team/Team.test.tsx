@@ -84,7 +84,7 @@ describe('Team page test suite', () => {
 
     it('should display a table when data is received from backend', async () => {
         await renderInTestApp(<TeamPage />);
-        expect(await screen.findByText('TEST TEAM\'s Repositories')).toBeVisible();
+        expect(await screen.findByText('Repositories')).toBeVisible();
         expect(await screen.findByText('test repo 1')).toBeVisible();
     });
 

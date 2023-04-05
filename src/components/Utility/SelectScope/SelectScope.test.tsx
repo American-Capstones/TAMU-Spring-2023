@@ -12,8 +12,8 @@ configure({adapter: new Adapter()});
 
 describe('SelectScope test suite', () => {
     const mockClick = jest.fn();
-    const Component = <SelectScope handleClick={mockClick} title='Test Title' />
-    const ComponentWithDefault = <SelectScope handleClick={mockClick} title='Test Title' defaultOption='teams' />
+    const Component = <SelectScope handleClick={mockClick} />
+    const ComponentWithDefault = <SelectScope handleClick={mockClick} defaultOption='repositories' />
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -21,35 +21,36 @@ describe('SelectScope test suite', () => {
 
     it('should render', async () => {
         await renderInTestApp(Component);
-        expect(await screen.findByText('Test Title')).toBeVisible();
+        expect(await screen.findByLabelText('scope select')).toBeVisible();
     });
 
-    it('should render an option per item found', async () => {
+    it('should render an option scope available', async () => {
+        // These scopes are defined as Teams, Topics, and Repositories
+        
         const wrapper = await renderInTestApp(Component);
-        const Select = wrapper.getByRole('button');
-        await userEvent.click(Select);
-        const Options = wrapper.getAllByRole('option');
-
-        // Teams, Topics, Repositories
-        expect(Options.length).toEqual(3); 
+        const Teams = wrapper.getByLabelText('teams');
+        const Topics = wrapper.getByLabelText('topics');
+        const Repos = wrapper.getByLabelText('repositories');
+        expect(Teams).toBeVisible();
+        expect(Topics).toBeVisible();
+        expect(Repos).toBeVisible();
     });
 
     it('should select the correct value if defaultOption is given', async () => {
         const wrapper = await renderInTestApp(ComponentWithDefault);
-        const Select = wrapper.getByRole('button');
-        expect(Select.textContent).toEqual('Teams');
+        const Repos = wrapper.getByLabelText('repositories');
+        const Teams = wrapper.getByLabelText('teams');
+        expect(Repos).toHaveAttribute('aria-pressed', 'true');
+        expect(Teams).toHaveAttribute('aria-pressed', 'false');
     })
 
     it('should call the handleClick prop when option is chosen', async () => {
         const wrapper = await renderInTestApp(Component);
 
-        const Select = wrapper.getByRole('button');
-        await userEvent.click(Select);
-        const listbox = within(wrapper.getByRole('listbox'));
-        const repos = listbox.getByText('Repositories');
+        const Topics = wrapper.getByLabelText('topics');
+        await userEvent.click(Topics);
+        const repos = wrapper.getByLabelText('repositories');
         await userEvent.click(repos);
-        const teams = listbox.getByText('Teams');
-        await userEvent.click(teams);
         
         expect(mockClick).toHaveBeenCalledTimes(2);
     });

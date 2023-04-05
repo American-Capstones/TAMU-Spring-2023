@@ -92,7 +92,6 @@ export async function getVulnerabilityNodes(
       },
     );
     if(result){
-      console.log("result", result);
       if(!result.repository || !result.repository.vulnerabilityAlerts){
         break
       }
