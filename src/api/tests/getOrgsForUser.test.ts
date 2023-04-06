@@ -1,9 +1,5 @@
 import {getOrgNodes} from "../getOrgsForUser";
 
-const getOrgsForUser = require('../getOrgsForUser');
-const graphql = require('../useOctokitGraphQl');
-jest.mock('../useOctokitGraphQl');
-
 describe("getOrgsForUser Test Suite", () => {
   test("Should return a valid list of repositories when given all valid inputs", async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) => Promise.resolve(
@@ -16,9 +12,13 @@ describe("getOrgsForUser Test Suite", () => {
             },
             "nodes": [
               {
+                "url" : "url.com",
+                "avatarUrl": "avatarUrl.com",
                 "name": "ORG_ONE"
               },
               {
+                "url" : "url2.com",
+                "avatarUrl": "avatarUrl2.com",
                 "name": "ORG_TWO"
               }
             ]
@@ -30,9 +30,13 @@ describe("getOrgsForUser Test Suite", () => {
     const orgNodes = await getOrgNodes(mockedGraphQl, 10);
     expect(orgNodes).toEqual([
       {
+        "url" : "url.com",
+        "avatarUrl": "avatarUrl.com",
         "name": "ORG_ONE",
       },
       {
+        "url" : "url2.com",
+        "avatarUrl": "avatarUrl2.com",
         "name": "ORG_TWO",
       }
     ]);
