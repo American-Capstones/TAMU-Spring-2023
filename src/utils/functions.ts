@@ -150,7 +150,7 @@ export const makeBarData = (orgData: any) => {
 }
 
 export const makeLineData = (orgData: any) => {
-    console.log(orgData);
+    //console.log(orgData);
     if (!orgData) return []
     let crit_vulns:Coords[] = [];
     let high_vulns:Coords[] = [];

@@ -24,10 +24,10 @@ import {formatRepoNodes,} from '../utils/functions';
     graphql: any,
     orgLogin: string,
     ) => {
-    return getRepoNodes(graphql, orgLogin, GITHUB_REPO_MAX_ITEMS);;
+    return getRepoNodesForOrg(graphql, orgLogin, GITHUB_REPO_MAX_ITEMS);;
   };
   
-  export async function getRepoNodes (
+  export async function getRepoNodesForOrg (
       graphql: any,
       orgLogin: string,
       repoLimit: number,

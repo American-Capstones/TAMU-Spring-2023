@@ -18,7 +18,7 @@ export function useGetTeamVulns(orgName:string|undefined, teamName:string|undefi
     const { loading, data, error } = useGetAllVulns(orgName)
     // Filter now
 
-    console.log(`in tema vulns :${JSON.stringify(data)}`)
+   // console.log(`in tema vulns :${JSON.stringify(data)}`)
     
     if (!data) {
         return {

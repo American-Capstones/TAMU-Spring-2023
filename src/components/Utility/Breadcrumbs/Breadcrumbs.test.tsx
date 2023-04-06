@@ -66,7 +66,7 @@ describe('Breadcrumbs test suite', () => {
         const wrapper = shallow(<Breadcrumbs />);
         const crumbs = loc.pathname.split('/').slice(2).filter((crumb) => !['team', 'topic', 'repo'].includes(crumb));
         const current = wrapper.find(Typography);
-        console.log(crumbs, current.text())
+        //console.log(crumbs, current.text())
         expect(current.text()).toEqual(crumbs.at(-1));
     });
 
