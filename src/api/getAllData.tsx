@@ -52,7 +52,7 @@ export async function getAllRawData(graphql: any, orgLogin: string): Promise<{ "
     return orgData
 }
 
-async function getVulnDataForRepos(graphql: any, orgLogin: string, newRepos: Repository[], teamData: Team, orgData: any, seen: Set<string>, seenTopics: Map<string, Topic>): Promise<any> {
+export async function getVulnDataForRepos(graphql: any, orgLogin: string, newRepos: Repository[], teamData: Team, orgData: any, seen: Set<string>, seenTopics: Map<string, Topic>): Promise<any> {
     for (let newRepo of newRepos) {
         let offenses = new Set<string>
 

@@ -1,8 +1,5 @@
 import { getRepoNodes } from "../getReposForTeam";
 
-const getReposForTeam = require('../getReposForTeam');
-const graphql = require('../useOctokitGraphQl');
-jest.mock('../useOctokitGraphQl');
 
 describe("getRepoNodes Test Suite", () => {
     test("Should return empty list when given invalid org name", async () => {

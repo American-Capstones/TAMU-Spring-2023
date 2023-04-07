@@ -1,10 +1,6 @@
 import { getVulnerabilityNodes } from "../getVulnsFromRepo";
 
-const getVulnsFromRepo = require('../getVulnsFromRepo');
-const graphql = require('../useOctokitGraphQl');
-jest.mock('../useOctokitGraphQl');
-
-describe("getVulnerabilitiesFromRepo Test Suite", () => {
+describe("getVulnsFromRepo Test Suite", () => {
     test("Should return a valid list of vulnerabilities when given all valid inputs", async () => {
         const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) => Promise.resolve(
             {
@@ -16,12 +12,13 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                             "hasNextPage": false,
                             "endCursor": ""
                         },
-                        "nodes": [
+                        nodes: [
                             {
                                 "number": 1,
                                 "createdAt": "2023-03-01T18:32:56Z",
                                 "dismissedAt": null,
                                 "fixedAt": null,
+                                "dependabotUpdate": null,
                                 "securityAdvisory": {
                                     "summary": "vuln1 summary",
                                     "severity": "MODERATE",
@@ -30,14 +27,8 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                                         "totalCount": 1
                                     }
                                 },
-                                "securityVulnerability": {
-                                    "package": {
-                                        "name": "Vuln1 name"
-                                    },
-                                    "firstPatchedVersion": {
-                                        "identifier": "8.0.1"
-                                    },
-                                    "vulnerableVersionRange": "< 8.0.1"
+                                "package": {
+                                    "name": "Vuln1 name",
                                 },
                                 "state": "OPEN"
                             },
@@ -46,6 +37,12 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                                 "createdAt": "2023-03-01T18:32:56Z",
                                 "dismissedAt": "2023-03-10T18:46:04Z",
                                 "fixedAt": null,
+                                "dependabotUpdate": {
+                                    "pullRequest": {
+                                        "number": 3,
+                                        "permalink": "https://github.com/validOrg/validRepo/pull/3"
+                                    }
+                                },
                                 "securityAdvisory": {
                                     "summary": "vuln2 summary",
                                     "severity": "HIGH",
@@ -54,76 +51,18 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                                         "totalCount": 1
                                     }
                                 },
-                                "securityVulnerability": {
-                                    "package": {
-                                        "name": "Vuln2 name"
-                                    },
-                                    "firstPatchedVersion": {
-                                        "identifier": "8.0.1"
-                                    },
-                                    "vulnerableVersionRange": "< 8.0.1"
+                                "package": {
+                                    "name": "Vuln2 name",
                                 },
-                                "state": "DISMISSED"
-                            }
-                        ]
-                    }
+                                "vulnerableVersionRange": "< 8.0.1",
+                            },
+                            state: "DISMISSED",
+                            url: "https://github.com/validOrg/validRepo/security/dependabot/1",
+                        ],
+                    },
                 }
             }
-        ));
-
-        const Vulns = await getVulnerabilityNodes(mockedGraphQl, "validRepo", "validOrg");
-        expect(Vulns).toEqual([
-            {
-                "number": 1,
-                "createdAt": "2023-03-01T18:32:56Z",
-                "dismissedAt": null,
-                "fixedAt": null,
-                "securityAdvisory": {
-                    "classification": "GENERAL",
-                    "severity": "MODERATE",
-                    "summary": "vuln1 summary",
-                    "vulnerabilities": {
-                        "totalCount": 1,
-                    }
-                },
-                "securityVulnerability": {
-                    "firstPatchedVersion": {
-                        "identifier": "8.0.1",
-                    },
-                    "package": {
-                        "name": "Vuln1 name",
-                    },
-                    "vulnerableVersionRange": "< 8.0.1",
-                },
-                "state": "OPEN",
-                "url": "https://github.com/validOrg/validRepo/security/dependabot/1",
-            },
-            {
-                "number": 1,
-                "createdAt": "2023-03-01T18:32:56Z",
-                "dismissedAt": "2023-03-10T18:46:04Z",
-                "fixedAt": null,
-                "securityAdvisory": {
-                    "classification": "GENERAL",
-                    "severity": "HIGH",
-                    "summary": "vuln2 summary",
-                    "vulnerabilities": {
-                        "totalCount": 1,
-                    }
-                },
-                "securityVulnerability": {
-                    "firstPatchedVersion": {
-                        "identifier": "8.0.1",
-                    },
-                    "package": {
-                        "name": "Vuln2 name",
-                    },
-                    "vulnerableVersionRange": "< 8.0.1",
-                },
-                "state": "DISMISSED",
-                "url": "https://github.com/validOrg/validRepo/security/dependabot/1",
-            },
-        ]);
+        )),
     });
 
     test("Should return empty list when given a 'first' value that is too large", async () => {
@@ -154,7 +93,65 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
         ));
 
         const Vulns = await getVulnerabilityNodes(mockedGraphQl, "validRepo", "validOrg");
-        expect(Vulns).toEqual([]);
+        expect(Vulns).toEqual([
+            {
+                "number": 1,
+                "createdAt": "2023-03-01T18:32:56Z",
+                "dismissedAt": null,
+                "fixedAt": null,
+                "dependabotUpdate": null,
+                "securityAdvisory": {
+                    "classification": "GENERAL",
+                    "severity": "MODERATE",
+                    "summary": "vuln1 summary",
+                    "vulnerabilities": {
+                        "totalCount": 1,
+                    }
+                },
+                "securityVulnerability": {
+                    "firstPatchedVersion": {
+                        "identifier": "8.0.1",
+                    },
+                    "package": {
+                        "name": "Vuln1 name",
+                    },
+                    "vulnerableVersionRange": "< 8.0.1",
+                },
+                "state": "OPEN",
+                "url": "https://github.com/validOrg/validRepo/security/dependabot/1",
+            },
+            {
+                "number": 1,
+                "createdAt": "2023-03-01T18:32:56Z",
+                "dismissedAt": "2023-03-10T18:46:04Z",
+                "fixedAt": null,
+                "dependabotUpdate": {
+                    "pullRequest": {
+                        "number": 3,
+                        "permalink": "https://github.com/validOrg/validRepo/pull/3"
+                    }
+                },
+                "securityAdvisory": {
+                    "classification": "GENERAL",
+                    "severity": "HIGH",
+                    "summary": "vuln2 summary",
+                    "vulnerabilities": {
+                        "totalCount": 1,
+                    }
+                },
+                "securityVulnerability": {
+                    "firstPatchedVersion": {
+                        "identifier": "8.0.1",
+                    },
+                    "package": {
+                        "name": "Vuln2 name",
+                    },
+                    "vulnerableVersionRange": "< 8.0.1",
+                },
+                "state": "DISMISSED",
+                "url": "https://github.com/validOrg/validRepo/security/dependabot/1",
+            },
+        ]);
     });
 
     test("Should return empty list when given an invalid org name", async () => {
@@ -179,7 +176,7 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
             }
         ));
 
-        const Vulns = await getVulnerabilityNodes(mockedGraphQl, "invalidOrg", "validRepo", 10);
+        const Vulns = await getVulnerabilityNodes(mockedGraphQl, "invalidOrg", "validRepo");
         expect(Vulns).toEqual([]);
     });
 
@@ -205,7 +202,8 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
             }
         ));
 
-        const Vulns = await getVulnerabilityNodes(mockedGraphQl, "validOrg", "invalidRepo", 10);
+        const Vulns = await getVulnerabilityNodes(mockedGraphQl, "validOrg", "invalidRepo");
         expect(Vulns).toEqual([]);
     });
-})
+});
+
