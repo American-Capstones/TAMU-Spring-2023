@@ -2,15 +2,15 @@ import { useCallback, useEffect, useState } from "react";
 import { getOctokit } from "../utils/functions";
 
 import {
-  useApi,
-  githubAuthApiRef,
+    useApi,
+    githubAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { getReposForTeam } from "../api/getReposForTeam";
 import { Repository } from "../utils/types";
 import { getVulnCountsForAllRepos } from "../api/getVulnCountsForAllRepos";
 
 
-export function useGetReposFromTeam(orgName:string|undefined, teamName:string|undefined) {
+export function useGetReposFromTeam(orgName: string | undefined, teamName: string | undefined) {
     const [loading, setLoading] = useState<boolean>(true);
     const [repos, setRepos] = useState<Repository[]>([]);
     const [error, setError] = useState<Error>();
@@ -23,7 +23,7 @@ export function useGetReposFromTeam(orgName:string|undefined, teamName:string|un
         const graphql = await getOctokit(auth)
 
         try {
-            if(teamName && orgName) {
+            if (teamName && orgName) {
                 repoNames = await getReposForTeam(graphql, orgName, teamName)
 
             }
@@ -43,7 +43,7 @@ export function useGetReposFromTeam(orgName:string|undefined, teamName:string|un
     }, [getOrgNames]);
 
     return {
-        loading, 
+        loading,
         repos,
         error
     };

@@ -14,14 +14,14 @@
 * limitations under the License.
 */
 
-import { Org, Orgs, Error } from '../utils/types';
+import { Org, Orgs } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_ORG_MAX_ITEMS } from '../utils/constants';
 
-export const getOrgsForUser = (graphql:any) => {
+export const getOrgsForUser = (graphql: any) => {
     return getOrgNodes(graphql, GITHUB_ORG_MAX_ITEMS);
 };
 
-export async function getOrgNodes(graphql:any, organizationLimit: number): Promise<Org[]> {
+export async function getOrgNodes(graphql: any, organizationLimit: number): Promise<Org[]> {
     const orgNodes: Org[] = [];
     let result:
         | Orgs<Org[]>
@@ -29,7 +29,7 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
 
     do {
         result = await graphql(
-        `
+            `
         query($first: Int, $endCursor: String){
             viewer {
               organizations(first:$first, after: $endCursor) {
@@ -43,18 +43,18 @@ export async function getOrgNodes(graphql:any, organizationLimit: number): Promi
             }
           }
         `,
-        {
-            first:
-            organizationLimit > GITHUB_GRAPHQL_MAX_ITEMS
-                ? GITHUB_GRAPHQL_MAX_ITEMS
-                : organizationLimit,
-            endCursor: result
-            ? result.viewer.organizations.pageInfo.endCursor
-            : undefined,
-        },
+            {
+                first:
+                    organizationLimit > GITHUB_GRAPHQL_MAX_ITEMS
+                        ? GITHUB_GRAPHQL_MAX_ITEMS
+                        : organizationLimit,
+                endCursor: result
+                    ? result.viewer.organizations.pageInfo.endCursor
+                    : undefined,
+            },
         );
 
-        if(result?.viewer){
+        if (result?.viewer) {
             orgNodes.push(
                 ...result.viewer.organizations.nodes
             );

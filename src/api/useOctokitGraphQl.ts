@@ -15,34 +15,33 @@
  */
 import { Octokit } from '@octokit/rest';
 import {
-  useApi,
-  githubAuthApiRef,
-  configApiRef,
+    useApi,
+    githubAuthApiRef,
+    configApiRef,
 } from '@backstage/core-plugin-api';
-import { readGithubIntegrationConfigs } from '@backstage/integration';
 
 let octokit: any;
 
 export const useOctokitGraphQl = <T>() => {
-  const auth = useApi(githubAuthApiRef);
-  const config = useApi(configApiRef);
+    const auth = useApi(githubAuthApiRef);
+    const config = useApi(configApiRef);
 
-  /*const baseUrl = readGithubIntegrationConfigs(
-    config.getOptionalConfigArray('integrations.github') ?? [],
-  )[0].apiBaseUrl;*/
-  const baseUrl = "https://api.github.com"
+    /*const baseUrl = readGithubIntegrationConfigs(
+      config.getOptionalConfigArray('integrations.github') ?? [],
+    )[0].apiBaseUrl;*/
+    const baseUrl = "https://api.github.com"
 
-  return (path: string, options?: any): Promise<T> =>
-    auth
-      .getAccessToken(['repo', 'read:org', 'read:discussion'])
-      .then((token: string) => {
-        if (!octokit) {
-          octokit = new Octokit({ auth: token, ...(baseUrl && { baseUrl }) });
-        }
+    return (path: string, options?: any): Promise<T> =>
+        auth
+            .getAccessToken(['repo', 'read:org', 'read:discussion'])
+            .then((token: string) => {
+                if (!octokit) {
+                    octokit = new Octokit({ auth: token, ...(baseUrl && { baseUrl }) });
+                }
 
-        return octokit;
-      })
-      .then(octokitInstance => {
-        return octokitInstance.graphql(path, options);
-      });
+                return octokit;
+            })
+            .then(octokitInstance => {
+                return octokitInstance.graphql(path, options);
+            });
 };

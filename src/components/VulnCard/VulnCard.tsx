@@ -13,7 +13,7 @@ import { ExpandMore } from '@material-ui/icons'
 function utcToHuman(date_string: string) {
     let date = new Date(date_string);
     return date.toLocaleString();
-  }
+}
 
 type VulnCardProps = {
     vuln: VulnInfoFormatted
@@ -52,15 +52,15 @@ export const VulnCard = (props: VulnCardProps) => {
 
                         {props.vuln.pullRequest &&
                             <Button href={props.vuln.pullRequest}>
-                            <Tooltip title='Pull Request'>
-                                <Chip
-                                    clickable
-                                    style={{
-                                        color: 'white',
-                                        fontWeight: 'bolder',
-                                        background: deepPurple[500]
-                                    }} label={"PR"} />
-                            </Tooltip>
+                                <Tooltip title='Pull Request'>
+                                    <Chip
+                                        clickable
+                                        style={{
+                                            color: 'white',
+                                            fontWeight: 'bolder',
+                                            background: deepPurple[500]
+                                        }} label={"PR"} />
+                                </Tooltip>
                             </Button>
                         }
 

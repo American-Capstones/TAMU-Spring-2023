@@ -21,26 +21,26 @@ export interface stateInterface {
 }
 
 const team_cols = [
-    {title: 'Team Name', field: 'name'}, 
-    {title: 'critical', field: 'vulnData.criticalNum'}, 
-    {title: 'high', field: 'vulnData.highNum'}, 
-    {title: 'moderate', field: 'vulnData.moderateNum'}, 
-    {title: 'low', field: 'vulnData.lowNum'}
+    { title: 'Team Name', field: 'name' },
+    { title: 'critical', field: 'vulnData.criticalNum' },
+    { title: 'high', field: 'vulnData.highNum' },
+    { title: 'moderate', field: 'vulnData.moderateNum' },
+    { title: 'low', field: 'vulnData.lowNum' }
 ]
 const topic_cols = [
-    {title: 'Topic Name', field: 'name'}, 
-    {title: 'critical', field: 'vulnData.criticalNum'}, 
-    {title: 'high', field: 'vulnData.highNum'}, 
-    {title: 'moderate', field: 'vulnData.moderateNum'}, 
-    {title: 'low', field: 'vulnData.lowNum'}
+    { title: 'Topic Name', field: 'name' },
+    { title: 'critical', field: 'vulnData.criticalNum' },
+    { title: 'high', field: 'vulnData.highNum' },
+    { title: 'moderate', field: 'vulnData.moderateNum' },
+    { title: 'low', field: 'vulnData.lowNum' }
 ]
 const repo_cols = [
-    {title: 'Repo Name', field: 'name'}, 
-    {title: 'critical', field: 'critical'}, 
-    {title: 'high', field: 'high'}, 
-    {title: 'moderate', field: 'moderate'}, 
-    {title: 'low', field: 'low'},
-    {title: 'topics', field: 'repositoryTopics'}
+    { title: 'Repo Name', field: 'name' },
+    { title: 'critical', field: 'critical' },
+    { title: 'high', field: 'high' },
+    { title: 'moderate', field: 'moderate' },
+    { title: 'low', field: 'low' },
+    { title: 'topics', field: 'repositoryTopics' }
 ]
 
 export const Organization = () => {
@@ -49,7 +49,7 @@ export const Organization = () => {
     const location = useLocation();
     const { loading, data: orgData, error } = useGetAllVulns(orgName);
     const { scope } = useContext(ScopeContext);
-    const [ tableScope, setTableScope ] = useState<string>(scope);
+    const [tableScope, setTableScope] = useState<string>(scope);
 
     let goToTeams = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./team/${rowData.name}`, { replace: true });
@@ -76,9 +76,9 @@ export const Organization = () => {
     return (
         <>
             {location.state && location.state.error &&
-                <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state.error}</Alert>
+                <Alert severity='error' style={{ marginBottom: '1rem' }}>{location.state.error}</Alert>
             }
-            <div style={{marginBottom:'1.24rem'}}>
+            <div style={{ marginBottom: '1.24rem' }}>
                 <SelectOrg defaultOption={orgName ?? ''} />
             </div>
             <Grid container spacing={8} direction='column'>
@@ -86,10 +86,10 @@ export const Organization = () => {
                     <Graphs barData={makeBarData(orgData)} lineData={makeLineData(orgData)} isLoading={loading} />
                 </Grid>
                 <Grid item>
-                    <div style={{marginBottom:'1.04rem'}}>
+                    <div style={{ marginBottom: '1.04rem' }}>
                         <SelectScope handleClick={changeScope} defaultOption={scope} />
                     </div>
-                    {(loading || !orgData) && 
+                    {(loading || !orgData) &&
                         <Skeleton variant="rectangular" width="100%">
                             <Table
                                 columns={team_cols}
@@ -98,7 +98,7 @@ export const Organization = () => {
                                 filters={filters}
                                 emptyContent={emptyTeamsContent}
                                 isLoading={loading}
-                        /></Skeleton>
+                            /></Skeleton>
                     }
                     {tableScope == "teams" && !loading &&
                         <Table

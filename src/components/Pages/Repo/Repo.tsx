@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormControlLabel, Switch } from '@material-ui/core';
-import { RepoVulns, VulnInfoUnformatted } from '../../../utils/types';
+import { RepoVulns } from '../../../utils/types';
 import { VulnList } from '../../VulnList';
-import { Error } from '../Error';
-import ReactLoading from "react-loading";
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 import { Skeleton } from '@material-ui/lab';
 import { HorizontalScrollGrid } from '@backstage/core-components';
 import CircleIcon from '@mui/icons-material/Circle';
 
 const columnStyle: React.CSSProperties = {
-  marginRight: "4em",
-  display: "flex",
-  flexDirection: "column",
-  minWidth: "25em",
-  maxWidth: "25em"
+    marginRight: "4em",
+    display: "flex",
+    flexDirection: "column",
+    minWidth: "25em",
+    maxWidth: "25em"
 }
 
 export const Repo = ({ }: {}) => {
     const { orgName, repoName, teamName, topicName } = useParams();
     const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
-    const [ shownRepoVulns, setShownRepoVulns ] = useState<RepoVulns>();
-    const [ openVulns, setOpenVulns ] = useState<RepoVulns>();
+    const [shownRepoVulns, setShownRepoVulns] = useState<RepoVulns>();
+    const [openVulns, setOpenVulns] = useState<RepoVulns>();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -36,15 +34,15 @@ export const Repo = ({ }: {}) => {
             })
         }
     }, [vulns]);
-    
+
     const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
-      const target = event.target as HTMLInputElement;
-      
-      if (target.checked) {
-          setShownRepoVulns(openVulns);
-      } else if (!target.checked){
-          setShownRepoVulns(vulns);
-      }
+        const target = event.target as HTMLInputElement;
+
+        if (target.checked) {
+            setShownRepoVulns(openVulns);
+        } else if (!target.checked) {
+            setShownRepoVulns(vulns);
+        }
     }
 
     if (error) {
@@ -54,21 +52,20 @@ export const Repo = ({ }: {}) => {
         } else if (currentLocation.includes("topic")) {
             navigate(`../${orgName}/topic/${topicName}`, { state: error.message, replace: false });
         }
-        // return <Error message={error.message}/>
     }
 
     return (
         <div style={{
             width: "100%",
             height: "100%"
-          }}>
+        }}>
             <h1>{repoName}</h1>
             <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
             <HorizontalScrollGrid>
                 <div style={{
-                padding: "1.24rem",
-                display: "flex",
-                flexDirection: "row"
+                    padding: "1.24rem",
+                    display: "flex",
+                    flexDirection: "row"
                 }}>
                     <div title="Critical" style={columnStyle}>
                         <div style={{
@@ -132,6 +129,6 @@ export const Repo = ({ }: {}) => {
                     </div>
                 </div>
             </HorizontalScrollGrid>
-        </div> 
+        </div>
     );
 }

@@ -1,14 +1,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { getMonthlyVulns } from "../api/getMonthlyVulns";
-import { formatOrgData, getOctokit } from "../utils/functions";
+import { getOctokit } from "../utils/functions";
 
 import {
-  useApi,
-  githubAuthApiRef,
+    useApi,
+    githubAuthApiRef,
 } from '@backstage/core-plugin-api';
 
-export function useGetMonthlyVulns(orgName:string|undefined) {
+export function useGetMonthlyVulns(orgName: string | undefined) {
     const [loading, setLoading] = useState<boolean>(true);
     const [months, setMonths] = useState<number[]>([]);
     const [error, setError] = useState<Error>();
@@ -17,7 +17,7 @@ export function useGetMonthlyVulns(orgName:string|undefined) {
 
     const getMonthVulns = useCallback(async () => {
         setLoading(true);
-        if(orgName) {
+        if (orgName) {
             try {
                 const graphql = await getOctokit(auth)
                 const result = await getMonthlyVulns(graphql, orgName) //result also has an error message that can be handled
@@ -35,7 +35,7 @@ export function useGetMonthlyVulns(orgName:string|undefined) {
     }, [getMonthVulns]);
 
     return {
-        loading, 
+        loading,
         months,
         error
     };

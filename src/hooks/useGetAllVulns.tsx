@@ -4,8 +4,8 @@ import { getOctokit } from "../utils/functions";
 import { DataContext } from '../components/Root/Root';
 
 import {
-  useApi,
-  githubAuthApiRef,
+    useApi,
+    githubAuthApiRef,
 } from '@backstage/core-plugin-api';
 import { Org } from "../utils/types";
 import { EMPTY_ORG } from "../utils/constants";
@@ -14,15 +14,15 @@ interface iDataContext {
     data: Org,
     setData: Dispatch<SetStateAction<Org>>
 }
-export function useGetAllVulns(orgName:string|undefined) {
+export function useGetAllVulns(orgName: string | undefined) {
     const [loading, setLoading] = useState<boolean>(true);
-    const {data, setData} = useContext<iDataContext>(DataContext);
+    const { data, setData } = useContext<iDataContext>(DataContext);
     const [error, setError] = useState<Error>();
 
     const auth = useApi(githubAuthApiRef)
     const getVulns = useCallback(async () => {
 
-        if(orgName && data.name != orgName) {
+        if (orgName && data.name != orgName) {
             let allData: any;
 
             try {
@@ -30,11 +30,11 @@ export function useGetAllVulns(orgName:string|undefined) {
                 allData = await getAllData(graphql, orgName)
 
                 setData(allData)
-            } catch(caughtError: any){
+            } catch (caughtError: any) {
                 setError(Error(caughtError.message));
                 setData(EMPTY_ORG)
-            }  
-       }
+            }
+        }
         setLoading(false)
     }, [orgName])
 
@@ -43,7 +43,7 @@ export function useGetAllVulns(orgName:string|undefined) {
     }, [getVulns]);
 
     return {
-        loading, 
+        loading,
         data,
         error
     };

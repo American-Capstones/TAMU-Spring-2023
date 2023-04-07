@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 import {
-  Teams, 
-  Team,
+    Teams,
+    Team,
 } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_TEAM_MAX_ITEMS } from '../utils/constants';
 
-export const getTeamsForOrg = (graphql:any,  orgLogin: string) => {
-  let teams =  getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
-  return teams;
+export const getTeamsForOrg = (graphql: any, orgLogin: string) => {
+    let teams = getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
+    return teams;
 };
 
-export async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: number, getAll: boolean = false): Promise<Team[]> {
-  const teamNodes: Team[] = [];
-  let result:
-    | Teams<Team[]>
-    | undefined = undefined;
+export async function getTeamNodes(graphql: any, orgLogin: string, teamLimit: number, getAll: boolean = false): Promise<Team[]> {
+    const teamNodes: Team[] = [];
+    let result:
+        | Teams<Team[]>
+        | undefined = undefined;
 
-  do {
-    result = await graphql(
-      `
+    do {
+        result = await graphql(
+            `
       query ($login: String!, $first: Int, $endCursor: String){ 
         organization(login: $login) {
           teams(first:$first, after: $endCursor){
@@ -44,29 +44,29 @@ export async function getTeamNodes(graphql:any, orgLogin: string, teamLimit: num
         }
       }
       `,
-      {
-        login: orgLogin,
-        first:
-          teamLimit > GITHUB_GRAPHQL_MAX_ITEMS
-            ? GITHUB_GRAPHQL_MAX_ITEMS
-            : teamLimit,
-        endCursor: result
-          ? result.organization.teams.pageInfo.endCursor
-          : undefined,
-      },
-    );
-    
-    if(result) {
-      if (!result.organization){
-        break
-      }
-      teamNodes.push(
-        ...result.organization.teams.nodes
-      );
-    }
+            {
+                login: orgLogin,
+                first:
+                    teamLimit > GITHUB_GRAPHQL_MAX_ITEMS
+                        ? GITHUB_GRAPHQL_MAX_ITEMS
+                        : teamLimit,
+                endCursor: result
+                    ? result.organization.teams.pageInfo.endCursor
+                    : undefined,
+            },
+        );
 
-    if (teamNodes.length >= teamLimit && !getAll) return teamNodes;
-  } while (result?.organization.teams.pageInfo.hasNextPage);
+        if (result) {
+            if (!result.organization) {
+                break
+            }
+            teamNodes.push(
+                ...result.organization.teams.nodes
+            );
+        }
 
-  return teamNodes;
+        if (teamNodes.length >= teamLimit && !getAll) return teamNodes;
+    } while (result?.organization.teams.pageInfo.hasNextPage);
+
+    return teamNodes;
 }

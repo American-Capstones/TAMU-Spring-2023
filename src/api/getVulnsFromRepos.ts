@@ -18,30 +18,30 @@
 import {
     VulnInfoRepo,
     VulnInfoUnformatted
-  } from '../utils/types';
-  import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULNS_MAX_ITEMS } from '../utils/constants';
-  
-  export const getVulnsFromRepos = (graphql: any, ids: string[], orgLogin: string, getAll: boolean) => {  
-      return getVulnerabilityNodes(graphql, ids, orgLogin, getAll);
-  };
-  
-  export async function getVulnerabilityNodes(
+} from '../utils/types';
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULNS_MAX_ITEMS } from '../utils/constants';
+
+export const getVulnsFromRepos = (graphql: any, ids: string[], orgLogin: string, getAll: boolean) => {
+    return getVulnerabilityNodes(graphql, ids, orgLogin, getAll);
+};
+
+export async function getVulnerabilityNodes(
     graphql: (
-      path: string,
-      options?: any,
+        path: string,
+        options?: any,
     ) => Promise<VulnInfoRepo<VulnInfoUnformatted[]>>,
     ids: string[],
     owner: string,
     getAll: boolean = false
-  ): Promise<VulnInfoUnformatted[]> {
+): Promise<VulnInfoUnformatted[]> {
     const repoRequestLimit = GITHUB_VULNS_MAX_ITEMS
-    const vulnerabilityData : VulnInfoUnformatted[] = [];
+    const vulnerabilityData: VulnInfoUnformatted[] = [];
     let result:
-      | VulnInfoRepo<VulnInfoUnformatted[]>
-      | undefined = undefined;
-    do{
-      result = await graphql(
-        `
+        | VulnInfoRepo<VulnInfoUnformatted[]>
+        | undefined = undefined;
+    do {
+        result = await graphql(
+            `
         query ($ids: [ID!]!, $first: Int, $endCursor: String){
             nodes(ids: $ids) {
                 ... on Repository {
@@ -76,31 +76,30 @@ import {
               }
             }
         `,
-        {
-          ids: ids,
-          owner: owner,
-          first:
-            repoRequestLimit > GITHUB_GRAPHQL_MAX_ITEMS
-              ? GITHUB_GRAPHQL_MAX_ITEMS
-              : repoRequestLimit,
-          endCursor: result
-          ? result.nodes[0].vulnerabilityAlerts.pageInfo.endCursor
-          : undefined,
-        },
-      );
-      if(result){
-        console.log(result)
-        // if(!result.repository || !result.repository.vulnerabilityAlerts){
-        //   break
-        // }
-        for (var n of result.nodes){
-            vulnerabilityData.push(...n.vulnerabilityAlerts.nodes)            
+            {
+                ids: ids,
+                owner: owner,
+                first:
+                    repoRequestLimit > GITHUB_GRAPHQL_MAX_ITEMS
+                        ? GITHUB_GRAPHQL_MAX_ITEMS
+                        : repoRequestLimit,
+                endCursor: result
+                    ? result.nodes[0].vulnerabilityAlerts.pageInfo.endCursor
+                    : undefined,
+            },
+        );
+        if (result) {
+            console.log(result)
+            // if(!result.repository || !result.repository.vulnerabilityAlerts){
+            //   break
+            // }
+            for (var n of result.nodes) {
+                vulnerabilityData.push(...n.vulnerabilityAlerts.nodes)
+            }
         }
-      }
-      
-      if (vulnerabilityData.length >= repoRequestLimit && !getAll) return vulnerabilityData;
-    } while(result?.nodes[0].vulnerabilityAlerts.pageInfo.hasNextPage)
-  
+
+        if (vulnerabilityData.length >= repoRequestLimit && !getAll) return vulnerabilityData;
+    } while (result?.nodes[0].vulnerabilityAlerts.pageInfo.hasNextPage)
+
     return vulnerabilityData;
-  }
-  
+}
