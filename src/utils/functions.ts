@@ -227,3 +227,38 @@ export const severityColors = (severity: string) => {
             return grey[600];
     }
 }
+
+export const getColorStyling = (numVulns: number) => {
+    let style: React.CSSProperties = {}
+    if (numVulns == 0) {
+        style = {
+            // green background
+            backgroundColor: 'green',
+            color: 'white'
+        }
+    }
+    else if (numVulns <= 2) {
+        style = {
+            // yellow background
+            backgroundColor: '#ffeb3b',
+            color: '#523b02'
+        }
+
+    }
+    else if (numVulns < 6) {
+        style = {
+            // orange background
+            backgroundColor: '#ff9800',
+            color: 'white'
+        }
+    }
+    else {
+        console.log("numVulns: " + numVulns)
+        style = {
+            // red background
+            backgroundColor: 'red',
+            color: 'white'
+        }
+    }
+    return style
+};

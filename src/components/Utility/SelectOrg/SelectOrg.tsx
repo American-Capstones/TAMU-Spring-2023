@@ -1,12 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 import { useState } from 'react';
 import { Box, TextField } from '@material-ui/core';
 import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 import { useNavigate } from "react-router-dom";
 import { Autocomplete, Alert } from '@mui/material';
 import { Org } from '../../../utils/types';
+import { DataContext } from '../../Root/Root';
+import { EMPTY_ORG } from '../../../utils/constants';
+import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
+
+interface iDataContext {
+    data: Org,
+    setData: Dispatch<SetStateAction<Org>>
+}
 
 export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) => {
+    const { setData } = useContext<iDataContext>(DataContext);
     const [selectValue, setSelectValue] = useState<Org | null>(null);
     const { loading, orgs, error } = useGetOrgsForUser();
     const navigate = useNavigate();
@@ -22,7 +31,6 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
             }
         }
     }, [loading])
-
 
     return (
         <>
@@ -41,6 +49,7 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
                         navigate('../');
                     }
                     else {
+                        setData(EMPTY_ORG);
                         navigate(`../${newValue.name}`, { replace: true });
                     }
                 }}

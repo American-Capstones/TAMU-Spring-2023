@@ -26,12 +26,14 @@ export function useGetAllVulns(orgName: string | undefined) {
             let allData: any;
 
             try {
+                setLoading(true);
                 const graphql = await getOctokit(auth)
                 allData = await getAllData(graphql, orgName)
 
                 setData(allData)
             } catch (caughtError: any) {
                 setError(Error(caughtError.message));
+                setLoading(true);
                 setData(EMPTY_ORG)
             }
         }
@@ -43,6 +45,7 @@ export function useGetAllVulns(orgName: string | undefined) {
     }, [getVulns]);
 
     return {
+        setLoading,
         loading,
         data,
         error

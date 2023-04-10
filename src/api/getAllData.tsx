@@ -3,7 +3,7 @@ import { getReposForTeam } from "./getReposForTeam";
 import { getVulnsFromRepo } from "./getVulnsFromRepo";
 import { getReposForOrg } from "./getReposForOrg";
 
-import { Team, Topic, Repository, vulnData } from "../utils/types";
+import { Team, Topic, Repository, vulnData, VulnInfoShort } from "../utils/types";
 import { formatVulnData } from "../utils/functions";
 import { EMPTY_ORG, EMPTY_TEAM, EMPTY_VULNDATA } from "../utils/constants";
 
@@ -54,7 +54,7 @@ export async function getAllRawData(graphql: any, orgLogin: string): Promise<{ "
 
 export async function getVulnDataForRepos(graphql: any, orgLogin: string, newRepos: Repository[], teamData: Team, orgData: any, seen: Set<string>, seenTopics: Map<string, Topic>): Promise<any> {
     for (let newRepo of newRepos) {
-        let offenses = new Set<string>
+        let dismissed = new Set<VulnInfoShort>
 
         //getVulnsFromRepo should return an error
         let newVulns = await getVulnsFromRepo(graphql, newRepo.name, orgLogin)
@@ -70,41 +70,44 @@ export async function getVulnDataForRepos(graphql: any, orgLogin: string, newRep
 
         let topicVulnData: vulnData = JSON.parse(JSON.stringify(EMPTY_VULNDATA))
 
-        for (let vulns of newVulnsFormatted) {
-            let createdDate = new Date(vulns.createdAt)
+        for (let vuln of newVulnsFormatted) {
+            let createdDate = new Date(vuln.createdAt)
             let createdIndex = createdDate.getMonth()
-            let dismissedIndex = vulns.dismissedAt != null ? new Date(vulns.dismissedAt).getMonth() : -1
+            let dismissedIndex = vuln.dismissedAt != null ? new Date(vuln.dismissedAt).getMonth() : -1
 
-        let today = new Date()
-        const vulnJSON = JSON.parse(JSON.stringify(vulns))
-        const vulnName = vulnJSON.packageName
-        if(vulns.dismissedAt){
-          offenses.add(vulnName)
-        }
-        else if(offenses.has(vulnName)) {
-          teamData.offenses += 1
-        }
-        let severityCat:string = ""
-        let severityCatNum:string = ""
+            let today = new Date()
+            const vulnJSON = JSON.parse(JSON.stringify(vuln))
+            const vulnName = vulnJSON.packageName
+            const checkVuln: VulnInfoShort = { packageName: vulnName, versionNum: vulnJSON.versionNum, severity: vulnJSON.severity }
 
-            if (vulns.severity == "CRITICAL") {
+            if (vuln.dismissedAt) {
+                dismissed.add(checkVuln)
+            }
+            else if (dismissed.has(checkVuln)) {
+                teamData.offenses.push(checkVuln)
+            }
+
+            let severityCat: string = ""
+            let severityCatNum: string = ""
+
+            if (vuln.severity == "CRITICAL") {
                 severityCat = "critical"
                 severityCatNum = "criticalNum"
             }
-            else if (vulns.severity == "HIGH") {
+            else if (vuln.severity == "HIGH") {
                 severityCat = "high"
                 severityCatNum = "highNum"
             }
-            else if (vulns.severity == "MODERATE") {
+            else if (vuln.severity == "MODERATE") {
                 severityCat = "moderate"
                 severityCatNum = "moderateNum"
             }
-            else if (vulns.severity == "LOW") {
+            else if (vuln.severity == "LOW") {
                 severityCat = "low"
                 severityCatNum = "lowNum"
             }
 
-            if (vulns.state == "OPEN") {
+            if (vuln.state == "OPEN") {
                 // @ts-ignore
                 newRepo[severityCat] += 1;
                 // @ts-ignore
@@ -120,7 +123,7 @@ export async function getVulnDataForRepos(graphql: any, orgLogin: string, newRep
             } while (i != dismissedIndex && i != today.getMonth() + 1)
 
             if (!seen.has(id)) {
-                if (vulns.state == "OPEN") {
+                if (vuln.state == "OPEN") {
                     // @ts-ignore
                     orgData.vulnData[severityCatNum] += 1
                     // @ts-ignore

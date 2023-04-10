@@ -40,7 +40,7 @@ export const EMPTY_TEAM: Team = {
         lowNum: 0,
     },
     repos: [],
-    offenses: 0
+    offenses: [],
 }
 
 export const EMPTY_VULNDATA: vulnData = {

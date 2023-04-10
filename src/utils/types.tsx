@@ -77,7 +77,7 @@ export type Teams<T> = {
 export type Team = {
   name: string;
   vulnData: vulnData,
-  offenses: number,
+  offenses: VulnInfoShort[],
   repos: Repository[]
 }
 
@@ -125,6 +125,12 @@ export type VulnInfoUnformatted = {
   }
   state : string;
   url: string;
+}
+
+export type VulnInfoShort = {
+    packageName: string;
+    versionNum: string;
+    severity: string;
 }
 
 export type VulnInfoFormatted = {

@@ -4,9 +4,10 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Table } from '@backstage/core-components';
 import GroupIcon from '@mui/icons-material/Group';
 import { Chip, Grid, Typography } from '@material-ui/core';
-import { makeBarData, makeLineData } from '../../../utils/functions';
+import { getColorStyling, makeBarData, makeLineData } from '../../../utils/functions';
 import { Alert, Skeleton } from '@mui/material';
 import { useGetTeamVulns } from '../../../hooks/useGetTeamVulns';
+import { VulnInfoShort } from '../../../utils/types';
 
 const emptyContent = () => {
     return (
@@ -20,39 +21,6 @@ export const TeamPage = ({ }: {}) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const getColorStyling = (numVulns: number) => {
-        let style: React.CSSProperties = {}
-        if (numVulns == 0) {
-            style = {
-                // green background
-                backgroundColor: 'green',
-                color: 'white'
-            }
-        }
-        else if (numVulns <= 2) {
-            style = {
-                // yellow background
-                backgroundColor: '#ffeb3b',
-                color: '#523b02'
-            }
-
-        }
-        else if (numVulns < 6) {
-            style = {
-                // orange background
-                backgroundColor: '#ff9800',
-                color: 'white'
-            }
-        }
-        else {
-            style = {
-                // red background
-                backgroundColor: 'red',
-                color: 'white'
-            }
-        }
-        return style
-    };
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
@@ -80,7 +48,9 @@ export const TeamPage = ({ }: {}) => {
             }
             {(teamData && !loading) &&
                 <div style={{
-                    marginBottom: '1.64rem'
+                    marginBottom: '1.64rem',
+                    display: 'flex',
+                    flexDirection: 'row',
                 }}>
                     <div style={{
                         display: 'flex',
@@ -101,12 +71,11 @@ export const TeamPage = ({ }: {}) => {
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        // justifyContent: 'space-between',
                         gap: '.48rem'
                     }}>
 
                         {teamData?.offenses != undefined &&
-                            <Chip style={getColorStyling(teamData.offenses)} label={`${teamData?.offenses} Repeat Vulnerabilities`} />
+                            <Chip style={getColorStyling(teamData.offenses.length)} label={`${teamData.offenses.length} Repeat Vulnerabilities`} />
                         }
                     </div>
                 </div>

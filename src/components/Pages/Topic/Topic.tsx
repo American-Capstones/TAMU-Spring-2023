@@ -50,22 +50,23 @@ export const TopicPage = ({ }: {}) => {
                     gap: '.48rem'
                 }}>
                     {(topicData && !loading) &&
-                        <Chip
-                            label='Topic'
-                            icon={<TagIcon sx={{ color: '#333333' }} />}
-                            style={{ paddingLeft: '.48rem' }} />
+
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: '.48rem'
+                        }}>
+                            <Typography style={{
+                                marginTop: 0,
+                                marginBottom: 0
+                            }} variant='h3'>{(topicData && !loading) ? topicName : ""}</Typography>
+                            <Chip
+                                label='Topic'
+                                icon={<TagIcon sx={{ color: '#333333' }} />}
+                                style={{ paddingLeft: '.48rem' }} />
+                        </div>
                     }
-                </div>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: '.48rem'
-                }}>
-                    <Typography style={{
-                        marginTop: 0,
-                        marginBottom: 0
-                    }} variant='h3'>{(topicData && !loading) ? topicName : ""}</Typography>
                 </div>
             </div>
             <Grid container spacing={6} direction='column'>
