@@ -104,7 +104,6 @@ export const TeamPage = ({ }: {}) => {
                     }} variant='h3'>{(teamData && !loading) ? teamName : ""}</Typography>
                 </div>
             </div>
-            {teamData?.offenses != undefined && teamData.offenses > 0 && <Chip label={`Offenses: ${teamData.offenses}`} />}
             <Grid container spacing={6} direction='column'>
                 <Grid item>
                     <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
