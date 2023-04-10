@@ -23,8 +23,8 @@ export const TeamPage = ({ }: {}) => {
     const location = useLocation();
 
     const getColorStyling = (numVulns: number) => {
-        let style : React.CSSProperties = {}
-        if ( numVulns == 0 ){
+        let style: React.CSSProperties = {}
+        if (numVulns == 0) {
             style = {
                 // green background
                 backgroundColor: 'green',
@@ -101,17 +101,10 @@ export const TeamPage = ({ }: {}) => {
                     alignItems: 'center',
                     gap: '.48rem'
                 }}>
-                    {loading && <Skeleton variant='text'></Skeleton>}
-                    {!loading &&
-                        <Typography style={{
-                            marginTop: 0,
-                            marginBottom: 0
-                        }} variant='h3'>{(teamData && !loading) ? teamName : ""}</Typography>}
-                    {!loading &&
-                        <IconButton target='_blank' href='https://github.com' aria-label='Go to Team Page on GitHub'>
-                            <GitHubIcon />
-                        </IconButton>
-                    }
+                    <Typography style={{
+                        marginTop: 0,
+                        marginBottom: 0
+                    }} variant='h3'>{(teamData && !loading) ? teamName : ""}</Typography>
                 </div>
             </div>
             {teamData?.offenses != undefined && teamData.offenses > 0 && <Chip label={`Offenses: ${teamData.offenses}`} />}
