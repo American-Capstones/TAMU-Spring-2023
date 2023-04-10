@@ -81,10 +81,8 @@ export async function getVulnDataForRepos(graphql:any, orgLogin:string, newRepos
         if(vulns.dismissedAt){
           offenses.add(vulnName)
         }
-        else {
-          if(offenses.has(vulnName)) {
-            teamData.offenses += 1
-          }
+        else if(offenses.has(vulnName)) {
+          teamData.offenses += 1
         }
         let severityCat:string = ""
         let severityCatNum:string = ""

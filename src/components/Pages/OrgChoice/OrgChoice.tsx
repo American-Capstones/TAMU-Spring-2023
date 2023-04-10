@@ -5,7 +5,7 @@ import { Alert } from '@mui/material';
 import { Typography, useMediaQuery } from '@material-ui/core';
 import heroImage from '../../../assets/images/hero.png';
 
-export const OrgChoice = ({ }: {}) => {
+export const OrgChoice = () => {
 
     const desktopImageStyle: React.CSSProperties = {
         borderRadius: '100%',
