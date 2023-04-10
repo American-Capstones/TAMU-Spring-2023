@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FormControlLabel, Switch } from '@material-ui/core';
-import { RepoVulns, VulnInfoUnformatted } from '../../../utils/types';
+import { RepoVulns } from '../../../utils/types';
 import { VulnList } from '../../VulnList';
-import { Error } from '../Error';
-import ReactLoading from "react-loading";
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 import { Skeleton } from '@material-ui/lab';
 import { HorizontalScrollGrid } from '@backstage/core-components';
