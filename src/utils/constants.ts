@@ -1,10 +1,10 @@
 import { Org, Team, vulnData } from "./types";
 
 export const GITHUB_GRAPHQL_MAX_ITEMS = 100;
-export const GITHUB_ORG_MAX_ITEMS = 100000;
-export const GITHUB_TEAM_MAX_ITEMS = 10000;
-export const GITHUB_REPO_MAX_ITEMS = 100000;
-export const GITHUB_VULNS_MAX_ITEMS = 100000;
+export const GITHUB_ORG_MAX_ITEMS = 100;
+export const GITHUB_TEAM_MAX_ITEMS = 100;
+export const GITHUB_REPO_MAX_ITEMS = 100;
+export const GITHUB_VULNS_MAX_ITEMS = 100;
 
 export const EMPTY_ORG:Org = {
     name: '',
