@@ -1,6 +1,7 @@
 import { Octokit } from '@octokit/rest';
 import { OAuthApi } from '@backstage/core-plugin-api';
-import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns, Org, RepositoryUnformatted, Repository, Coords } from "./types"
+import { VulnInfoUnformatted, VulnInfoFormatted, RepoVulns, Org, RepositoryUnformatted, Repository, Coords } from "./types";
+import { grey } from '@material-ui/core/colors';
 
 export const formatVulnData = (VulnDataUnformatted: VulnInfoUnformatted[]) => {
     const vdfArr: VulnInfoFormatted[] = []
@@ -208,4 +209,21 @@ export const makeLineData = (orgData: any) => {
     ].reverse();
 
     return return_val;
+}
+
+export const severityColors = (severity: string) => {
+    switch (severity.toUpperCase()) {
+        case "CRITICAL":
+            return "#67000D";
+        case "HIGH":
+            return "#A50F15";
+        case "MODERATE":
+            return "#EF3B2C";
+        case "LOW":
+            return "#FC9272";
+        case "UNKNOWN":
+            return grey[500];
+        default:
+            return grey[600];
+    }
 }

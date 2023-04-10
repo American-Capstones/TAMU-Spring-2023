@@ -88,25 +88,26 @@ export const TeamPage = ({ }: {}) => {
                         alignItems: 'center',
                         gap: '.48rem'
                     }}>
+                        <Typography style={{
+                            marginTop: 0,
+                            marginBottom: 0
+                        }} variant='h3'>{(teamData && !loading) ? teamName : ""}</Typography>
                         <Chip
                             label='Team'
                             icon={<GroupIcon sx={{ color: '#333333' }} />}
-                            style={{ paddingLeft: '.48rem' }} />
-
-                        {teamData?.offenses != undefined &&
-                            <Chip style={getColorStyling(teamData.offenses)} label={`${teamData?.offenses} Repeat Vulnerabilities`} />
-                        }
+                            style={{ paddingLeft: '.48rem', marginLeft: '1rem' }} />
                     </div>
                     <div style={{
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
+                        // justifyContent: 'space-between',
                         gap: '.48rem'
                     }}>
-                        <Typography style={{
-                            marginTop: 0,
-                            marginBottom: 0
-                        }} variant='h3'>{(teamData && !loading) ? teamName : ""}</Typography>
+
+                        {teamData?.offenses != undefined &&
+                            <Chip style={getColorStyling(teamData.offenses)} label={`${teamData?.offenses} Repeat Vulnerabilities`} />
+                        }
                     </div>
                 </div>
             }

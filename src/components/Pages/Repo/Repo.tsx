@@ -7,6 +7,7 @@ import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 import { Skeleton } from '@material-ui/lab';
 import { HorizontalScrollGrid } from '@backstage/core-components';
 import CircleIcon from '@mui/icons-material/Circle';
+import { severityColors } from '../../../utils/functions';
 
 const columnStyle: React.CSSProperties = {
     marginRight: "4em",
@@ -59,8 +60,10 @@ export const Repo = ({ }: {}) => {
             width: "100%",
             height: "100%"
         }}>
-            <h1>{repoName}</h1>
-            <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
+            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+                <h1>{repoName}</h1>
+                <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
+            </div>
             <HorizontalScrollGrid>
                 <div style={{
                     padding: "1.24rem",
@@ -74,7 +77,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#3B1F2B" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('critical') }} />
                             <h3>Critical Vulnerabilities</h3>
                         </div>
                         {loading &&
@@ -89,7 +92,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#C73E1D" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('high') }} />
                             <h3>High Vulnerabilities</h3>
                         </div>
                         {loading &&
@@ -104,7 +107,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#F18F01" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('moderate') }} />
                             <h3>Moderate Vulnerabilities</h3>
                         </div>
                         {loading &&
@@ -119,7 +122,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#2A4F87" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('low') }} />
                             <h3>Low Vulnerabilities</h3>
                         </div>
                         {loading &&
