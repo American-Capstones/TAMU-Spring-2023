@@ -1,5 +1,5 @@
 import { Tooltip } from '@material-ui/core';
-import { green, grey, red } from '@material-ui/core/colors';
+import { grey } from '@material-ui/core/colors';
 import { SecurityOutlined, VerifiedUserOutlined } from '@material-ui/icons'
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import React from 'react';
@@ -27,6 +27,8 @@ export const VulnCardBadge = (props: VulnCardBadgeProps) => {
                 return "#2A4F87";
             case "UNKNOWN":
                 return grey[500];
+            default:
+                return grey[600];
         }
     }
 
@@ -42,7 +44,7 @@ export const VulnCardBadge = (props: VulnCardBadgeProps) => {
             case "OPEN":
                 return (
                     <Tooltip title="Open Vulnerability">
-                        <SecurityOutlined style={{ color: severityColor} } />
+                        <SecurityOutlined style={{ color: severityColor }} />
                     </Tooltip>
                 );
             case "FIXED":

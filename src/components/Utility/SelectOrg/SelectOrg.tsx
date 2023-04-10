@@ -27,7 +27,7 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
     return (
         <>
             {error &&
-                <Alert severity='error' style={{marginBottom: '1rem'}}>{error}</Alert>
+                <Alert severity='error' style={{ marginBottom: '1rem' }}>{error}</Alert>
             }
             <Autocomplete
                 autoHighlight

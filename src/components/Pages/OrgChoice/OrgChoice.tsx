@@ -54,8 +54,8 @@ export const OrgChoice = ({ }: {}) => {
 
     return (
         <>
-            { location.state && location.state.error &&
-                <Alert severity='error' style={{marginBottom: '1rem'}}>{location.state.error}</Alert>
+            {location.state && location.state.error &&
+                <Alert severity='error' style={{ marginBottom: '1rem' }}>{location.state.error}</Alert>
             }
             <div style={divStyle}>
                 <Typography variant='h4' style={{ marginBottom: "1.2rem", fontSize: '3.96em' }}>Let's roll up our sleeves,<br />and get to work!</Typography>

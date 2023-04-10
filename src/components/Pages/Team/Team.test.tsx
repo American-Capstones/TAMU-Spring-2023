@@ -10,17 +10,17 @@ import { Team } from '../../../utils/types';
 import { Typography } from '@material-ui/core';
 
 // This is necessary to avoid issues testing components w/ hooks
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
-const testTeam:Team = 
+const testTeam: Team =
 {
     name: 'test team 1',
     vulnData: {
         startMonth: 1,
-        critical: [0,0,0,0,0,0,0,0,0,0,0,0],
-        high: [1,1,1,1,1,1,1,1,1,1,1,1],
-        moderate: [2,2,2,2,2,2,2,2,2,2,2,2],
-        low: [3,3,3,3,3,3,3,3,3,3,3,3],
+        critical: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        high: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        moderate: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+        low: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
         criticalNum: 0,
         highNum: 12,
         moderateNum: 24,
@@ -59,9 +59,9 @@ jest.mock('react-router-dom', () => ({
 
 // Needed when fully rendering a Responsive element from Nivo
 class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe() { }
+    unobserve() { }
+    disconnect() { }
 }
 
 describe('Team page test suite', () => {
@@ -72,7 +72,7 @@ describe('Team page test suite', () => {
         const typography = wrapper.find(<Typography>TEST TEAM</Typography>);
         expect(typography).toBeTruthy();
     });
-    
+
     it('should render a Graphs component', async () => {
         const wrapper = shallow(<TeamPage />);
         expect(wrapper.find(Graphs)).toHaveLength(1);

@@ -5,11 +5,10 @@ import { renderInTestApp } from "@backstage/test-utils";
 import { configure } from 'enzyme';
 import { SelectOrg } from '.';
 import React from 'react';
-import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 const testOrg = {
     name: 'test org 2',
@@ -25,16 +24,18 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../hooks/useGetOrgsForUser', () => ({
     ...jest.requireActual('../../../hooks/useGetOrgsForUser'),
-    useGetOrgsForUser: jest.fn().mockReturnValue({ loading: false, orgs: [{
-        name: 'test org', 
-        url: 'test url 1',
-        avatarUrl: 'test url 1',
-    },
-    {
-        name: 'test org 2',
-        url: 'test url 2',
-        avatarUrl: 'test url 2',
-    }]})
+    useGetOrgsForUser: jest.fn().mockReturnValue({
+        loading: false, orgs: [{
+            name: 'test org',
+            url: 'test url 1',
+            avatarUrl: 'test url 1',
+        },
+        {
+            name: 'test org 2',
+            url: 'test url 2',
+            avatarUrl: 'test url 2',
+        }]
+    })
 }));
 
 describe('SelectOrg test suite', () => {
@@ -55,11 +56,11 @@ describe('SelectOrg test suite', () => {
         const Options = wrapper.getAllByRole('option');
 
         // orgs length
-        expect(Options.length).toEqual(2); 
+        expect(Options.length).toEqual(2);
     });
 
     it('should select the correct value if defaultOption is given', async () => {
-        const wrapper = await renderInTestApp(<SelectOrg defaultOption='test org 2'/>);
+        const wrapper = await renderInTestApp(<SelectOrg defaultOption='test org 2' />);
         const input = await wrapper.getByRole('combobox');
         expect(input).toHaveAttribute('value', 'test org 2');
     })
@@ -70,7 +71,7 @@ describe('SelectOrg test suite', () => {
         const input = wrapper.getByRole('combobox');
         await userEvent.click(input);
         autocomplete.focus();
-        
+
         fireEvent.keyDown(autocomplete, { key: 'ArrowDown' })
         fireEvent.keyDown(autocomplete, { key: 'Enter' })
         expect(mockedUsedNavigate).toHaveBeenCalledWith(`../test org 2`, { replace: true });

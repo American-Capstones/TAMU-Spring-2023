@@ -1,21 +1,8 @@
-import { useCallback, useEffect, useState, useContext, Dispatch, SetStateAction } from "react";
-import { getAllData } from "../api/getAllData";
-import { formatOrgData, getOctokit } from "../utils/functions";
-import { DataContext } from '../components/Root/Root';
-
-import {
-  useApi,
-  githubAuthApiRef,
-} from '@backstage/core-plugin-api';
-import { Org } from "../utils/types";
 import { useGetAllVulns } from "./useGetAllVulns";
-interface iDataContext {
-    data: Org,
-    setData: Dispatch<SetStateAction<Org>>
-}
-export function useGetTopicVulns(orgName:string|undefined, topicName:string|undefined) {
+
+export function useGetTopicVulns(orgName: string | undefined, topicName: string | undefined) {
     const { loading, data: orgData, error } = useGetAllVulns(orgName)
-    
+
     if (!orgData) {
         return {
             loading: true,

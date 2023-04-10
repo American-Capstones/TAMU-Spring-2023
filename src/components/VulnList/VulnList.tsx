@@ -5,19 +5,19 @@ import { VulnCard } from '../VulnCard';
 
 // React Functional Component
 export const VulnList = ({ vulns }: VulnListProps) => {
-  return (
-    <>
-    {vulns &&
-        <Grid container spacing={4}>
-            {vulns.map((vuln, index) =>
-                <Grid key={index} item xs={12} style={{
-                    width: "28em"
-                }}>
-                    <VulnCard vuln={vuln}/>
+    return (
+        <>
+            {vulns &&
+                <Grid container spacing={4}>
+                    {vulns.map((vuln, index) =>
+                        <Grid key={index} item xs={12} style={{
+                            width: "28em"
+                        }}>
+                            <VulnCard vuln={vuln} />
+                        </Grid>
+                    )}
                 </Grid>
-            )}
-        </Grid>
-    }
-    </>
-  )
+            }
+        </>
+    )
 }

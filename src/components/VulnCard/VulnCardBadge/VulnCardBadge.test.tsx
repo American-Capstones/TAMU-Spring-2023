@@ -3,12 +3,11 @@ import { configure, shallow } from 'enzyme';
 import { VulnCardBadge } from './VulnCardBadge';
 import React from 'react';
 import { Tooltip } from '@material-ui/core';
-import { green, grey } from '@material-ui/core/colors';
+import { grey } from '@material-ui/core/colors';
 import { SecurityOutlined, VerifiedUserOutlined } from '@material-ui/icons';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 
 configure({ adapter: new Adapter() });
-
 
 const severityColors = (severity: string) => {
     switch (severity.toUpperCase()) {
@@ -22,10 +21,11 @@ const severityColors = (severity: string) => {
             return "#2A4F87";
         case "UNKNOWN":
             return grey[500];
+        default:
+            return grey[600];
     }
 }
 
-// Test for <VulnCardBadge />
 describe('VulnCardBadge Test Suite', () => {
 
     /* When there is no pull request, it should return <></> */
@@ -45,28 +45,28 @@ describe('VulnCardBadge Test Suite', () => {
         })
 
         it('renders correct icon when state is \'dismissed\'', () => {
-            const wrapper = shallow(<VulnCardBadge state={'DISMISSED'} severity='high'/>);
+            const wrapper = shallow(<VulnCardBadge state={'DISMISSED'} severity='high' />);
             expect(wrapper.contains(
                 <VerifiedUserIcon style={{ color: severityColors('high') }} />
             )).toBeTruthy();
         })
 
         it('renders correct icon when state is lowercase', () => {
-            const wrapper = shallow(<VulnCardBadge state={'open'} severity='high'/>);
+            const wrapper = shallow(<VulnCardBadge state={'open'} severity='high' />);
             expect(wrapper.contains(
                 <SecurityOutlined style={{ color: severityColors('high') }} />
             )).toBeTruthy();
         })
 
         it('renders correct icon when state is mixed case', () => {
-            const wrapper = shallow(<VulnCardBadge state={'oPeN'} severity='critical'/>);
+            const wrapper = shallow(<VulnCardBadge state={'oPeN'} severity='critical' />);
             expect(wrapper.contains(
                 <SecurityOutlined style={{ color: severityColors('critical') }} />
             )).toBeTruthy();
         })
 
         it('should not render when there is no state', () => {
-            const wrapper = shallow(<VulnCardBadge state='' severity='low'/>);
+            const wrapper = shallow(<VulnCardBadge state='' severity='low' />);
             expect(wrapper.find(Tooltip)).toHaveLength(0);
         })
     })
