@@ -1,7 +1,8 @@
 import React from 'react';
 import { Graphs } from '../../Graphs';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
-import { GroupIcon, Table } from '@backstage/core-components';
+import { Table } from '@backstage/core-components';
+import GroupIcon from '@mui/icons-material/Group';
 import { Chip, Grid, Typography } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
 import { Alert, Skeleton } from '@mui/material';
@@ -77,34 +78,38 @@ export const TeamPage = ({ }: {}) => {
             {location.state &&
                 <Alert severity='error' style={{ marginBottom: '1rem' }}>{location.state}</Alert>
             }
-            <div style={{
-                marginBottom: '1.64rem'
-            }}>
+            {(teamData && !loading) &&
                 <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: '.48rem'
+                    marginBottom: '1.64rem'
                 }}>
-                    <Chip label='Team' icon={<GroupIcon />} style={{ paddingLeft: '.48rem' }} />
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: '.48rem'
+                    }}>
+                        <Chip
+                            label='Team'
+                            icon={<GroupIcon sx={{ color: '#333333' }} />}
+                            style={{ paddingLeft: '.48rem' }} />
 
-                    {teamData?.offenses != undefined &&
-                        <Chip style={getColorStyling(teamData.offenses)} label={`${teamData?.offenses} Reoccurences`} />
-                    }
+                        {teamData?.offenses != undefined &&
+                            <Chip style={getColorStyling(teamData.offenses)} label={`${teamData?.offenses} Repeat Vulnerabilities`} />
+                        }
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: '.48rem'
+                    }}>
+                        <Typography style={{
+                            marginTop: 0,
+                            marginBottom: 0
+                        }} variant='h3'>{(teamData && !loading) ? teamName : ""}</Typography>
+                    </div>
                 </div>
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: '.48rem'
-                }}>
-                    <Typography style={{
-                        marginTop: 0,
-                        marginBottom: 0
-                    }} variant='h3'>{(teamData && !loading) ? teamName : ""}</Typography>
-                </div>
-            </div>
-            {teamData?.offenses != undefined && teamData.offenses > 0 && <Chip label={`Offenses: ${teamData.offenses}`} />}
+            }
             <Grid container spacing={6} direction='column'>
                 <Grid item>
                     <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />

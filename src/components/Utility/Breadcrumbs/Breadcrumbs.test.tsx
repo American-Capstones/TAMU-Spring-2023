@@ -4,9 +4,8 @@ import { Typography } from "@material-ui/core";
 import React from 'react';
 import { configure, shallow } from 'enzyme';
 import { Link } from "@backstage/core-components";
-import { CribSharp } from '@mui/icons-material';
 
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 // When these paths are split, will result in an array like:
 // [ "", "dd", "testOrg", ...]
@@ -22,7 +21,7 @@ jest.mock('react-router-dom', () => ({
 const routerDom = require('react-router-dom');
 
 describe('Breadcrumbs test suite', () => {
-    
+
     it('should render the correct amount of breadcrumbs', () => {
         const wrapper = shallow(<Breadcrumbs />);
         expect(wrapper.find(Link).length).toEqual(2);
@@ -35,12 +34,12 @@ describe('Breadcrumbs test suite', () => {
         let crumbs = pathname.split('/').slice(2).filter((crumb) => !['team', 'topic', 'repo'].includes(crumb));
         const links = wrapper.find(Link);
         const current = wrapper.find(Typography);
-        
+
         links.forEach((link) => {
             expect(crumbs.includes(link.text())).toBeTruthy();
             crumbs.splice(crumbs.indexOf(link.text()), 1);
         })
-        
+
         expect(crumbs.length).toEqual(1); // The last crumb should be the current page, not a link
         expect(crumbs.includes(current.text())).toBeTruthy();
     });
@@ -49,13 +48,16 @@ describe('Breadcrumbs test suite', () => {
         // Find the link tags, test their "to" attr
         const wrapper = shallow(<Breadcrumbs />);
         const links = wrapper.find(Link);
-        const intermediates = ['team','topic','repo']
         let aggregate = '';
 
         links.forEach(async (link) => {
             const page = link.text();
             const to = link.prop('to');
-            if (page === "testTeam") { aggregate = `${aggregate}/team` }
+
+            if (page === "testTeam") {
+                aggregate = `${aggregate}/team`
+            }
+
             const expected = `${aggregate}/${page}`;
             expect(to).toEqual(`.${expected}`);
             aggregate = expected;

@@ -1,18 +1,17 @@
 import React from 'react';
-
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Repo } from './Repo';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
 import {
-  setupRequestMockHandlers,
-  renderInTestApp,
+    setupRequestMockHandlers,
+    renderInTestApp,
 } from "@backstage/test-utils";
 import { configure, shallow } from 'enzyme';
 import { FormControlLabel } from '@material-ui/core';
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 const testRepo = 'TEST REPO';
 

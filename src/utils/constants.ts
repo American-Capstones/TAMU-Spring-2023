@@ -6,7 +6,7 @@ export const GITHUB_TEAM_MAX_ITEMS = 100;
 export const GITHUB_REPO_MAX_ITEMS = 100;
 export const GITHUB_VULNS_MAX_ITEMS = 100;
 
-export const EMPTY_ORG:Org = {
+export const EMPTY_ORG: Org = {
     name: '',
     vulnData: {
         startMonth: undefined,
@@ -26,7 +26,7 @@ export const EMPTY_ORG:Org = {
     avatarUrl: '',
 }
 
-export const EMPTY_TEAM:Team = {
+export const EMPTY_TEAM: Team = {
     name: '',
     vulnData: {
         startMonth: undefined,
@@ -43,7 +43,7 @@ export const EMPTY_TEAM:Team = {
     offenses: 0
 }
 
-export const EMPTY_VULNDATA:vulnData =  {
+export const EMPTY_VULNDATA: vulnData = {
     startMonth: undefined,
     critical: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     high: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

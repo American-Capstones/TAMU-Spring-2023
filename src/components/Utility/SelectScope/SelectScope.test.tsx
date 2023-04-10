@@ -1,5 +1,5 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { screen, within } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderInTestApp } from "@backstage/test-utils";
 import { configure } from 'enzyme';
@@ -8,7 +8,7 @@ import React from 'react';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 describe('SelectScope test suite', () => {
     const mockClick = jest.fn();
@@ -26,7 +26,7 @@ describe('SelectScope test suite', () => {
 
     it('should render an option scope available', async () => {
         // These scopes are defined as Teams, Topics, and Repositories
-        
+
         const wrapper = await renderInTestApp(Component);
         const Teams = wrapper.getByLabelText('teams');
         const Topics = wrapper.getByLabelText('topics');
@@ -51,7 +51,7 @@ describe('SelectScope test suite', () => {
         await userEvent.click(Topics);
         const repos = wrapper.getByLabelText('repositories');
         await userEvent.click(repos);
-        
+
         expect(mockClick).toHaveBeenCalledTimes(2);
     });
 });

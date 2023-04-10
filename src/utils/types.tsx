@@ -17,9 +17,9 @@
 import { TableColumn, TableFilter } from "@backstage/core-components";
 
 export type Connection<T> = {
-  nodes: T;
-  pageInfo: {
-    hasNextPage: boolean;
+    nodes: T;
+    pageInfo: {
+     hasNextPage: boolean;
     endCursor?: string;
   };
 };

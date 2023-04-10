@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { ResponsiveLine } from '@nivo/line';
 import { Box, Grid } from '@material-ui/core';
@@ -23,13 +23,13 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 {(isLoading || barData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                
+
                 {(!isLoading && barData.length > 0) && <InfoCard variant='flex'>
-                <h3 style={{margin: '0', textAlign: 'center'}}>Open Vulnerability Count by Severity</h3>
+                    <h3 style={{ margin: '0', textAlign: 'center' }}>Open Vulnerability Count by Severity</h3>
                     <Box
                         style={cardStyle}>
                         <ResponsiveBar
-                            colors={ [ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ]}
+                            colors={['#67000D', '#A50F15', '#EF3B2C', '#FC9272']}
                             data={barData}
                             indexBy="severity"
                             keys={["count"]}
@@ -124,12 +124,12 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
                 {(isLoading || lineData.length == 0) &&
                     <Skeleton variant='rect' style={cardStyle} animation='wave' />
                 }
-                
+
                 {(!isLoading && lineData.length > 0) && <InfoCard variant='flex'>
-                <h3 style={{margin: '0', textAlign: 'center'}}>Total Vulnerability Count by Severity over Time</h3>
+                    <h3 style={{ margin: '0', textAlign: 'center' }}>Total Vulnerability Count by Severity over Time</h3>
                     <Box style={cardStyle}>
                         <ResponsiveLine
-                            colors={[ '#67000D', '#A50F15', '#EF3B2C', '#FC9272' ].reverse()}
+                            colors={['#67000D', '#A50F15', '#EF3B2C', '#FC9272'].reverse()}
                             data={lineData}
                             margin={{ top: 20, right: 110, bottom: 50, left: 60 }}
                             xScale={{ type: 'point' }}

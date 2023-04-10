@@ -6,7 +6,7 @@ import { Root } from './Root';
 import { Header } from '@backstage/core-components';
 import { OrgChoice, Organization, TeamPage, TopicPage, Repo } from '../Pages';
 
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 type Props = {
     path: string,
@@ -16,7 +16,7 @@ type Props = {
 }
 
 
-let pathMap: Map<string, ()=>{}> = new Map<string, ()=>{}>;
+let pathMap: Map<string, () => {}> = new Map<string, () => {}>;
 describe('Root test suite', () => {
     beforeAll(() => {
         const component = shallow(<Root />);
@@ -25,7 +25,7 @@ describe('Root test suite', () => {
             return pathMap.set(routeProps.path, routeProps.element.type);
         }, pathMap);
     })
-    
+
     it('should render a header for the plugin', () => {
         const wrapper = shallow(<Root />);
         expect(wrapper.find(Header).length).toEqual(1);

@@ -1,10 +1,7 @@
-import { getVulnsFromRepo } from "../getVulnsFromRepo";
 import { formatVulnData } from "../../utils/functions";
 import { getVulnDataForRepos } from "../getAllData";
 import {Topic} from "../../utils/functions";
 import { EMPTY_ORG, EMPTY_TEAM, EMPTY_VULNDATA } from "../../utils/constants";
-import { getAllRawData } from "../getAllData";
-import { getReposForOrg } from "../getReposForOrg";
 jest.mock('../getVulnsFromRepo', () => ({
     ...jest.requireActual('../getVulnsFromRepo'),
     getVulnsFromRepo: jest.fn(),

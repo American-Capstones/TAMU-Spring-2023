@@ -6,19 +6,19 @@ import React from 'react';
 import { BarGraphData, LineGraphData } from '../../utils/types';
 import { Graphs } from './Graphs';
 
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe() { }
+    unobserve() { }
+    disconnect() { }
 }
 
 describe('Graphs test suite', () => {
     window.ResizeObserver = ResizeObserver;
     const barData: BarGraphData[] = [{ severity: 'Critical', count: 20 }, { severity: 'Low', count: 200 }]
     const lineData: LineGraphData[] = [{ id: 'Critical', data: [{ x: 'Jan', y: 4 }, { x: 'Jun', y: 15 }] }];
-    const ComponentWithData = <Graphs lineData={lineData} barData={barData}/>;
+    const ComponentWithData = <Graphs lineData={lineData} barData={barData} />;
 
     it('should render a bar graph', async () => {
         const wrapper = shallow(ComponentWithData);

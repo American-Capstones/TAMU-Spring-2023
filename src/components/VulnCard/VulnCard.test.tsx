@@ -2,9 +2,8 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { configure, shallow } from 'enzyme';
 import { VulnCard } from './VulnCard';
 import React from 'react';
-import { Tooltip, Typography } from '@material-ui/core';
-import { green, grey } from '@material-ui/core/colors';
-import { SecurityOutlined, VerifiedUserOutlined } from '@material-ui/icons';
+import { Typography } from '@material-ui/core';
+import { grey } from '@material-ui/core/colors';
 import { VulnInfoFormatted } from '../../utils/types';
 import { format } from 'timeago.js';
 
@@ -28,6 +27,7 @@ describe('VulnCardBadge Test Suite', () => {
             summary: 'test vulnerability',
             vulnerabilityCount: 1,
             state: 'OPEN',
+            url: 'https://test.com'
         }, {
             packageName: 'Test Package 2',
             versionNum: '2.2.2',
@@ -41,6 +41,7 @@ describe('VulnCardBadge Test Suite', () => {
             summary: 'test vulnerability',
             vulnerabilityCount: 2,
             state: 'OPEN',
+            url: 'https://test.com'
         }];
 
         it('should render', () => {
