@@ -1,24 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
 import { getVulnsFromRepo } from "../api/getVulnsFromRepo";
-import { formatVulnData, getOctokit, sortVulnData } from "../utils/functions";
+import { getOctokit, sortVulnData } from "../utils/functions";
 
 import {
-  useApi,
-  githubAuthApiRef,
+    useApi,
+    githubAuthApiRef,
 } from '@backstage/core-plugin-api';
-import {  RepoVulns, VulnInfoFormatted } from "../utils/types";
+import { RepoVulns } from "../utils/types";
 
-export function useGetVulnsFromRepo(repoName:string|undefined, orgName:string|undefined) {
+export function useGetVulnsFromRepo(repoName: string | undefined, orgName: string | undefined) {
     const [loading, setLoading] = useState<boolean>(true);
     const [vulnInfo, setVulnInfo] = useState<RepoVulns>();
     const [error, setError] = useState<Error>();
-    
+
     const auth = useApi(githubAuthApiRef)
 
     const getVulns = useCallback(async () => {
         setLoading(true);
         try {
-            if(repoName && orgName) {
+            if (repoName && orgName) {
                 const graphql = await getOctokit(auth)
                 const vulns = await getVulnsFromRepo(graphql, repoName, orgName)
 
@@ -36,7 +36,7 @@ export function useGetVulnsFromRepo(repoName:string|undefined, orgName:string|un
     }, [getVulns]);
 
     return {
-        loading, 
+        loading,
         vulnInfo,
         error
     };

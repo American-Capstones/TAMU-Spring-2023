@@ -6,7 +6,7 @@ import { renderInTestApp } from "@backstage/test-utils";
 import { configure } from 'enzyme';
 import React from 'react';
 
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 const loc = { pathname: '/dd/path1/path2' }
 const root = { pathname: '/dd' }
