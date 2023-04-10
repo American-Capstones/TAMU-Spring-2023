@@ -19,9 +19,8 @@ import {
 } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_TEAM_MAX_ITEMS } from '../utils/constants';
 
-export const getTeamsForOrg = (graphql: any, orgLogin: string) => {
-    let teams = getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
-    return teams;
+export const getTeamsForOrg = (graphql:any,  orgLogin: string) => {
+  return getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);
 };
 
 export async function getTeamNodes(graphql: any, orgLogin: string, teamLimit: number, getAll: boolean = false): Promise<Team[]> {

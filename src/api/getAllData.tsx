@@ -75,19 +75,17 @@ export async function getVulnDataForRepos(graphql: any, orgLogin: string, newRep
             let createdIndex = createdDate.getMonth()
             let dismissedIndex = vulns.dismissedAt != null ? new Date(vulns.dismissedAt).getMonth() : -1
 
-            let today = new Date()
-            const vulnJSON = JSON.parse(JSON.stringify(vulns))
-            const vulnName = vulnJSON.packageName
-            if (vulns.dismissedAt) {
-                offenses.add(vulnName)
-            }
-            else {
-                if (offenses.has(vulnName)) {
-                    teamData.offenses += 1
-                }
-            }
-            let severityCat: string = ""
-            let severityCatNum: string = ""
+        let today = new Date()
+        const vulnJSON = JSON.parse(JSON.stringify(vulns))
+        const vulnName = vulnJSON.packageName
+        if(vulns.dismissedAt){
+          offenses.add(vulnName)
+        }
+        else if(offenses.has(vulnName)) {
+          teamData.offenses += 1
+        }
+        let severityCat:string = ""
+        let severityCatNum:string = ""
 
             if (vulns.severity == "CRITICAL") {
                 severityCat = "critical"

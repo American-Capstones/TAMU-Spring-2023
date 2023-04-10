@@ -12,9 +12,13 @@ describe("getOrgsForUser Test Suite", () => {
                         },
                         "nodes": [
                             {
+                                "url": "url.com",
+                                "avatarUrl": "avatarUrl.com",
                                 "name": "ORG_ONE"
                             },
                             {
+                                "url": "url2.com",
+                                "avatarUrl": "avatarUrl2.com",
                                 "name": "ORG_TWO"
                             }
                         ]
