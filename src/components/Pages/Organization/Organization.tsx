@@ -2,12 +2,14 @@ import React, { useContext, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
 import { SelectOrg, SelectScope } from '../../Utility';
-import { Table } from '@backstage/core-components';
+import { SubvalueCell, Table } from '@backstage/core-components';
 import { Graphs } from '../../Graphs';
-import { Grid } from '@material-ui/core';
+import { Button, Grid, Typography } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
-import { Alert, Skeleton } from '@mui/material';
+import { Alert, Skeleton, colors } from '@mui/material';
 import { ScopeContext } from "../../Root/Root";
+import { Link } from "@material-ui/icons";
+import { colorVariants } from "@backstage/theme";
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
@@ -21,21 +23,63 @@ export interface stateInterface {
 }
 
 const team_cols = [
-    { title: 'Team Name', field: 'name' },
+    {
+        title: 'Team Name',
+        field: 'name',
+        render: (row: any): React.ReactNode => (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '.72rem',
+                alignItems: 'center',
+            }}><Typography style={{
+                fontWeight: 'bold',
+            }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+            </div>
+        )
+    },
     { title: 'critical', field: 'vulnData.criticalNum' },
     { title: 'high', field: 'vulnData.highNum' },
     { title: 'moderate', field: 'vulnData.moderateNum' },
     { title: 'low', field: 'vulnData.lowNum' }
 ]
 const topic_cols = [
-    { title: 'Topic Name', field: 'name' },
+    {
+        title: 'Topic Name',
+        field: 'name',
+        render: (row: any): React.ReactNode => (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '.72rem',
+                alignItems: 'center',
+            }}><Typography style={{
+                fontWeight: 'bold',
+            }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+            </div>
+        )
+    },
     { title: 'critical', field: 'vulnData.criticalNum' },
     { title: 'high', field: 'vulnData.highNum' },
     { title: 'moderate', field: 'vulnData.moderateNum' },
     { title: 'low', field: 'vulnData.lowNum' }
 ]
 const repo_cols = [
-    { title: 'Repo Name', field: 'name' },
+    {
+        title: 'Repo Name',
+        field: 'name',
+        render: (row: any): React.ReactNode => (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '.72rem',
+                alignItems: 'center',
+            }}><Typography style={{
+                fontWeight: 'bold',
+            }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+            </div>
+        )
+    },
     { title: 'critical', field: 'critical' },
     { title: 'high', field: 'high' },
     { title: 'moderate', field: 'moderate' },

@@ -8,6 +8,7 @@ import { getColorStyling, makeBarData, makeLineData } from '../../../utils/funct
 import { Alert, Skeleton } from '@mui/material';
 import { useGetTeamVulns } from '../../../hooks/useGetTeamVulns';
 import { VulnInfoShort } from '../../../utils/types';
+import { Link } from '@material-ui/icons';
 
 const emptyContent = () => {
     return (
@@ -31,7 +32,21 @@ export const TeamPage = ({ }: {}) => {
     }
 
     const cols = [
-        { title: 'Repository Name', field: 'name' },
+        {
+            title: 'Repository Name',
+            field: 'name',
+            render: (row: any): React.ReactNode => (
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: '.72rem',
+                    alignItems: 'center',
+                }}><Typography style={{
+                    fontWeight: 'bold',
+                }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+                </div>
+            )
+        },
         { title: 'critical', field: 'critical' },
         { title: 'high', field: 'high' },
         { title: 'moderate', field: 'moderate' },
