@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Graphs } from '../../Graphs';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Table } from '@backstage/core-components';
@@ -7,7 +7,6 @@ import { Chip, Grid, Typography } from '@material-ui/core';
 import { getColorStyling, makeBarData, makeLineData } from '../../../utils/functions';
 import { Alert, Skeleton } from '@mui/material';
 import { useGetTeamVulns } from '../../../hooks/useGetTeamVulns';
-import { VulnInfoShort } from '../../../utils/types';
 import { Link } from '@material-ui/icons';
 
 const emptyContent = () => {
@@ -35,7 +34,7 @@ export const TeamPage = ({ }: {}) => {
         {
             title: 'Repository Name',
             field: 'name',
-            render: (row: any): React.ReactNode => (
+            render: (row: any): ReactNode => (
                 <div style={{
                     display: 'flex',
                     flexDirection: 'row',
