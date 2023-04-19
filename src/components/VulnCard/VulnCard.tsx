@@ -49,9 +49,8 @@ export const VulnCard = (props: VulnCardProps) => {
                             marginLeft: "auto"
                         }
                     }>
-
                         {props.vuln.pullRequest &&
-                            <Button href={props.vuln.pullRequest}>
+                            <Button href={props.vuln.pullRequest} target="_blank" onClick={(e) => {e.stopPropagation()}}>
                                 <Tooltip title='Pull Request'>
                                     <Chip
                                         clickable
@@ -63,8 +62,6 @@ export const VulnCard = (props: VulnCardProps) => {
                                 </Tooltip>
                             </Button>
                         }
-
-
                     </div>
                 </div>
             </AccordionSummary>
