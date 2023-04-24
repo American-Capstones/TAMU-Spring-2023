@@ -35,7 +35,7 @@ cd src
 
 Open App.tsx and add 
 
-`import { DependabotDashboard Page } from '@internal/plugin-dependabot-dashboard'`
+`import { DependabotDashboardPage } from '@internal/plugin-dependabot-dashboard'`
 
 Then add a new Route element to "routes"
 
