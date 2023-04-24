@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Graphs } from '../../Graphs';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Table } from '@backstage/core-components';
@@ -7,7 +7,7 @@ import { Chip, Grid, Typography } from '@material-ui/core';
 import { getColorStyling, makeBarData, makeLineData } from '../../../utils/functions';
 import { Alert, Skeleton } from '@mui/material';
 import { useGetTeamVulns } from '../../../hooks/useGetTeamVulns';
-import { VulnInfoShort } from '../../../utils/types';
+import { Link } from '@material-ui/icons';
 
 const emptyContent = () => {
     return (
@@ -31,7 +31,21 @@ export const TeamPage = ({ }: {}) => {
     }
 
     const cols = [
-        { title: 'Repository Name', field: 'name' },
+        {
+            title: 'Repository Name',
+            field: 'name',
+            render: (row: any): ReactNode => (
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    gap: '.72rem',
+                    alignItems: 'center',
+                }}><Typography style={{
+                    fontWeight: 'bold',
+                }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+                </div>
+            )
+        },
         { title: 'critical', field: 'critical' },
         { title: 'high', field: 'high' },
         { title: 'moderate', field: 'moderate' },

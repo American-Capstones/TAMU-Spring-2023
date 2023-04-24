@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FormControlLabel, Switch } from '@material-ui/core';
+import { FormControlLabel, Input, Switch } from '@material-ui/core';
 import { RepoVulns } from '../../../utils/types';
 import { VulnList } from '../../VulnList';
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
@@ -23,6 +23,23 @@ export const Repo = ({ }: {}) => {
     const [shownRepoVulns, setShownRepoVulns] = useState<RepoVulns>();
     const [openVulns, setOpenVulns] = useState<RepoVulns>();
     const navigate = useNavigate();
+
+    const includes = (vuln: any, search: string) => vuln.packageName.toLowerCase().includes(search);
+    
+    const searchChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement;
+        const search = target.value.toLowerCase();
+
+        if (vulns) {
+            const filteredVulns: RepoVulns = {
+                critical: vulns.critical.filter(vuln => includes(vuln, search)),
+                high: vulns.high.filter(vuln => includes(vuln, search)),
+                moderate: vulns.moderate.filter(vuln => includes(vuln, search)),
+                low: vulns.low.filter(vuln => includes(vuln, search)),
+            }
+            setShownRepoVulns(filteredVulns);
+        }
+    }
 
     useEffect(() => {
         if (vulns) {
@@ -60,9 +77,15 @@ export const Repo = ({ }: {}) => {
             width: "100%",
             height: "100%"
         }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-                <h1>{repoName}</h1>
-                <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
+            <h1 style={{ fontSize: '32px' }}>{repoName}</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex' }}>
+                    <p style={{ marginRight: '1em', fontSize: '16px' }}>Open Alerts Only</p>
+                    <FormControlLabel control={<Switch onChange={openFilter} />} label=""/>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <Input placeholder="Search Package Name" onChange={searchChange} style={{ height: '2em', width: '20em' }}/>
+                </div>
             </div>
             <HorizontalScrollGrid>
                 <div style={{
