@@ -1,29 +1,45 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FormControlLabel, Switch } from '@material-ui/core';
-import { RepoVulns, VulnInfoUnformatted } from '../../../utils/types';
+import { FormControlLabel, Input, Switch } from '@material-ui/core';
+import { RepoVulns } from '../../../utils/types';
 import { VulnList } from '../../VulnList';
-import { Error } from '../Error';
-import ReactLoading from "react-loading";
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 import { Skeleton } from '@material-ui/lab';
 import { HorizontalScrollGrid } from '@backstage/core-components';
 import CircleIcon from '@mui/icons-material/Circle';
+import { severityColors } from '../../../utils/functions';
 
 const columnStyle: React.CSSProperties = {
-  marginRight: "4em",
-  display: "flex",
-  flexDirection: "column",
-  minWidth: "25em",
-  maxWidth: "25em"
+    marginRight: "4em",
+    display: "flex",
+    flexDirection: "column",
+    minWidth: "25em",
+    maxWidth: "25em"
 }
 
 export const Repo = ({ }: {}) => {
     const { orgName, repoName, teamName, topicName } = useParams();
     const { loading, vulnInfo: vulns, error } = useGetVulnsFromRepo(repoName, orgName);
-    const [ shownRepoVulns, setShownRepoVulns ] = useState<RepoVulns>();
-    const [ openVulns, setOpenVulns ] = useState<RepoVulns>();
+    const [shownRepoVulns, setShownRepoVulns] = useState<RepoVulns>();
+    const [openVulns, setOpenVulns] = useState<RepoVulns>();
     const navigate = useNavigate();
+
+    const includes = (vuln: any, search: string) => vuln.packageName.toLowerCase().includes(search);
+    
+    const searchChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const target = event.target as HTMLInputElement;
+        const search = target.value.toLowerCase();
+
+        if (vulns) {
+            const filteredVulns: RepoVulns = {
+                critical: vulns.critical.filter(vuln => includes(vuln, search)),
+                high: vulns.high.filter(vuln => includes(vuln, search)),
+                moderate: vulns.moderate.filter(vuln => includes(vuln, search)),
+                low: vulns.low.filter(vuln => includes(vuln, search)),
+            }
+            setShownRepoVulns(filteredVulns);
+        }
+    }
 
     useEffect(() => {
         if (vulns) {
@@ -36,15 +52,15 @@ export const Repo = ({ }: {}) => {
             })
         }
     }, [vulns]);
-    
+
     const openFilter = (event: React.FormEvent<HTMLInputElement>) => {
-      const target = event.target as HTMLInputElement;
-      
-      if (target.checked) {
-          setShownRepoVulns(openVulns);
-      } else if (!target.checked){
-          setShownRepoVulns(vulns);
-      }
+        const target = event.target as HTMLInputElement;
+
+        if (target.checked) {
+            setShownRepoVulns(openVulns);
+        } else if (!target.checked) {
+            setShownRepoVulns(vulns);
+        }
     }
 
     if (error) {
@@ -54,21 +70,28 @@ export const Repo = ({ }: {}) => {
         } else if (currentLocation.includes("topic")) {
             navigate(`../${orgName}/topic/${topicName}`, { state: error.message, replace: false });
         }
-        // return <Error message={error.message}/>
     }
 
     return (
         <div style={{
             width: "100%",
             height: "100%"
-          }}>
-            <h1>{repoName}</h1>
-            <FormControlLabel control={<Switch onChange={openFilter} />} label="Open Only" />
+        }}>
+            <h1 style={{ fontSize: '32px' }}>{repoName}</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex' }}>
+                    <p style={{ marginRight: '1em', fontSize: '16px' }}>Open Alerts Only</p>
+                    <FormControlLabel control={<Switch onChange={openFilter} />} label=""/>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <Input placeholder="Search Package Name" onChange={searchChange} style={{ height: '2em', width: '20em' }}/>
+                </div>
+            </div>
             <HorizontalScrollGrid>
                 <div style={{
-                padding: "1.24rem",
-                display: "flex",
-                flexDirection: "row"
+                    padding: "1.24rem",
+                    display: "flex",
+                    flexDirection: "row"
                 }}>
                     <div title="Critical" style={columnStyle}>
                         <div style={{
@@ -77,7 +100,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#3B1F2B" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('critical') }} />
                             <h3>Critical Vulnerabilities</h3>
                         </div>
                         {loading &&
@@ -92,7 +115,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#C73E1D" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('high') }} />
                             <h3>High Vulnerabilities</h3>
                         </div>
                         {loading &&
@@ -107,7 +130,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#F18F01" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('moderate') }} />
                             <h3>Moderate Vulnerabilities</h3>
                         </div>
                         {loading &&
@@ -122,7 +145,7 @@ export const Repo = ({ }: {}) => {
                             alignItems: "center",
                             gap: ".64rem"
                         }}>
-                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: "#2A4F87" }} />
+                            <CircleIcon sx={{ fontSize: '.72em' }} style={{ color: severityColors('low') }} />
                             <h3>Low Vulnerabilities</h3>
                         </div>
                         {loading &&
@@ -132,6 +155,6 @@ export const Repo = ({ }: {}) => {
                     </div>
                 </div>
             </HorizontalScrollGrid>
-        </div> 
+        </div>
     );
 }

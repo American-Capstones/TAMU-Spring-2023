@@ -17,9 +17,9 @@
 import { TableColumn, TableFilter } from "@backstage/core-components";
 
 export type Connection<T> = {
-  nodes: T;
-  pageInfo: {
-    hasNextPage: boolean;
+    nodes: T;
+    pageInfo: {
+     hasNextPage: boolean;
     endCursor?: string;
   };
 };
@@ -77,7 +77,7 @@ export type Teams<T> = {
 export type Team = {
   name: string;
   vulnData: vulnData,
-  offenses: number,
+  offenses: VulnInfoShort[],
   repos: Repository[]
 }
 
@@ -125,6 +125,12 @@ export type VulnInfoUnformatted = {
   }
   state : string;
   url: string;
+}
+
+export type VulnInfoShort = {
+    packageName: string;
+    versionNum: string;
+    severity: string;
 }
 
 export type VulnInfoFormatted = {
@@ -228,13 +234,6 @@ export type GraphsProps = {
     lineData: LineGraphData[],
     barData: BarGraphData[],
     isLoading?: boolean
-}
-
-export type monthVulns = {
-  critical: number[];
-  high: number[];
-  moderate: number[];
-  low: number[];
 }
 
 export type Topic = {

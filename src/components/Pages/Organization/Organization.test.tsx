@@ -1,11 +1,10 @@
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { screen, within } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { renderInTestApp } from "@backstage/test-utils";
 import { configure, shallow } from 'enzyme';
 import { Organization } from '.';
 import React from 'react';
 import { SelectOrg } from '../../Utility';
-import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
 import { SelectScope } from '../../Utility';
 import { Table } from '@backstage/core-components';
 import { Graphs } from '../../Graphs';
@@ -14,16 +13,16 @@ import { Org } from '../../../utils/types';
 
 // This is necessary to mock useNavigate 
 // and to avoid issues with testing hooks
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
-const testOrg:Org = {
+const testOrg: Org = {
     name: 'TEST ORG',
     vulnData: {
         startMonth: 1,
-        critical: [0,0,0,0,0,0,0,0,0,0,0,0],
-        high: [1,1,1,1,1,1,1,1,1,1,1,1],
-        moderate: [2,2,2,2,2,2,2,2,2,2,2,2],
-        low: [3,3,3,3,3,3,3,3,3,3,3,3],
+        critical: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        high: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        moderate: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+        low: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
         criticalNum: 0,
         highNum: 12,
         moderateNum: 24,
@@ -43,7 +42,8 @@ const testOrg:Org = {
                 moderateNum: 0,
                 lowNum: 0
             },
-            repos: []
+            repos: [],
+            offenses: 0
         }
     ],
     repos: [],
@@ -61,11 +61,11 @@ jest.mock('react-router-dom', () => ({
 
 jest.mock('../../../hooks/useGetOrgsForUser', () => ({
     ...jest.requireActual('.../../../hooks/useGetOrgsForUser'),
-    useGetOrgsForUser: jest.fn().mockReturnValue({ 
-        loading: false, 
+    useGetOrgsForUser: jest.fn().mockReturnValue({
+        loading: false,
         orgs: [
             { name: 'TEST ORG', url: '', avatarUrl: '' }
-        ], 
+        ],
         error: undefined
     })
 }));
@@ -81,9 +81,9 @@ jest.mock('../../../hooks/useGetAllVulns', () => ({
 
 // Needed when fully rendering a Responsive element from Nivo
 class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe() { }
+    unobserve() { }
+    disconnect() { }
 }
 
 describe('Organization page test suite', () => {
@@ -91,7 +91,7 @@ describe('Organization page test suite', () => {
 
     it('should render the organization selector', async () => {
         const wrapper = shallow(<Organization />);
-        expect(wrapper.contains(<SelectOrg defaultOption='TEST ORG'/>)).toBeTruthy();
+        expect(wrapper.contains(<SelectOrg defaultOption='TEST ORG' />)).toBeTruthy();
     });
 
     it('should render the scope selector', async () => {
@@ -101,19 +101,18 @@ describe('Organization page test suite', () => {
 
     it('should change the data in the table depending on the scope selected', async () => {
         const wrapper = await renderInTestApp(<Organization />);
-        const Select = await wrapper.findByRole('button', { name: 'Teams' });
-        await userEvent.click(Select);
-        const listbox1 = within(wrapper.getByRole('listbox'));
-        const repos = listbox1.getByText('Repositories');
-        await userEvent.click(repos);
-        expect(await screen.findByText('Repos within this organization')).toBeVisible();
-        await userEvent.click(Select);
-        const listbox2 = within(wrapper.getByRole('listbox'));
-        const teams = listbox2.getByText('Teams');
-        await userEvent.click(teams);
-        expect(await screen.findByText('Teams within this organization')).toBeVisible();
-    })
-    
+        const TeamsSelect = await wrapper.findByLabelText('teams');
+        const TopicsSelect = await wrapper.findByLabelText('topics');
+        const ReposSelect = await wrapper.findByLabelText('repositories');
+
+        await userEvent.click(TeamsSelect);
+        expect(await screen.findByText('Team Name')).toBeVisible();
+        await userEvent.click(TopicsSelect);
+        expect(await screen.findByText('Topic Name')).toBeVisible();
+        await userEvent.click(ReposSelect);
+        expect(await screen.findByText('Repo Name')).toBeVisible();
+    });
+
     it('should render a Graphs component', async () => {
         const wrapper = shallow(<Organization />);
         expect(wrapper.find(Graphs)).toHaveLength(1);
@@ -126,7 +125,7 @@ describe('Organization page test suite', () => {
 
     it('should display a table when data is received from backend', async () => {
         await renderInTestApp(<Organization />);
-        expect(await screen.findByText('Teams within this organization')).toBeVisible();
+        expect(await screen.findByText('Teams')).toBeVisible();
         expect(await screen.findByText('test team 1')).toBeVisible();
     });
 

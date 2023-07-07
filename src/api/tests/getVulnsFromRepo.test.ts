@@ -1,10 +1,6 @@
 import {getVulnerabilityNodes} from "../getVulnsFromRepo";
 
-const getVulnsFromRepo = require('../getVulnsFromRepo');
-const graphql = require('../useOctokitGraphQl');
-jest.mock('../useOctokitGraphQl');
-
-describe("getVulnerabilitiesFromRepo Test Suite", () => {
+describe("getVulnsFromRepo Test Suite", () => {
   test("Should return a valid list of vulnerabilities when given all valid inputs", async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) => Promise.resolve(
         {
@@ -22,6 +18,7 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                     "createdAt": "2023-03-01T18:32:56Z",
                     "dismissedAt": null,
                     "fixedAt": null,
+                    "dependabotUpdate": null,
                     "securityAdvisory": {
                       "summary": "vuln1 summary",
                       "severity": "MODERATE",
@@ -46,6 +43,12 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
                     "createdAt": "2023-03-01T18:32:56Z",
                     "dismissedAt": "2023-03-10T18:46:04Z",
                     "fixedAt": null,
+                    "dependabotUpdate": {
+                      "pullRequest": {
+                        "number": 3,
+                        "permalink": "https://github.com/validOrg/validRepo/pull/3"
+                      }
+                    },
                     "securityAdvisory": {
                       "summary": "vuln2 summary",
                       "severity": "HIGH",
@@ -78,6 +81,7 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
         "createdAt": "2023-03-01T18:32:56Z",
         "dismissedAt": null,
         "fixedAt": null,
+        "dependabotUpdate": null,
         "securityAdvisory": {
         "classification": "GENERAL",
         "severity": "MODERATE",
@@ -103,6 +107,12 @@ describe("getVulnerabilitiesFromRepo Test Suite", () => {
     "createdAt": "2023-03-01T18:32:56Z",
     "dismissedAt": "2023-03-10T18:46:04Z",
     "fixedAt": null,
+    "dependabotUpdate": {
+      "pullRequest": {
+        "number": 3,
+        "permalink": "https://github.com/validOrg/validRepo/pull/3"
+      }
+    },
     "securityAdvisory":  {
         "classification": "GENERAL",
         "severity": "HIGH",

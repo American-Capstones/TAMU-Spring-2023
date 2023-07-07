@@ -4,25 +4,22 @@ import { renderInTestApp } from "@backstage/test-utils";
 import { configure, shallow } from 'enzyme';
 import { TopicPage } from '.';
 import React from 'react';
-import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
 import { Graphs } from '../../Graphs';
-import { SelectScope } from '../../Utility';
 import { Table } from '@backstage/core-components';
 import { Topic } from '../../../utils/types';
-import { Grid } from '@material-ui/core';
 
 // This is necessary to avoid issues testing components w/ hooks
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
-const testTopic:Topic = 
+const testTopic: Topic =
 {
     name: 'test topic 1',
     vulnData: {
         startMonth: 1,
-        critical: [0,0,0,0,0,0,0,0,0,0,0,0],
-        high: [1,1,1,1,1,1,1,1,1,1,1,1],
-        moderate: [2,2,2,2,2,2,2,2,2,2,2,2],
-        low: [3,3,3,3,3,3,3,3,3,3,3,3],
+        critical: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        high: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        moderate: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+        low: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
         criticalNum: 0,
         highNum: 12,
         moderateNum: 24,
@@ -60,9 +57,9 @@ jest.mock('react-router-dom', () => ({
 
 // Needed when fully rendering a Responsive element from Nivo
 class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe() { }
+    unobserve() { }
+    disconnect() { }
 }
 
 describe('Team page test suite', () => {
@@ -72,7 +69,7 @@ describe('Team page test suite', () => {
         const wrapper = shallow(<TopicPage />);
         expect(wrapper.children).not.toBeNull();
     });
-    
+
     it('should render a Graphs component', async () => {
         const wrapper = shallow(<TopicPage />);
         expect(wrapper.find(Graphs)).toHaveLength(1);
@@ -85,7 +82,7 @@ describe('Team page test suite', () => {
 
     it('should display a table when data is received from backend', async () => {
         await renderInTestApp(<TopicPage />);
-        expect(await screen.findByText('Repositories associated with test topic 1')).toBeVisible();
+        expect(await screen.findByText('Repositories')).toBeVisible();
         expect(await screen.findByText('test repo 1')).toBeVisible();
     });
 

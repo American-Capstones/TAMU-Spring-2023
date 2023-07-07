@@ -1,44 +1,32 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useState } from 'react';
+import React, { createContext, Dispatch, SetStateAction, useState } from 'react';
 import { Route } from 'react-router-dom';
 import {
-  Header,
-  Page,
-  Content,
-  HeaderLabel,
+    Header,
+    Page,
+    Content,
 } from '@backstage/core-components';
 import { FlatRoutes } from '@backstage/core-app-api';
 import { OrgChoice, Organization, TeamPage, TopicPage, Repo } from '../Pages';
 import { Breadcrumbs } from '../Utility';
 import { Org } from '../../utils/types';
+import { EMPTY_ORG } from '../../utils/constants';
 
-const emptyOrg:Org = {
-    name: '',
-    vulnData: {
-        startMonth: undefined,
-        critical: [],
-        high: [],
-        moderate: [],
-        low: [],
-        criticalNum: 0,
-        highNum: 0,
-        moderateNum: 0,
-        lowNum: 0,
-    },
-    teams: [],
-    repos: [],
-    topics: [],
-    url: '',
-    avatarUrl: '',
-}
 interface iDataContext {
     data: Org,
     setData: Dispatch<SetStateAction<Org>>
 }
-export const DataContext = createContext<iDataContext>({data:emptyOrg, setData:()=>{}});
+interface iTableContext {
+    scope: string,
+    setScope: Dispatch<SetStateAction<string>>
+}
+export const DataContext = createContext<iDataContext>({ data: EMPTY_ORG, setData: () => { } });
+export const ScopeContext = createContext<iTableContext>({ scope: 'teams', setScope: () => { } })
 
 export const Root = () => {
-    const [data, setData] = useState(emptyOrg);
-    const value = {data, setData};
+    const [data, setData] = useState(EMPTY_ORG);
+    const [scope, setScope] = useState('teams');
+    const scopeValue = { scope, setScope };
+    const value = { data, setData };
 
     return (
         <Page themeId="tool">
@@ -54,26 +42,31 @@ export const Root = () => {
                     padding: '2.48rem'
                 }}>
                     <DataContext.Provider value={value}>
-                        <FlatRoutes>
-                        <Route 
-                            path='/'
-                            element={<OrgChoice />}/>
-                        <Route 
-                            path='/:orgName'
-                            element={<Organization />}/>
-                        <Route 
-                            path='/:orgName/team/:teamName'
-                            element={<TeamPage />}/>
-                        <Route 
-                            path='/:orgName/team/:teamName/:repoName'
-                            element={<Repo />}/>
-                        <Route 
-                            path='/:orgName/topic/:topicName'
-                            element={<TopicPage />}/>
-                        <Route 
-                            path='/:orgName/topic/:topicName/:repoName'
-                            element={<Repo />}/>
-                        </FlatRoutes>
+                        <ScopeContext.Provider value={scopeValue}>
+                            <FlatRoutes>
+                                <Route
+                                    path='/'
+                                    element={<OrgChoice />} />
+                                <Route
+                                    path='/:orgName'
+                                    element={<Organization />} />
+                                <Route
+                                    path='/:orgName/team/:teamName'
+                                    element={<TeamPage />} />
+                                <Route
+                                    path='/:orgName/team/:teamName/:repoName'
+                                    element={<Repo />} />
+                                <Route
+                                    path='/:orgName/topic/:topicName'
+                                    element={<TopicPage />} />
+                                <Route
+                                    path='/:orgName/topic/:topicName/:repoName'
+                                    element={<Repo />} />
+                                <Route
+                                    path='/:orgName/repo/:repoName'
+                                    element={<Repo />} />
+                            </FlatRoutes>
+                        </ScopeContext.Provider>
                     </DataContext.Provider>
                 </div>
             </Content>

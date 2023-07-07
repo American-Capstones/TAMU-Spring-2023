@@ -1,14 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 import { useState } from 'react';
 import { Box, TextField } from '@material-ui/core';
 import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 import { useNavigate } from "react-router-dom";
-import { Error } from '../../Pages/Error';
-import { Autocomplete } from '@mui/material';
+import { Autocomplete, Alert } from '@mui/material';
 import { Org } from '../../../utils/types';
 import { Alert } from '@mui/material';
+import { DataContext } from '../../Root/Root';
+import { EMPTY_ORG } from '../../../utils/constants';
+import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
+
+interface iDataContext {
+    data: Org,
+    setData: Dispatch<SetStateAction<Org>>
+}
 
 export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) => {
+    const { setData } = useContext<iDataContext>(DataContext);
     const [selectValue, setSelectValue] = useState<Org | null>(null);
     const { loading, orgs, error } = useGetOrgsForUser();
     const navigate = useNavigate();
@@ -25,10 +33,6 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
         }
     }, [loading])
 
-    /*if (error) {
-        return <Error message={error.message}/>
-    }*/
-
     return (
         <>
             {error &&
@@ -37,15 +41,17 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
             <Autocomplete
                 autoHighlight
                 id="combo-box-demo"
+                data-testid="autocomplete"
                 options={orgs}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option) => option.name || ""}
                 onChange={(event: any, newValue) => {
                     setSelectValue(newValue)
-                    if (newValue === null) {
+                    if (!newValue) {
                         navigate('../');
                     }
-                    if (newValue != null) {
-                        navigate(`../${newValue?.name}`, { replace: true });
+                    else {
+                        setData(EMPTY_ORG);
+                        navigate(`../${newValue.name}`, { replace: true });
                     }
                 }}
                 value={selectValue}
