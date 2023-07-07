@@ -22,6 +22,7 @@ export function useGetOrgsForUser() {
             const orgNodes = await getOrgsForUser(graphql) //result also has an error message that can be handled
             setOrgs(orgNodes)
         }
+
         catch (caughtError) {
             setError(Error(caughtError.message));
         }

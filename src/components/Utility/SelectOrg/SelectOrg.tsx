@@ -5,6 +5,7 @@ import { useGetOrgsForUser } from '../../../hooks/useGetOrgsForUser';
 import { useNavigate } from "react-router-dom";
 import { Autocomplete, Alert } from '@mui/material';
 import { Org } from '../../../utils/types';
+import { Alert } from '@mui/material';
 import { DataContext } from '../../Root/Root';
 import { EMPTY_ORG } from '../../../utils/constants';
 import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
@@ -35,7 +36,7 @@ export const SelectOrg = ({ defaultOption = '' }: { defaultOption?: string }) =>
     return (
         <>
             {error &&
-                <Alert severity='error' style={{ marginBottom: '1rem' }}>{error}</Alert>
+                <Alert severity='error' style={{marginBottom: '1rem'}}>{error.message}</Alert>
             }
             <Autocomplete
                 autoHighlight
