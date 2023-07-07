@@ -1,40 +1,101 @@
-import React from 'react';
-import { useState } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
-import mockData from "../../../mock/data.json";
-import lineMockData from '../../../mock/lineMock.json';
+import React, { useContext, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
 import { SelectOrg, SelectScope } from '../../Utility';
-import { ErrorPage, Table } from '@backstage/core-components';
-import { useGetTeamsForOrg } from '../../../hooks/useGetTeamsForOrg';
-import ReactLoading from "react-loading";
+import { SubvalueCell, Table } from '@backstage/core-components';
 import { Graphs } from '../../Graphs';
-import { Grid } from '@material-ui/core';
-import { Team } from '../../../utils/types';
 import { useGetMonthlyVulns } from '../../../hooks/useGetMonthlyVulns';
+import { Team } from '../../../utils/types';
+import { Button, Grid, Typography } from '@material-ui/core';
+import { makeBarData, makeLineData } from '../../../utils/functions';
+import { Alert, Skeleton, colors } from '@mui/material';
+import { ScopeContext } from "../../Root/Root";
+import { Link } from "@material-ui/icons";
+import { colorVariants } from "@backstage/theme";
 
 const emptyTeamsContent = <h1>No teams in this organization available.</h1>
 const emptyReposContent = <h1>No Repos in this organization available.</h1>
+const emptyTopicsContent = <h1>No Topics in this organization available.</h1>
 
-// todo: This needs to be an API call but that function hasn't been written yet. 
-const useGetAllRepos = () => ({ loading: false, repos: [{ name: 'Repo 1' }, { name: 'Repo 2' }]})
 
-export const Organization = ({} : {}) => {
+export interface stateInterface {
+    org_name: string,
+    org_avatarUrl: string,
+    org_url: string
+}
+
+const team_cols = [
+    {
+        title: 'Team Name',
+        field: 'name',
+        render: (row: any): React.ReactNode => (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '.72rem',
+                alignItems: 'center',
+            }}><Typography style={{
+                fontWeight: 'bold',
+            }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+            </div>
+        )
+    },
+    { title: 'critical', field: 'vulnData.criticalNum' },
+    { title: 'high', field: 'vulnData.highNum' },
+    { title: 'moderate', field: 'vulnData.moderateNum' },
+    { title: 'low', field: 'vulnData.lowNum' }
+]
+const topic_cols = [
+    {
+        title: 'Topic Name',
+        field: 'name',
+        render: (row: any): React.ReactNode => (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '.72rem',
+                alignItems: 'center',
+            }}><Typography style={{
+                fontWeight: 'bold',
+            }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+            </div>
+        )
+    },
+    { title: 'critical', field: 'vulnData.criticalNum' },
+    { title: 'high', field: 'vulnData.highNum' },
+    { title: 'moderate', field: 'vulnData.moderateNum' },
+    { title: 'low', field: 'vulnData.lowNum' }
+]
+const repo_cols = [
+    {
+        title: 'Repo Name',
+        field: 'name',
+        render: (row: any): React.ReactNode => (
+            <div style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: '.72rem',
+                alignItems: 'center',
+            }}><Typography style={{
+                fontWeight: 'bold',
+            }} color="textPrimary">{row.name}</Typography> <Link color="primary" fontSize="small" />
+            </div>
+        )
+    },
+    { title: 'critical', field: 'critical' },
+    { title: 'high', field: 'high' },
+    { title: 'moderate', field: 'moderate' },
+    { title: 'low', field: 'low' },
+    { title: 'topics', field: 'repositoryTopics' }
+]
+
+export const Organization = () => {
     const { orgName } = useParams();
-    // const { loading, months,} = useGetMonthlyVulns(orgName);
-    const { loading, teams } = useGetTeamsForOrg(orgName);
-    const { loading: repoLoading, repos} = useGetAllRepos();
-    const [ showTeams, setShowTeams ] = useState(true);
     const navigate = useNavigate();
-
-    if (loading) {
-        return <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}> <ReactLoading 
-          type={"spin"}
-          color={"#8B0000"}
-          height={100}
-          width={100}
-        />
-        </div>
-    }
+    const location = useLocation();
+    const { loading, data: orgData, error } = useGetAllVulns(orgName);
+    const { scope } = useContext(ScopeContext);
+    const [tableScope, setTableScope] = useState<string>(scope);
 
     let goToTeams = (event: React.MouseEvent | undefined, rowData: Team) => {
         const severityCount = [
@@ -58,52 +119,93 @@ export const Organization = ({} : {}) => {
         navigate(`./${rowData.name}`, { state: severityCount, replace: true });
     }
 
-    let changeScope = (newScope: string) => {
-        setShowTeams(newScope == 'teams');
+    let goToTopics = (event: React.MouseEvent | undefined, rowData: any) => {
+        navigate(`./topic/${rowData.name}`, { replace: true });
     }
 
-    const team_cols = [{title: 'Team Name', field: 'name'}, {title: 'critical', field: 'critical'}, {title: 'high', field: 'high'}, {title: 'moderate', field: 'moderate'}, {title: 'low', field: 'low'}]
-    const team_filters: any[] = []
-    const team_title = 'Teams within this organization'
-    const repo_cols = [{title: 'Repo Name', field: 'name'}]
-    const repo_filters: any[] = []
-    const repo_title = 'Repos within this organization'
+    let goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
+        navigate(`./repo/${rowData.name}`, { replace: true });
+    }
+
+    let changeScope = (newScope: string) => {
+        setTableScope(newScope);
+    }
+
+    if (error) {
+        navigate(`../`, { state: { error: error.message }, replace: false });
+    }
+
+    const filters: any[] = []
+
     return (
-
         <>
-            <SelectOrg defaultOption={orgName ?? ''}/>
-
-            <Grid container spacing={2} direction='column'>
+            {location.state && location.state.error &&
+                <Alert severity='error' style={{ marginBottom: '1rem' }}>{location.state.error}</Alert>
+            }
+            <div style={{ marginBottom: '1.24rem' }}>
+                <SelectOrg defaultOption={orgName ?? ''} />
+            </div>
+            <Grid container spacing={8} direction='column'>
                 <Grid item>
-                    <Graphs barData={mockData} lineData={lineMockData} />
+                    <Graphs barData={makeBarData(orgData)} lineData={makeLineData(orgData)} isLoading={loading} />
                 </Grid>
                 <Grid item>
-                    <SelectScope handleClick={changeScope} title='Table Scope' defaultOption='teams' />
-                    {showTeams ?
-                        <Table 
-                            title={team_title}
+                    <div style={{ marginBottom: '1.04rem' }}>
+                        <SelectScope handleClick={changeScope} defaultOption={scope} />
+                    </div>
+                    {(loading || !orgData) &&
+                        <Skeleton variant="rectangular" width="100%">
+                            <Table
+                                columns={team_cols}
+                                data={[]}
+                                onRowClick={goToTeams}
+                                filters={filters}
+                                emptyContent={emptyTeamsContent}
+                                isLoading={loading}
+                            /></Skeleton>
+                    }
+                    {tableScope == "teams" && !loading &&
+                        <Table
+                            title="Subteams"
+                            subtitle={orgName}
                             options={{ search: true, paging: true }}
                             columns={team_cols}
-                            data={teams}
+                            data={orgData.teams}
                             onRowClick={goToTeams}
-                            filters={team_filters}
+                            filters={filters}
                             emptyContent={emptyTeamsContent}
-                        />
-                    :
-                        <Table 
-                            title={repo_title}
-                            options={{ search: true, paging: true }}
-                            columns={repo_cols}
-                            data={repos}
-                            onRowClick={() => alert('Picked a repo, undefined behavior')}
-                            filters={repo_filters}
-                            emptyContent={emptyReposContent}
+                            isLoading={loading}
                         />
                     }
-                    
+                    {tableScope == "repositories" && !loading &&
+                        <Table
+                            title="Repositories"
+                            subtitle={orgName}
+                            options={{ search: true, paging: true }}
+                            columns={repo_cols}
+                            data={orgData.repos}
+                            onRowClick={goToRepo}
+                            filters={filters}
+                            emptyContent={emptyReposContent}
+                            isLoading={loading}
+                        />
+                    }
+                    {tableScope == "topics" && !loading &&
+                        <Table
+                            title="Topics"
+                            subtitle={orgName}
+                            options={{ search: true, paging: true }}
+                            columns={topic_cols}
+                            data={orgData.topics}
+                            onRowClick={goToTopics}
+                            filters={filters}
+                            emptyContent={emptyTopicsContent}
+                            isLoading={loading}
+                        />
+                    }
+
                 </Grid>
             </Grid>
         </>
-
-    );
+    )
 };

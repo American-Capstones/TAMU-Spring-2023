@@ -14,62 +14,54 @@
 * limitations under the License.
 */
 
-import { Org, Orgs, Error } from '../utils/types';
+import { Org, Orgs } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_ORG_MAX_ITEMS } from '../utils/constants';
 
-export const getOrgsForUser = (graphql:any) => {
+export const getOrgsForUser = (graphql: any) => {
     return getOrgNodes(graphql, GITHUB_ORG_MAX_ITEMS);
 };
 
-export async function getOrgNodes(graphql:any, organizationLimit: number): Promise<{"orgNodes": Org[], "error": Error}> {
+export async function getOrgNodes(graphql: any, organizationLimit: number): Promise<Org[]> {
     const orgNodes: Org[] = [];
-    let error: 
-        | Error
-        | undefined = undefined;
     let result:
         | Orgs<Org[]>
         | undefined = undefined;
 
     do {
-        result = await graphql( 
-        `
+        result = await graphql(
+            `
         query($first: Int, $endCursor: String){
             viewer {
               organizations(first:$first, after: $endCursor) {
                 pageInfo {hasNextPage, endCursor}
                 nodes {
                   name
+                  url
+                  avatarUrl
                 }
               }
             }
           }
         `,
-        {
-            first:
-            organizationLimit > GITHUB_GRAPHQL_MAX_ITEMS
-                ? GITHUB_GRAPHQL_MAX_ITEMS
-                : organizationLimit,
-            endCursor: result
-            ? result.viewer.organizations.pageInfo.endCursor
-            : undefined,
-        },
+            {
+                first:
+                    organizationLimit > GITHUB_GRAPHQL_MAX_ITEMS
+                        ? GITHUB_GRAPHQL_MAX_ITEMS
+                        : organizationLimit,
+                endCursor: result
+                    ? result.viewer.organizations.pageInfo.endCursor
+                    : undefined,
+            },
         );
-        
-        if(result){
-            // result.viewer will be null if there is an error
-            if (!result.viewer){
-                if (result.errors){
-                    error = result.errors[0]
-                }
-                break
-            } 
+
+        if (result?.viewer) {
             orgNodes.push(
                 ...result.viewer.organizations.nodes
             );
         }
 
-        if (orgNodes.length >= organizationLimit) return {orgNodes, error};
-    } while (result?.viewer.organizations.pageInfo.hasNextPage);
+        if (orgNodes.length >= organizationLimit) return orgNodes;
+    } while (result?.viewer?.organizations.pageInfo.hasNextPage);
 
-    return {orgNodes, error};
+    return orgNodes;
 }

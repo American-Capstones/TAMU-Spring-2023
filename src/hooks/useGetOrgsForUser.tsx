@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import { getOrgsForUser } from "../api/getOrgsForUser";
-import { formatOrgData, getOctokit } from "../utils/functions";
+import { getOctokit } from "../utils/functions";
 
 import {
-  useApi,
-  githubAuthApiRef,
+    useApi,
+    githubAuthApiRef,
 } from '@backstage/core-plugin-api';
+import { Org } from "../utils/types";
 
 export function useGetOrgsForUser() {
     const [loading, setLoading] = useState<boolean>(true);
-    const [orgs, setOrgs] = useState<string[]>([]);
+    const [orgs, setOrgs] = useState<Org[]>([]);
     const [error, setError] = useState<Error>();
 
     const auth = useApi(githubAuthApiRef)
@@ -18,12 +19,11 @@ export function useGetOrgsForUser() {
         setLoading(true);
         try {
             const graphql = await getOctokit(auth)
-            const result = await getOrgsForUser(graphql) //result also has an error message that can be handled
-            const orgNamesFormatted = formatOrgData(result.orgNodes)
-            setOrgs(orgNamesFormatted)
+            const orgNodes = await getOrgsForUser(graphql) //result also has an error message that can be handled
+            setOrgs(orgNodes)
         }
-        catch {
-            setError(Error("Error in useGetOrgsForUser"))
+        catch (caughtError) {
+            setError(Error(caughtError.message));
         }
 
         setLoading(false)
@@ -34,7 +34,7 @@ export function useGetOrgsForUser() {
     }, [getOrgNames]);
 
     return {
-        loading, 
+        loading,
         orgs,
         error
     };

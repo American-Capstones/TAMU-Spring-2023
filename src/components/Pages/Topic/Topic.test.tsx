@@ -2,19 +2,18 @@ import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { screen } from '@testing-library/react';
 import { renderInTestApp } from "@backstage/test-utils";
 import { configure, shallow } from 'enzyme';
-import { TeamPage } from '.';
+import { TopicPage } from '.';
 import React from 'react';
 import { Graphs } from '../../Graphs';
 import { Table } from '@backstage/core-components';
-import { Team } from '../../../utils/types';
-import { Typography } from '@material-ui/core';
+import { Topic } from '../../../utils/types';
 
 // This is necessary to avoid issues testing components w/ hooks
 configure({ adapter: new Adapter() });
 
-const testTeam: Team =
+const testTopic: Topic =
 {
-    name: 'test team 1',
+    name: 'test topic 1',
     vulnData: {
         startMonth: 1,
         critical: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -36,15 +35,14 @@ const testTeam: Team =
             critical: 0,
             repositoryTopics: [''],
         }
-    ],
-    offenses: 0
+    ]
 }
 
-jest.mock('../../../hooks/useGetTeamVulns', () => ({
-    ...jest.requireActual('../../../hooks/useGetTeamVulns'),
-    useGetTeamVulns: jest.fn((orgName, teamName) => ({
+jest.mock('../../../hooks/useGetTopicVulns', () => ({
+    ...jest.requireActual('../../../hooks/useGetTopicVulns'),
+    useGetTopicVulns: jest.fn((orgName, topicName) => ({
         loading: false,
-        data: testTeam,
+        data: testTopic,
         error: undefined,
     }))
 }));
@@ -53,8 +51,8 @@ jest.mock('../../../hooks/useGetTeamVulns', () => ({
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
     useNavigate: jest.fn(),
-    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG', teamName: 'TEST TEAM' }),
-    useLocation: jest.fn().mockReturnValue({ pathname: '/dependabot-dashboard/TEST ORG/team/test team 1' })
+    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG', topicName: 'test topic 1' }),
+    useLocation: jest.fn().mockReturnValue({ pathname: '/dependabot-dashboard/TEST ORG/team/test topic 1' })
 }));
 
 // Needed when fully rendering a Responsive element from Nivo
@@ -68,23 +66,22 @@ describe('Team page test suite', () => {
     window.ResizeObserver = ResizeObserver;
 
     it('should render', async () => {
-        const wrapper = shallow(<TeamPage />);
-        const typography = wrapper.find(<Typography>TEST TEAM</Typography>);
-        expect(typography).toBeTruthy();
+        const wrapper = shallow(<TopicPage />);
+        expect(wrapper.children).not.toBeNull();
     });
 
     it('should render a Graphs component', async () => {
-        const wrapper = shallow(<TeamPage />);
+        const wrapper = shallow(<TopicPage />);
         expect(wrapper.find(Graphs)).toHaveLength(1);
     })
 
     it('should render a table component', async () => {
-        const wrapper = shallow(<TeamPage />);
+        const wrapper = shallow(<TopicPage />);
         expect(wrapper.find(Table)).toHaveLength(1);
     })
 
     it('should display a table when data is received from backend', async () => {
-        await renderInTestApp(<TeamPage />);
+        await renderInTestApp(<TopicPage />);
         expect(await screen.findByText('Repositories')).toBeVisible();
         expect(await screen.findByText('test repo 1')).toBeVisible();
     });

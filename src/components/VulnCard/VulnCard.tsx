@@ -13,7 +13,7 @@ import { ExpandMore } from '@material-ui/icons'
 function utcToHuman(date_string: string) {
     let date = new Date(date_string);
     return date.toLocaleString();
-  }
+}
 
 type VulnCardProps = {
     vuln: VulnInfoFormatted
@@ -29,7 +29,7 @@ export const VulnCard = (props: VulnCardProps) => {
             >
                 <div style={{ display: "flex", flexDirection: "row", alignItems: "center", width: "100%" }}>
                     <div style={{ marginRight: "1.72em", marginBottom: 0, marginTop: 0 }}>
-                        <VulnCardBadge state={props.vuln.state} />
+                        <VulnCardBadge state={props.vuln.state} severity={props.vuln.severity} />
                     </div>
                     <div style={{ marginRight: "1.72em", marginBottom: 0, marginTop: 0 }}>
                         <div>
@@ -49,20 +49,19 @@ export const VulnCard = (props: VulnCardProps) => {
                             marginLeft: "auto"
                         }
                     }>
-
                         {props.vuln.pullRequest &&
-                            <Tooltip title='Pull Request'>
-                                <Chip
-                                    clickable
-                                    style={{
-                                        color: 'white',
-                                        fontWeight: 'bolder',
-                                        background: deepPurple[500]
-                                    }} label={"PR"} />
-                            </Tooltip>
+                            <Button href={props.vuln.pullRequest} target="_blank" onClick={(e) => {e.stopPropagation()}}>
+                                <Tooltip title='Pull Request'>
+                                    <Chip
+                                        clickable
+                                        style={{
+                                            color: 'white',
+                                            fontWeight: 'bolder',
+                                            background: deepPurple[500]
+                                        }} label={"PR"} />
+                                </Tooltip>
+                            </Button>
                         }
-
-
                     </div>
                 </div>
             </AccordionSummary>
@@ -92,7 +91,7 @@ export const VulnCard = (props: VulnCardProps) => {
 
             </AccordionDetails>
             <AccordionActions>
-                <Button color='primary'>View on GitHub</Button>
+                <Button target='_blank' href={props.vuln.url} color='primary'>View on GitHub </Button>
             </AccordionActions>
         </Accordion>
     )

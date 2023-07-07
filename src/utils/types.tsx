@@ -17,13 +17,13 @@
 import { TableColumn, TableFilter } from "@backstage/core-components";
 
 export type Connection<T> = {
-  nodes: T;
-  pageInfo: {
-    hasNextPage: boolean;
+    nodes: T;
+    pageInfo: {
+     hasNextPage: boolean;
     endCursor?: string;
   };
 };
- 
+
 export type Repositories = {
   organization: {
     teams: {
@@ -36,14 +36,33 @@ export type RepositoryNode = {
   repositories: Connection<Repository[]>;
 }
 
+export type Node = {
+    node: {
+        id: string;
+        topic: {
+            name: string;
+        }
+    }
+}
+
+export type RepositoryUnformatted = {
+    id: string;
+    name: string;
+    repositoryTopics: {
+        edges: Node[];
+    }
+}
+
 export type Repository = {
-  ID: string;
+  id: string;
   name: string;
   low: number;
   moderate: number;
   high: number;
   critical: number;
+  repositoryTopics: string[];
 }
+
 
 export type RepoName = {
   name: string;
@@ -55,12 +74,15 @@ export type Teams<T> = {
   };
 }
 
-export type Team = { 
+export type Team = {
   name: string;
-  low: number;
-  moderate: number;
-  high: number;
-  critical: number;
+  vulnData: vulnData,
+  offenses: VulnInfoShort[],
+  repos: Repository[]
+}
+
+export type TeamNode = {
+  name: string
 }
 
 export type VulnInfoRepo<T> = {
@@ -77,6 +99,13 @@ export type VulnInfoUnformatted = {
   createdAt : string;
   dismissedAt : string;
   fixedAt : string;
+  number: number;
+  dependabotUpdate:{
+    pullRequest: {
+      number: number,
+      permalink: string
+    }
+  }
   securityAdvisory : {
     summary : string;
     severity : string;
@@ -94,13 +123,20 @@ export type VulnInfoUnformatted = {
       identifier : string
     }
   }
-  state : string
+  state : string;
+  url: string;
+}
+
+export type VulnInfoShort = {
+    packageName: string;
+    versionNum: string;
+    severity: string;
 }
 
 export type VulnInfoFormatted = {
   packageName: string;
   versionNum: string;
-  createdAt: string; 
+  createdAt: string;
   pullRequest: string;
   dismissedAt: string;
   fixedAt: string;
@@ -110,6 +146,7 @@ export type VulnInfoFormatted = {
   summary: string;
   vulnerabilityCount: number;
   state: string;
+  url: string;
 };
 
 export type RepoVulns = {
@@ -123,7 +160,7 @@ export type VulnListProps = {
     vulns: VulnInfoFormatted[] | undefined;
 }
 
-export type Orgs <T> = { 
+export type Orgs <T> = {
   viewer:{
     organizations:Connection<T>;
   }
@@ -131,11 +168,17 @@ export type Orgs <T> = {
 
 export type Org = {
   name: string;
+  vulnData: vulnData,
+  teams: Team[],
+  repos: Repository[],
+  topics: Topic[]
+  url: string;
+  avatarUrl: string;
 }
 
 export type Error = {
   message: string;
-  type: string; 
+  type: string;
   path: [string];
   locations: [
     {
@@ -143,6 +186,23 @@ export type Error = {
       "column": number
     }
   ]
+}
+
+export type Severity = {
+   severity: string,
+   count: number
+}
+
+export type vulnData = {
+  startMonth: number | undefined,
+  critical: number[],
+  high: number[],
+  moderate: number[],
+  low: number[],
+  criticalNum: number,
+  highNum: number,
+  moderateNum: number,
+  lowNum: number
 }
 
 export type TableProps = {
@@ -172,18 +232,12 @@ export type BarGraphData = {
 
 export type GraphsProps = {
     lineData: LineGraphData[],
-    barData: BarGraphData[]
+    barData: BarGraphData[],
+    isLoading?: boolean
 }
 
-export type Severity = {
-   severity: string, 
-   count: number
-
-}
-
-export type monthVulns = {
-  critical: number[];
-  high: number[];
-  moderate: number[];
-  low: number[];
+export type Topic = {
+  name: string;
+  vulnData: vulnData,
+  repos: Repository[]
 }

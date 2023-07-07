@@ -1,18 +1,17 @@
 import React from 'react';
-
 import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
 import { Repo } from './Repo';
 import { setupServer } from 'msw/node';
 import { screen } from '@testing-library/react';
 import {
-  setupRequestMockHandlers,
-  renderInTestApp,
+    setupRequestMockHandlers,
+    renderInTestApp,
 } from "@backstage/test-utils";
 import { configure, shallow } from 'enzyme';
 import { FormControlLabel } from '@material-ui/core';
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 
-configure({adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
 const testRepo = 'TEST REPO';
 
@@ -24,7 +23,8 @@ jest.mock('../../../hooks/useGetVulnsFromRepo', () => ({
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
-    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG', teamName: 'TEST TEAM', repoName: 'TEST REPO' })
+    useParams: jest.fn().mockReturnValue({ orgName: 'TEST ORG', teamName: 'TEST TEAM', repoName: 'TEST REPO' }),
+    useNavigate: jest.fn(),
 }));
 
 describe('Repo Test Suite', () => {
@@ -66,6 +66,10 @@ describe('Repo Test Suite', () => {
     it('should render low list', async () => {
         await renderInTestApp(<Repo />);
         expect(screen.getByText('Low', { exact: false })).toBeInTheDocument();
+    });
+
+    it('should route to the correct page on error', async () => {
+        // todo - figure out how to test this
     });
 
     /*it('render NotFoundScreen when goes to a wrong path', async () => {
