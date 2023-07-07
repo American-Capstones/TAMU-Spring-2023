@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { TableColumn, TableFilter } from "@backstage/core-components";
+import { TableColumn, TableFilter } from '@backstage/core-components';
 
 export type Connection<T> = {
-    nodes: T;
-    pageInfo: {
-     hasNextPage: boolean;
+  nodes: T;
+  pageInfo: {
+    hasNextPage: boolean;
     endCursor?: string;
   };
 };
@@ -28,30 +28,30 @@ export type Repositories = {
   organization: {
     teams: {
       nodes: RepositoryNode[];
-    }
-  }
-}
+    };
+  };
+};
 
 export type RepositoryNode = {
   repositories: Connection<Repository[]>;
-}
+};
 
 export type Node = {
-    node: {
-        id: string;
-        topic: {
-            name: string;
-        }
-    }
-}
+  node: {
+    id: string;
+    topic: {
+      name: string;
+    };
+  };
+};
 
 export type RepositoryUnformatted = {
-    id: string;
-    name: string;
-    repositoryTopics: {
-        edges: Node[];
-    }
-}
+  id: string;
+  name: string;
+  repositoryTopics: {
+    edges: Node[];
+  };
+};
 
 export type Repository = {
   id: string;
@@ -61,8 +61,7 @@ export type Repository = {
   high: number;
   critical: number;
   repositoryTopics: string[];
-}
-
+};
 
 export type RepoName = {
   name: string;
@@ -72,66 +71,66 @@ export type Teams<T> = {
   organization: {
     teams: Connection<T>;
   };
-}
+};
 
 export type Team = {
   name: string;
-  vulnData: vulnData,
-  offenses: VulnInfoShort[],
-  repos: Repository[]
-}
+  vulnData: vulnData;
+  offenses: VulnInfoShort[];
+  repos: Repository[];
+};
 
 export type TeamNode = {
-  name: string
-}
+  name: string;
+};
 
 export type VulnInfoRepo<T> = {
-  repository : {
-    name:string;
-    url:string;
-    vulnerabilityAlerts: Connection<T>
+  repository: {
+    name: string;
+    url: string;
+    vulnerabilityAlerts: Connection<T>;
     // vulnerabilityAlerts : {
     //   nodes : T
     // }
-  }
-}
+  };
+};
 export type VulnInfoUnformatted = {
-  createdAt : string;
-  dismissedAt : string;
-  fixedAt : string;
+  createdAt: string;
+  dismissedAt: string;
+  fixedAt: string;
   number: number;
-  dependabotUpdate:{
+  dependabotUpdate: {
     pullRequest: {
-      number: number,
-      permalink: string
-    }
-  }
-  securityAdvisory : {
-    summary : string;
-    severity : string;
-    classification : string;
-    vulnerabilities : {
-      totalCount : number
-    }
-  }
-  securityVulnerability : {
-    package : {
-      name : string
-    }
-    vulnerableVersionRange : string;
-    firstPatchedVersion : {
-      identifier : string
-    }
-  }
-  state : string;
+      number: number;
+      permalink: string;
+    };
+  };
+  securityAdvisory: {
+    summary: string;
+    severity: string;
+    classification: string;
+    vulnerabilities: {
+      totalCount: number;
+    };
+  };
+  securityVulnerability: {
+    package: {
+      name: string;
+    };
+    vulnerableVersionRange: string;
+    firstPatchedVersion: {
+      identifier: string;
+    };
+  };
+  state: string;
   url: string;
-}
+};
 
 export type VulnInfoShort = {
-    packageName: string;
-    versionNum: string;
-    severity: string;
-}
+  packageName: string;
+  versionNum: string;
+  severity: string;
+};
 
 export type VulnInfoFormatted = {
   packageName: string;
@@ -140,7 +139,7 @@ export type VulnInfoFormatted = {
   pullRequest: string;
   dismissedAt: string;
   fixedAt: string;
-  vulnVersionRange: string,
+  vulnVersionRange: string;
   classification: string;
   severity: string;
   summary: string;
@@ -154,27 +153,27 @@ export type RepoVulns = {
   high: VulnInfoFormatted[];
   moderate: VulnInfoFormatted[];
   low: VulnInfoFormatted[];
-}
+};
 
 export type VulnListProps = {
-    vulns: VulnInfoFormatted[] | undefined;
-}
+  vulns: VulnInfoFormatted[] | undefined;
+};
 
-export type Orgs <T> = {
-  viewer:{
-    organizations:Connection<T>;
-  }
-}
+export type Orgs<T> = {
+  viewer: {
+    organizations: Connection<T>;
+  };
+};
 
 export type Org = {
   name: string;
-  vulnData: vulnData,
-  teams: Team[],
-  repos: Repository[],
-  topics: Topic[]
+  vulnData: vulnData;
+  teams: Team[];
+  repos: Repository[];
+  topics: Topic[];
   url: string;
   avatarUrl: string;
-}
+};
 
 export type Error = {
   message: string;
@@ -182,62 +181,62 @@ export type Error = {
   path: [string];
   locations: [
     {
-      "line": number,
-      "column": number
-    }
-  ]
-}
+      line: number;
+      column: number;
+    },
+  ];
+};
 
 export type Severity = {
-   severity: string,
-   count: number
-}
+  severity: string;
+  count: number;
+};
 
 export type vulnData = {
-  startMonth: number | undefined,
-  critical: number[],
-  high: number[],
-  moderate: number[],
-  low: number[],
-  criticalNum: number,
-  highNum: number,
-  moderateNum: number,
-  lowNum: number
-}
+  startMonth: number | undefined;
+  critical: number[];
+  high: number[];
+  moderate: number[];
+  low: number[];
+  criticalNum: number;
+  highNum: number;
+  moderateNum: number;
+  lowNum: number;
+};
 
 export type TableProps = {
-    columns: TableColumn[],
-    rows: any[],
-    filters: TableFilter[],
-    title: string,
-    onRowClick: (event: React.MouseEvent | undefined, rowData: any) => void,
-    emptyContent: React.ReactNode
+  columns: TableColumn[];
+  rows: any[];
+  filters: TableFilter[];
+  title: string;
+  onRowClick: (event: React.MouseEvent | undefined, rowData: any) => void;
+  emptyContent: React.ReactNode;
 };
 
 export type Coords = {
-    x: string,
-    y: number
-}
+  x: string;
+  y: number;
+};
 
 export type LineGraphData = {
-    id: string,
-    color?: string, // in the format hsl(num, %, %)
-    data: Coords[]
-}
+  id: string;
+  color?: string; // in the format hsl(num, %, %)
+  data: Coords[];
+};
 
 export type BarGraphData = {
-    severity: string,
-    count: number
-}
+  severity: string;
+  count: number;
+};
 
 export type GraphsProps = {
-    lineData: LineGraphData[],
-    barData: BarGraphData[],
-    isLoading?: boolean
-}
+  lineData: LineGraphData[];
+  barData: BarGraphData[];
+  isLoading?: boolean;
+};
 
 export type Topic = {
   name: string;
-  vulnData: vulnData,
-  repos: Repository[]
-}
+  vulnData: vulnData;
+  repos: Repository[];
+};

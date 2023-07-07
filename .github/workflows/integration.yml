@@ -13,7 +13,7 @@ jobs:
   merge_pull_request:
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout baggage-claim Repository"
+      - name: 'Checkout baggage-claim Repository'
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -21,7 +21,7 @@ jobs:
           token: ${{ secrets.BAGGAGE_CLAIM_DEPLOY_KEY }}
           submodules: recursive
 
-      - name: "Update submodule to referenced branch"
+      - name: 'Update submodule to referenced branch'
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           cd "plugins/dependabot-dashboard"
@@ -29,7 +29,7 @@ jobs:
           git pull
           cd ../..
 
-      - name: "Update submodule to referenced branch"
+      - name: 'Update submodule to referenced branch'
         if: ${{ github.event_name == 'push' }}
         run: |
           cd "plugins/dependabot-dashboard"

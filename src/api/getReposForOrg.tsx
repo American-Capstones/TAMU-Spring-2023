@@ -13,76 +13,64 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-    GITHUB_GRAPHQL_MAX_ITEMS,
-    GITHUB_REPO_MAX_ITEMS
-} from '../utils/constants';
-import { Repositories, Repository, } from '../utils/types';
-import { formatRepoNodes, } from '../utils/functions';
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_REPO_MAX_ITEMS } from '../utils/constants';
+import { Repositories, Repository } from '../utils/types';
+import { formatRepoNodes } from '../utils/functions';
 
-export const getReposForOrg = (
-    graphql: any,
-    orgLogin: string,
-) => {
-    return getRepoNodesForOrg(graphql, orgLogin, GITHUB_REPO_MAX_ITEMS);;
+export const getReposForOrg = (graphql: any, orgLogin: string) => {
+  return getRepoNodesForOrg(graphql, orgLogin, GITHUB_REPO_MAX_ITEMS);
 };
 
 export async function getRepoNodesForOrg(
-    graphql: any,
-    orgLogin: string,
-    repoLimit: number,
-    getAll: boolean = false,
+  graphql: any,
+  orgLogin: string,
+  repoLimit: number,
+  getAll: boolean = false,
 ): Promise<Repository[]> {
-    const repoNodes: Repository[] = [];
-    let result:
-        | Repositories
-        | undefined = undefined;
+  const repoNodes: Repository[] = [];
+  let result: Repositories | undefined = undefined;
 
-    do {
-        result = await graphql(
-            `
-            query($login: String!, $first: Int, $endCursor: String){
-                organization(login: $login) {
-                    repositories(first:$first, after: $endCursor) {
-                    pageInfo {hasNextPage, endCursor}
-                    nodes {
+  do {
+    result = await graphql(
+      `
+        query ($login: String!, $first: Int, $endCursor: String) {
+          organization(login: $login) {
+            repositories(first: $first, after: $endCursor) {
+              pageInfo {
+                hasNextPage
+                endCursor
+              }
+              nodes {
+                name
+                id
+                repositoryTopics(first: 100) {
+                  edges {
+                    node {
+                      id
+                      topic {
                         name
-                        id
-                        repositoryTopics(first:100) {
-                        edges {
-                            node {
-                            id
-                            topic {
-                                name
-                                }
-                            }
-                        }
-                        }            
-                    }  
-                } 
+                      }
+                    }
+                  }
                 }
-            }      
-            `,
-            {
-                login: orgLogin,
-                first:
-                    repoLimit > GITHUB_GRAPHQL_MAX_ITEMS
-                        ? GITHUB_GRAPHQL_MAX_ITEMS
-                        : repoLimit,
-                endCursor: result
-                    ? result.organization.repositories.pageInfo.endCursor
-                    : undefined,
-            },
-        );
-        if (result) {
-            if (result.organization) {
-                repoNodes.push(
-                    ...formatRepoNodes(result.organization.repositories.nodes)
-                );
+              }
             }
+          }
         }
-        if (repoNodes.length >= repoLimit && !getAll) return repoNodes;
-    } while (result?.organization?.repositories.pageInfo.hasNextPage);
+      `,
+      {
+        login: orgLogin,
+        first: repoLimit > GITHUB_GRAPHQL_MAX_ITEMS ? GITHUB_GRAPHQL_MAX_ITEMS : repoLimit,
+        endCursor: result ? result.organization.repositories.pageInfo.endCursor : undefined,
+      },
+    );
+    if (result) {
+      if (result.organization) {
+        repoNodes.push(...formatRepoNodes(result.organization.repositories.nodes));
+      }
+    }
+    if (repoNodes.length >= repoLimit && !getAll) return repoNodes;
+  } while (result?.organization?.repositories.pageInfo.hasNextPage);
 
-    return repoNodes;
+  return repoNodes;
 }

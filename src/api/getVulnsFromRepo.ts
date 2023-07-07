@@ -13,96 +13,86 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-    VulnInfoRepo,
-    VulnInfoUnformatted
-} from '../utils/types';
+import { VulnInfoRepo, VulnInfoUnformatted } from '../utils/types';
 import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULNS_MAX_ITEMS } from '../utils/constants';
 
 export const getVulnsFromRepo = (graphql: any, repoName: string, orgLogin: string) => {
-    return getVulnerabilityNodes(graphql, repoName, orgLogin);
+  return getVulnerabilityNodes(graphql, repoName, orgLogin);
 };
 
 export async function getVulnerabilityNodes(
-    graphql: (
-        path: string,
-        options?: any,
-    ) => Promise<VulnInfoRepo<VulnInfoUnformatted[]>>,
-    name: string,
-    owner: string
+  graphql: (path: string, options?: any) => Promise<VulnInfoRepo<VulnInfoUnformatted[]>>,
+  name: string,
+  owner: string,
 ): Promise<VulnInfoUnformatted[]> {
-    const repoRequestLimit = GITHUB_VULNS_MAX_ITEMS
-    const vulnerabilityData: VulnInfoUnformatted[] = [];
-    let result:
-        | VulnInfoRepo<VulnInfoUnformatted[]>
-        | undefined = undefined;
-    do {
-        result = await graphql(
-            `
-      query ($name: String!, $owner:String!, $first: Int, $endCursor: String){
-        repository(name: $name, owner: $owner){
-          name
-          url
-          vulnerabilityAlerts(first: $first, after: $endCursor) {
-            pageInfo {hasNextPage, endCursor}
-            nodes {
-              number
-              createdAt
-              dismissedAt
-              fixedAt
-              dependabotUpdate{
-                pullRequest{	
-                  number		
-                  permalink
-                }
+  const repoRequestLimit = GITHUB_VULNS_MAX_ITEMS;
+  const vulnerabilityData: VulnInfoUnformatted[] = [];
+  let result: VulnInfoRepo<VulnInfoUnformatted[]> | undefined = undefined;
+  do {
+    result = await graphql(
+      `
+        query ($name: String!, $owner: String!, $first: Int, $endCursor: String) {
+          repository(name: $name, owner: $owner) {
+            name
+            url
+            vulnerabilityAlerts(first: $first, after: $endCursor) {
+              pageInfo {
+                hasNextPage
+                endCursor
               }
-              securityAdvisory {
-                summary
-                severity
-                classification
-                vulnerabilities {
-                  totalCount
+              nodes {
+                number
+                createdAt
+                dismissedAt
+                fixedAt
+                dependabotUpdate {
+                  pullRequest {
+                    number
+                    permalink
+                  }
                 }
+                securityAdvisory {
+                  summary
+                  severity
+                  classification
+                  vulnerabilities {
+                    totalCount
+                  }
+                }
+                securityVulnerability {
+                  package {
+                    name
+                  }
+                  firstPatchedVersion {
+                    identifier
+                  }
+                  vulnerableVersionRange
+                }
+                state
               }
-              securityVulnerability {
-                package {
-                  name
-                }
-                firstPatchedVersion {
-                  identifier
-                }
-                vulnerableVersionRange
-              }
-              state
             }
           }
         }
-      }
       `,
-            {
-                name: name,
-                owner: owner,
-                first:
-                    repoRequestLimit > GITHUB_GRAPHQL_MAX_ITEMS
-                        ? GITHUB_GRAPHQL_MAX_ITEMS
-                        : repoRequestLimit,
-                endCursor: result
-                    ? result.repository.vulnerabilityAlerts.pageInfo.endCursor
-                    : undefined,
-            },
-        );
-        if (result) {
-            if (!result.repository || !result.repository.vulnerabilityAlerts) {
-                break
-            }
-            for (let vulnNode of result.repository.vulnerabilityAlerts.nodes) {
-                vulnNode.url = result.repository.url + "/security/dependabot/" + vulnNode.number
-                vulnerabilityData.push(vulnNode);
-            }
-        }
+      {
+        name: name,
+        owner: owner,
+        first: repoRequestLimit > GITHUB_GRAPHQL_MAX_ITEMS ? GITHUB_GRAPHQL_MAX_ITEMS : repoRequestLimit,
+        endCursor: result ? result.repository.vulnerabilityAlerts.pageInfo.endCursor : undefined,
+      },
+    );
+    if (result) {
+      if (!result.repository || !result.repository.vulnerabilityAlerts) {
+        break;
+      }
+      for (let vulnNode of result.repository.vulnerabilityAlerts.nodes) {
+        vulnNode.url = result.repository.url + '/security/dependabot/' + vulnNode.number;
+        vulnerabilityData.push(vulnNode);
+      }
+    }
 
-        if (vulnerabilityData.length >= repoRequestLimit) return vulnerabilityData;
-    } while (result?.repository.vulnerabilityAlerts.pageInfo.hasNextPage)
+    if (vulnerabilityData.length >= repoRequestLimit) return vulnerabilityData;
+  } while (result?.repository.vulnerabilityAlerts.pageInfo.hasNextPage);
 
-    return vulnerabilityData;
+  return vulnerabilityData;
 }
