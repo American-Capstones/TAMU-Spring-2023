@@ -1,6 +1,10 @@
 import React, { ReactNode } from 'react';
 import { Graphs } from '../../Graphs';
+import mockData from "../../../mock/data.json";
+import lineMockData from '../../../mock/lineMock_team.json';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useGetReposFromTeam } from '../../../hooks/useGetReposFromTeam';
+import ReactLoading from "react-loading";
 import { Table } from '@backstage/core-components';
 import GroupIcon from '@mui/icons-material/Group';
 import { Chip, Grid, Typography } from '@material-ui/core';
@@ -20,7 +24,6 @@ export const TeamPage = ({ }: {}) => {
     const { data: teamData, loading, error } = useGetTeamVulns(orgName, teamName);
     const navigate = useNavigate();
     const location = useLocation();
-
 
     const goToRepo = (event: React.MouseEvent | undefined, rowData: any) => {
         navigate(`./${rowData.name}`, { replace: true });
@@ -96,7 +99,7 @@ export const TeamPage = ({ }: {}) => {
             }
             <Grid container spacing={6} direction='column'>
                 <Grid item>
-                    <Graphs barData={makeBarData(teamData)} lineData={makeLineData(teamData)} isLoading={loading} />
+                    <Graphs barData={location.state} lineData={lineMockData} />
                 </Grid>
                 {/* Used for spacing */}
                 <Grid item></Grid>
