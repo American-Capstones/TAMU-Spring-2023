@@ -1,7 +1,7 @@
 import { getTeamNodes } from '../getTeamsForOrg';
 
 describe('getTeamsForOrg Test Suite', () => {
-  it('return a valid list of teams when given all valid inputs', async () => {
+  it('returns valid list of teams when given all valid inputs', async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         organization: {
@@ -46,7 +46,7 @@ describe('getTeamsForOrg Test Suite', () => {
     ]);
   });
 
-  it("return empty list when given a 'first' value that is too large", async () => {
+  it("returns empty list when given 'first' value that is too large", async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         organization: null,
@@ -70,7 +70,7 @@ describe('getTeamsForOrg Test Suite', () => {
     expect(Teams).toEqual([]);
   });
 
-  it('return empty list when given an invalid org name', async () => {
+  it('returns empty list when given invalid org name', async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         organization: null,

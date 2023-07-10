@@ -6,7 +6,6 @@ import { SelectOrg } from '../../Utility';
 
 // This is necessary to mock useNavigate
 // and to avoid issues with testing hooks
-configure({ adapter: new Adapter() });
 
 const mockedUsedNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
@@ -21,7 +20,11 @@ jest.mock('../../../hooks/useGetOrgsForUser', () => ({
 }));
 
 describe('OrgChoice test suite', () => {
-  it('show an OrgSelect element', () => {
+  beforeAll(() => {
+    configure({ adapter: new Adapter() });
+  });
+
+  it('shows OrgSelect element', () => {
     const wrapper = shallow(<OrgChoice />);
     expect(wrapper.contains(<SelectOrg />)).toBeTruthy();
   });

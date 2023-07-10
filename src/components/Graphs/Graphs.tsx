@@ -19,9 +19,9 @@ export const Graphs = ({ barData, lineData, isLoading = false }: GraphsProps) =>
   return (
     <Grid container item justifyContent="center" spacing={8}>
       <Grid item>
-        {(isLoading || barData.length == 0) && <Skeleton variant="rect" style={cardStyle} animation="wave" />}
+        {isLoading && <Skeleton variant="rect" style={cardStyle} animation="wave" />}
 
-        {!isLoading && barData.length > 0 && (
+        {!isLoading && (
           <InfoCard variant="flex">
             <h3 style={{ margin: '0', textAlign: 'center' }}>Open Vulnerability Count by Severity</h3>
             <Box style={cardStyle}>

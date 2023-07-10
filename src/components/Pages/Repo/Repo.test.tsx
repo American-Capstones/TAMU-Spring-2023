@@ -8,8 +8,6 @@ import { configure, shallow } from 'enzyme';
 import { FormControlLabel } from '@material-ui/core';
 import { useGetVulnsFromRepo } from '../../../hooks/useGetVulnsFromRepo';
 
-configure({ adapter: new Adapter() });
-
 const testRepo = 'TEST REPO';
 
 // const test_vulnInfo: RepoVulns =
@@ -28,49 +26,48 @@ jest.mock('react-router-dom', () => ({
 
 describe('Repo Test Suite', () => {
   const server = setupServer();
-  // Enable sane handlers for network requests
-  setupRequestMockHandlers(server);
 
-  it('render title', async () => {
+  beforeAll(() => {
+    // Enable sane handlers for network requests
+    setupRequestMockHandlers(server);
+    configure({ adapter: new Adapter() });
+  });
+
+  it('renders title', async () => {
     await renderInTestApp(<Repo />);
     expect(useGetVulnsFromRepo).toHaveBeenCalled();
     expect(screen.getByText(testRepo)).toBeInTheDocument();
   });
 
-  it('render FormLabelControl component', async () => {
+  it('renders FormLabelControl component', async () => {
     const wrapper = shallow(<Repo />);
     expect(wrapper.find(FormControlLabel)).toHaveLength(1);
   });
 
-  it('render toggle component', async () => {
+  it('renders toggle component', async () => {
     await renderInTestApp(<Repo />);
-    expect(screen.getByText('Open Only')).toBeInTheDocument();
+    expect(screen.getByText('Open Alerts Only')).toBeInTheDocument();
   });
 
-  it('render critical list', async () => {
+  it('renders critical list', async () => {
     await renderInTestApp(<Repo />);
     expect(screen.getByText('Critical', { exact: false })).toBeInTheDocument();
   });
 
-  it('render high list', async () => {
+  it('renders high list', async () => {
     await renderInTestApp(<Repo />);
     expect(screen.getByText('High', { exact: false })).toBeInTheDocument();
   });
 
-  it('render moderate list', async () => {
+  it('renders moderate list', async () => {
     await renderInTestApp(<Repo />);
     expect(screen.getByText('Moderate', { exact: false })).toBeInTheDocument();
   });
 
-  it('render low list', async () => {
+  it('renders low list', async () => {
     await renderInTestApp(<Repo />);
     expect(screen.getByText('Low', { exact: false })).toBeInTheDocument();
   });
 
-  it.todo('route to the correct page on error');
-
-  /*it('render NotFoundScreen when goes to a wrong path', async () => {
-        history.replaceState({}, 'WrongPath', '/wrongpath');
-        expect(wrapper.find(NotFoundScreen).length).toEqual(1);
-    });*/
+  it.todo('routes to correct page on error');
 });

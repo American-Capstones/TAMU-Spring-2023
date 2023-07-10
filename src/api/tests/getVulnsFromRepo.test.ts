@@ -1,7 +1,7 @@
 import { getVulnerabilityNodes } from '../getVulnsFromRepo';
 
 describe('getVulnsFromRepo Test Suite', () => {
-  it('return a valid list of vulnerabilities when given all valid inputs', async () => {
+  it('returns valid list of vulnerabilities when given all valid inputs', async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         repository: {
@@ -136,7 +136,7 @@ describe('getVulnsFromRepo Test Suite', () => {
     ]);
   });
 
-  it("return empty list when given a 'first' value that is too large", async () => {
+  it("returns empty list when given 'first' value that is too large", async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         repository: {
@@ -165,7 +165,7 @@ describe('getVulnsFromRepo Test Suite', () => {
     expect(Vulns).toEqual([]);
   });
 
-  it('return empty list when given an invalid org name', async () => {
+  it('returns empty list when given invalid org name', async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         repository: null,
@@ -185,11 +185,11 @@ describe('getVulnsFromRepo Test Suite', () => {
       }),
     );
 
-    const Vulns = await getVulnerabilityNodes(mockedGraphQl, 'invalidOrg', 'validRepo', 10);
+    const Vulns = await getVulnerabilityNodes(mockedGraphQl, 'invalidOrg', 'validRepo');
     expect(Vulns).toEqual([]);
   });
 
-  it('return empty list when given an invalid repo name', async () => {
+  it('returns empty list when given invalid repo name', async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         repository: null,
@@ -209,7 +209,7 @@ describe('getVulnsFromRepo Test Suite', () => {
       }),
     );
 
-    const Vulns = await getVulnerabilityNodes(mockedGraphQl, 'validOrg', 'invalidRepo', 10);
+    const Vulns = await getVulnerabilityNodes(mockedGraphQl, 'validOrg', 'invalidRepo');
     expect(Vulns).toEqual([]);
   });
 });

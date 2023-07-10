@@ -1,7 +1,7 @@
 import { getOrgNodes } from '../getOrgsForUser';
 
 describe('getOrgsForUser Test Suite', () => {
-  it('return a valid list of repositories when given all valid inputs', async () => {
+  it('returns valid list of repositories when given all valid inputs', async () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         viewer: {
