@@ -6,50 +6,50 @@ import { configure } from 'enzyme';
 import { SelectScope } from '.';
 import React from 'react';
 
-// This is necessary to mock useNavigate
-// and to avoid issues with testing hooks
-configure({ adapter: new Adapter() });
-
 describe('SelectScope test suite', () => {
   const mockClick = jest.fn();
   const Component = <SelectScope handleClick={mockClick} />;
   const ComponentWithDefault = <SelectScope handleClick={mockClick} defaultOption="repositories" />;
 
+  beforeAll(() => {
+    configure({ adapter: new Adapter() });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('render', async () => {
+  it('renders to screen', async () => {
     await renderInTestApp(Component);
     expect(await screen.findByLabelText('scope select')).toBeVisible();
   });
 
-  it('render an option scope available', async () => {
+  it('renders option scope available', async () => {
     // These scopes are defined as Teams, Topics, and Repositories
 
-    const wrapper = await renderInTestApp(Component);
-    const Teams = wrapper.getByLabelText('teams');
-    const Topics = wrapper.getByLabelText('topics');
-    const Repos = wrapper.getByLabelText('repositories');
+    const view = await renderInTestApp(Component);
+    const Teams = screen.getByLabelText('teams');
+    const Topics = screen.getByLabelText('topics');
+    const Repos = screen.getByLabelText('repositories');
     expect(Teams).toBeVisible();
     expect(Topics).toBeVisible();
     expect(Repos).toBeVisible();
   });
 
-  it('select the correct value if defaultOption is given', async () => {
-    const wrapper = await renderInTestApp(ComponentWithDefault);
-    const Repos = wrapper.getByLabelText('repositories');
-    const Teams = wrapper.getByLabelText('teams');
+  it('selects correct value if defaultOption is given', async () => {
+    const view = await renderInTestApp(ComponentWithDefault);
+    const Repos = screen.getByLabelText('repositories');
+    const Teams = screen.getByLabelText('teams');
     expect(Repos).toHaveAttribute('aria-pressed', 'true');
     expect(Teams).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('call the handleClick prop when option is chosen', async () => {
-    const wrapper = await renderInTestApp(Component);
+  it('calls handleClick prop when option is chosen', async () => {
+    const view = await renderInTestApp(Component);
 
-    const Topics = wrapper.getByLabelText('topics');
+    const Topics = screen.getByLabelText('topics');
     await userEvent.click(Topics);
-    const repos = wrapper.getByLabelText('repositories');
+    const repos = screen.getByLabelText('repositories');
     await userEvent.click(repos);
 
     expect(mockClick).toHaveBeenCalledTimes(2);

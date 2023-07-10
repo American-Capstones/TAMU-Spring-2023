@@ -28,8 +28,6 @@ describe('Repo Test Suite', () => {
   const server = setupServer();
 
   beforeAll(() => {
-    // Enable sane handlers for network requests
-    setupRequestMockHandlers(server);
     configure({ adapter: new Adapter() });
   });
 

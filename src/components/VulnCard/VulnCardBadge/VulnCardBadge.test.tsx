@@ -7,11 +7,13 @@ import { SecurityOutlined, VerifiedUserOutlined } from '@material-ui/icons';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { severityColors } from '../../../utils/functions';
 
-configure({ adapter: new Adapter() });
-
 describe('VulnCardBadge Test Suite', () => {
+  beforeAll(() => {
+    configure({ adapter: new Adapter() });
+  });
+
   /* When there is no pull request, it return <></> */
-  describe('When a valid state is given', () => {
+  describe('When valid state is given', () => {
     it("renders correct icon when state is 'open'", () => {
       const wrapper = shallow(<VulnCardBadge state={'OPEN'} severity="UNKNOWN" />);
       expect(wrapper.contains(<SecurityOutlined style={{ color: severityColors('UNKNOWN') }} />)).toBeTruthy();
@@ -37,7 +39,7 @@ describe('VulnCardBadge Test Suite', () => {
       expect(wrapper.contains(<SecurityOutlined style={{ color: severityColors('critical') }} />)).toBeTruthy();
     });
 
-    it('not render when there is no state', () => {
+    it('does not render when there is no state', () => {
       const wrapper = shallow(<VulnCardBadge state="" severity="low" />);
       expect(wrapper.find(Tooltip)).toHaveLength(0);
     });

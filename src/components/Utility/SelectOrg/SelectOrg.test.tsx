@@ -6,10 +6,6 @@ import { configure } from 'enzyme';
 import { SelectOrg } from '.';
 import React from 'react';
 
-// This is necessary to mock useNavigate
-// and to avoid issues with testing hooks
-configure({ adapter: new Adapter() });
-
 const testOrg = {
   name: 'test org 2',
   avatarUrl: 'test avatar url',
@@ -42,47 +38,51 @@ jest.mock('../../../hooks/useGetOrgsForUser', () => ({
 }));
 
 describe('SelectOrg test suite', () => {
+  beforeAll(() => {
+    configure({ adapter: new Adapter() });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it('render', async () => {
+  it('renders on screen', async () => {
     await renderInTestApp(<SelectOrg />);
     expect(await screen.findByLabelText('Organization')).toBeVisible();
   });
 
-  it('render an option per org found', async () => {
-    const wrapper = await renderInTestApp(<SelectOrg />);
-    const Select = wrapper.getByRole('button');
+  it('renders option per org found', async () => {
+    const view = await renderInTestApp(<SelectOrg />);
+    const Select = screen.getByRole('button');
     await userEvent.click(Select);
-    const Options = wrapper.getAllByRole('option');
+    const Options = screen.getAllByRole('option');
 
     // orgs length
     expect(Options).toHaveLength(2);
   });
 
-  it('select the correct value if defaultOption is given', async () => {
-    const wrapper = await renderInTestApp(<SelectOrg defaultOption="test org 2" />);
-    const input = await wrapper.getByRole('combobox');
+  it('selects correct value if defaultOption is given', async () => {
+    const view = await renderInTestApp(<SelectOrg defaultOption="test org 2" />);
+    const input = screen.getByRole('combobox');
     expect(input).toHaveAttribute('value', 'test org 2');
   });
 
-  it('redirect to the org page if value is selected', async () => {
-    const wrapper = await renderInTestApp(<SelectOrg />);
-    const autocomplete = wrapper.getByTestId('autocomplete');
-    const input = wrapper.getByRole('combobox');
+  it('redirects to org page if value is selected', async () => {
+    const view = await renderInTestApp(<SelectOrg />);
+    const autocomplete = screen.getByTestId('autocomplete');
+    const input = screen.getByRole('combobox');
     await userEvent.click(input);
     autocomplete.focus();
 
-    fireEvent.keyDown(autocomplete, { key: 'ArrowDown' });
-    fireEvent.keyDown(autocomplete, { key: 'Enter' });
+    await userEvent.type(autocomplete, '{arrowdown}');
+    await userEvent.type(autocomplete, '{enter}');
     expect(mockedUsedNavigate).toHaveBeenCalledWith(`../test org 2`, { replace: true });
   });
 
   // an undefined value just means the user clicked away from it
-  it('not redirect if select value is undefined', async () => {
-    const wrapper = await renderInTestApp(<SelectOrg />);
-    const Select = wrapper.getByRole('button');
+  it('does not redirect if select value is undefined', async () => {
+    const view = await renderInTestApp(<SelectOrg />);
+    const Select = screen.getByRole('button');
     await userEvent.click(Select);
     await userEvent.click(document.body);
     expect(mockedUsedNavigate).not.toHaveBeenCalled();
