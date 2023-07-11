@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_REPO_MAX_ITEMS } from '../utils/constants';
-import { Repositories, Repository } from '../utils/types';
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_REPO_MAX_ITEMS } from '../../utils/constants';
+import { Repositories, Repository } from '../../utils/types';
 
-import { formatRepoNodes } from '../utils/functions';
+import { formatRepoNodes } from '../../utils/functions';
 
 export const getReposForTeam = (graphql: any, orgLogin: string, teamLogin: string) => {
   return getRepoNodes(graphql, orgLogin, teamLogin, GITHUB_REPO_MAX_ITEMS);

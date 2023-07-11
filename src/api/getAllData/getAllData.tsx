@@ -1,11 +1,11 @@
-import { getTeamsForOrg } from './getTeamsForOrg';
-import { getReposForTeam } from './getReposForTeam';
-import { getVulnsFromRepo } from './getVulnsFromRepo';
-import { getReposForOrg } from './getReposForOrg';
+import { getTeamsForOrg } from '../getTeamsForOrg/getTeamsForOrg';
+import { getReposForTeam } from '../getReposForTeam/getReposForTeam';
+import { getVulnsFromRepo } from '../getVulnsFromRepo/getVulnsFromRepo';
+import { getReposForOrg } from '../getReposForOrg/getReposForOrg';
 
-import { Team, Topic, Repository, vulnData, VulnInfoShort } from '../utils/types';
-import { formatVulnData } from '../utils/functions';
-import { EMPTY_ORG, EMPTY_TEAM, EMPTY_VULNDATA } from '../utils/constants';
+import { Team, Topic, Repository, vulnData, VulnInfoShort } from '../../utils/types';
+import { formatVulnData } from '../../utils/functions';
+import { EMPTY_ORG, EMPTY_TEAM, EMPTY_VULNDATA } from '../../utils/constants';
 
 export const getAllData = (graphql: any, orgLogin: string) => {
   return getAllRawData(graphql, orgLogin);

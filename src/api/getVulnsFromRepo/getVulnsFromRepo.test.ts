@@ -1,4 +1,4 @@
-import { getVulnerabilityNodes } from '../getVulnsFromRepo';
+import { getVulnerabilityNodes } from './getVulnsFromRepo';
 
 describe('getVulnsFromRepo Test Suite', () => {
   it('returns valid list of vulnerabilities when given all valid inputs', async () => {

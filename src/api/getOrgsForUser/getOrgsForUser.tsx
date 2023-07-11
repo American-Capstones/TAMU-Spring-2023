@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Org, Orgs } from '../utils/types';
-import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_ORG_MAX_ITEMS } from '../utils/constants';
+import { Org, Orgs } from '../../utils/types';
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_ORG_MAX_ITEMS } from '../../utils/constants';
 
 export const getOrgsForUser = (graphql: any) => {
   return getOrgNodes(graphql, GITHUB_ORG_MAX_ITEMS);

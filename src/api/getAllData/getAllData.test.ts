@@ -1,10 +1,10 @@
 import { formatVulnData } from '../../utils/functions';
-import { getVulnDataForRepos } from '../getAllData';
+import { getVulnDataForRepos } from './getAllData';
 import { Topic } from '../../utils/types';
 import { EMPTY_ORG, EMPTY_TEAM, EMPTY_VULNDATA } from '../../utils/constants';
 
-jest.mock('../getVulnsFromRepo', () => ({
-  ...jest.requireActual('../getVulnsFromRepo'),
+jest.mock('../getVulnsFromRepo/getVulnsFromRepo', () => ({
+  ...jest.requireActual('../getVulnsFromRepo/getVulnsFromRepo'),
   getVulnsFromRepo: jest.fn(),
 }));
 
@@ -13,8 +13,8 @@ jest.mock('../../utils/functions', () => ({
   formatVulnData: jest.fn(),
 }));
 
-jest.mock('../getReposForOrg', () => ({
-  ...jest.requireActual('../getReposForOrg'),
+jest.mock('../getReposForOrg/getReposForOrg', () => ({
+  ...jest.requireActual('../getReposForOrg/getReposForOrg'),
   getReposForOrg: jest.fn(),
 }));
 

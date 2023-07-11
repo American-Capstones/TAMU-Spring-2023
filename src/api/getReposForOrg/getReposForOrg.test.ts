@@ -1,4 +1,4 @@
-import { getRepoNodes } from '../getReposForTeam';
+import { getRepoNodesForOrg } from './getReposForOrg';
 
 describe('getRepoNodes Test Suite', () => {
   it('returns empty list when given invalid org name', async () => {
@@ -21,22 +21,7 @@ describe('getRepoNodes Test Suite', () => {
       }),
     );
 
-    const Repos = await getRepoNodes(mockedGraphQl, 'invalid', '', 10);
-    expect(Repos).toEqual([]);
-  });
-
-  it('returns empty list when given invalid team name', async () => {
-    const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
-      Promise.resolve({
-        organization: {
-          teams: {
-            nodes: [],
-          },
-        },
-      }),
-    );
-
-    const Repos = await getRepoNodes(mockedGraphQl, 'valid', 'invalid', 10);
+    const Repos = await getRepoNodesForOrg(mockedGraphQl, 'invalid', 10);
     expect(Repos).toEqual([]);
   });
 
@@ -60,7 +45,7 @@ describe('getRepoNodes Test Suite', () => {
       }),
     );
 
-    const Repos = await getRepoNodes(mockedGraphQl, 'valid', 'valid', 101);
+    const Repos = await getRepoNodesForOrg(mockedGraphQl, 'valid', 101);
     expect(Repos).toEqual([]);
   });
 
@@ -68,44 +53,47 @@ describe('getRepoNodes Test Suite', () => {
     const mockedGraphQl = jest.fn().mockImplementation((Query, Arguments) =>
       Promise.resolve({
         organization: {
-          teams: {
+          repositories: {
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: '',
+            },
             nodes: [
               {
-                repositories: {
-                  pageInfo: {
-                    hasNextPage: false,
-                    endCursor: '',
-                  },
-                  nodes: [
+                name: 'repo1',
+                id: '1',
+                repositoryTopics: {
+                  edges: [
                     {
-                      name: 'repo1',
-                      id: '1',
-                      repositoryTopics: {
-                        edges: [
-                          {
-                            node: {
-                              id: '0',
-                              topic: {
-                                name: 'topic3',
-                              },
-                            },
-                          },
-                          {
-                            node: {
-                              id: '0',
-                              topic: {
-                                name: 'topic4',
-                              },
-                            },
-                          },
-                        ],
+                      node: {
+                        id: '1',
+                        topic: {
+                          name: 'topic1',
+                        },
                       },
                     },
                     {
-                      name: 'repo2',
-                      id: '2',
-                      repositoryTopics: {
-                        edges: [],
+                      node: {
+                        id: '2',
+                        topic: {
+                          name: 'topic2',
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                name: 'repo2',
+                id: '2',
+                repositoryTopics: {
+                  edges: [
+                    {
+                      node: {
+                        id: '3',
+                        topic: {
+                          name: 'topic3',
+                        },
                       },
                     },
                   ],
@@ -117,7 +105,7 @@ describe('getRepoNodes Test Suite', () => {
       }),
     );
 
-    const Repos = await getRepoNodes(mockedGraphQl, 'valid', 'valid', 10);
+    const Repos = await getRepoNodesForOrg(mockedGraphQl, 'valid', 10);
     expect(Repos).toEqual([
       {
         id: '1',
@@ -126,7 +114,7 @@ describe('getRepoNodes Test Suite', () => {
         moderate: 0,
         low: 0,
         name: 'repo1',
-        repositoryTopics: ['topic3', ', ', 'topic4'],
+        repositoryTopics: ['topic1', ', ', 'topic2'],
       },
       {
         id: '2',
@@ -135,7 +123,7 @@ describe('getRepoNodes Test Suite', () => {
         moderate: 0,
         low: 0,
         name: 'repo2',
-        repositoryTopics: [],
+        repositoryTopics: ['topic3'],
       },
     ]);
   });

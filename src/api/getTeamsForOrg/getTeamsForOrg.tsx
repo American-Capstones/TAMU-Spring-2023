@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Teams, Team } from '../utils/types';
-import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_TEAM_MAX_ITEMS } from '../utils/constants';
+import { Teams, Team } from '../../utils/types';
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_TEAM_MAX_ITEMS } from '../../utils/constants';
 
 export const getTeamsForOrg = (graphql: any, orgLogin: string) => {
   return getTeamNodes(graphql, orgLogin, GITHUB_TEAM_MAX_ITEMS);

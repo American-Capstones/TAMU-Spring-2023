@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getVulnsFromRepo } from '../api/getVulnsFromRepo';
+import { getVulnsFromRepo } from '../api/getVulnsFromRepo/getVulnsFromRepo';
 import { getOctokit, sortVulnData } from '../utils/functions';
 
 import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';

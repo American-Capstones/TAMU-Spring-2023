@@ -1,4 +1,4 @@
-import { getOrgNodes } from '../getOrgsForUser';
+import { getOrgNodes } from './getOrgsForUser';
 
 describe('getOrgsForUser Test Suite', () => {
   it('returns valid list of repositories when given all valid inputs', async () => {

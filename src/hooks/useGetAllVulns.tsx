@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useContext, Dispatch, SetStateAction } from 'react';
-import { getAllData } from '../api/getAllData';
+import { getAllData } from '../api/getAllData/getAllData';
 import { getOctokit } from '../utils/functions';
 import { DataContext } from '../components/Root/Root';
 import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';

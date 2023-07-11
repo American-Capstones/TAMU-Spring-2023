@@ -1,4 +1,4 @@
-import { getTeamNodes } from '../getTeamsForOrg';
+import { getTeamNodes } from './getTeamsForOrg';
 
 describe('getTeamsForOrg Test Suite', () => {
   it('returns valid list of teams when given all valid inputs', async () => {

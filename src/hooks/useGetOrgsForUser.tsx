@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getOrgsForUser } from '../api/getOrgsForUser';
+import { getOrgsForUser } from '../api/getOrgsForUser/getOrgsForUser';
 import { getOctokit } from '../utils/functions';
 
 import { useApi, githubAuthApiRef } from '@backstage/core-plugin-api';

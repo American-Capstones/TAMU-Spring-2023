@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { VulnInfoRepo, VulnInfoUnformatted } from '../utils/types';
-import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULNS_MAX_ITEMS } from '../utils/constants';
+import { VulnInfoRepo, VulnInfoUnformatted } from '../../utils/types';
+import { GITHUB_GRAPHQL_MAX_ITEMS, GITHUB_VULNS_MAX_ITEMS } from '../../utils/constants';
 
 export const getVulnsFromRepo = (graphql: any, repoName: string, orgLogin: string) => {
   return getVulnerabilityNodes(graphql, repoName, orgLogin);
