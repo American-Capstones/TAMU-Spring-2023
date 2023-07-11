@@ -4,7 +4,6 @@ import { useGetAllVulns } from '../../../hooks/useGetAllVulns';
 import { SelectOrg, SelectScope } from '../../Utility';
 import { SubvalueCell, Table } from '@backstage/core-components';
 import { Graphs } from '../../Graphs';
-import { useGetMonthlyVulns } from '../../../hooks/useGetMonthlyVulns';
 import { Team } from '../../../utils/types';
 import { Button, Grid, Typography } from '@material-ui/core';
 import { makeBarData, makeLineData } from '../../../utils/functions';
@@ -127,19 +126,19 @@ export const Organization = () => {
     const severityCount = [
       {
         severity: 'Critical',
-        count: rowData.critical,
+        count: rowData.vulnData.critical,
       },
       {
         severity: 'High',
-        count: rowData.high,
+        count: rowData.vulnData.high,
       },
       {
         severity: 'Moderate',
-        count: rowData.moderate,
+        count: rowData.vulnData.moderate,
       },
       {
         severity: 'Low',
-        count: rowData.low,
+        count: rowData.vulnData.low,
       },
     ];
     navigate(`./${rowData.name}`, { state: severityCount, replace: true });
