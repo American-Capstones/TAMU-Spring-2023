@@ -6,6 +6,22 @@ import { getReposForOrg } from '../getReposForOrg/getReposForOrg';
 import { Team, Topic, Repository, vulnData, VulnInfoShort } from '../../utils/types';
 import { formatVulnData } from '../../utils/functions';
 import { EMPTY_ORG, EMPTY_TEAM, EMPTY_VULNDATA } from '../../utils/constants';
+import { PluginTaskScheduler } from '@backstage/backend-tasks';
+
+// ***** CHRON JOB STUFF HERE *****
+
+// Placeholder; when in Runway, import a PluginEnvironment with a scheduler from types.ts
+// PluginEnvironment should also carry a database connection
+let scheduler: PluginTaskScheduler;
+
+// scheduler.scheduleTask({
+//   id: 'data-pull-from-github-to-database',
+//   frequency: { minutes: 15 },
+//   timeout: { minutes: 10 },
+//   initialDelay: { seconds: 3 },
+//   fn: () => { /* This function needs to fetch the data from GH and store it in DB (once that's set up) */ },
+//   scope: 'global',
+// });
 
 export const getAllData = (graphql: any, orgLogin: string) => {
   return getAllRawData(graphql, orgLogin);

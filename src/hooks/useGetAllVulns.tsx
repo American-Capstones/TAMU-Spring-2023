@@ -11,8 +11,6 @@ interface iDataContext {
   setData: Dispatch<SetStateAction<Org>>;
 }
 
-// ***** CHRON JOB HERE *****
-
 export function useGetAllVulns(orgName: string | undefined) {
   const [loading, setLoading] = useState<boolean>(true);
   const { data, setData } = useContext<iDataContext>(DataContext);
