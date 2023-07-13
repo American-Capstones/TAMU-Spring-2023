@@ -97,4 +97,4 @@ Contributions are welcome! If you have any ideas or suggestions for how to impro
 
 If you encounter any issues while using the plugin, please report them on the [GitHub issue tracker](https://github.com/American-Capstones/TAMU-Spring-2023/issues). When submitting an issue, please include a clear description of the problem, any steps needed to reproduce it, and any relevant error messages.
 
-We welcome feedback and are committed to making the dependabot-dashboard plugin the best it can be!
+We welcome feedback and are committed to making the dependabot-dashboard plugin the best it can be!!!
