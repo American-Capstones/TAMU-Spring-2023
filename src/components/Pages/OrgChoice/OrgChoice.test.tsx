@@ -4,26 +4,28 @@ import { OrgChoice } from '.';
 import React from 'react';
 import { SelectOrg } from '../../Utility';
 
-// This is necessary to mock useNavigate 
+// This is necessary to mock useNavigate
 // and to avoid issues with testing hooks
-configure({ adapter: new Adapter() });
 
 const mockedUsedNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
-    ...jest.requireActual('react-router-dom'),
-    useNavigate: () => mockedUsedNavigate,
-    useLocation: jest.fn().mockReturnValue({ pathname: '/dependabot-dashboard' })
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedUsedNavigate,
+  useLocation: jest.fn().mockReturnValue({ pathname: '/dependabot-dashboard' }),
 }));
 
 jest.mock('../../../hooks/useGetOrgsForUser', () => ({
-    ...jest.requireActual('../../../hooks/useGetOrgsForUser'),
-    useGetOrgsForUser: jest.fn().mockReturnValue({ loading: false, orgs: ['test org', 'test org 2'] })
+  ...jest.requireActual('../../../hooks/useGetOrgsForUser'),
+  useGetOrgsForUser: jest.fn().mockReturnValue({ loading: false, orgs: ['test org', 'test org 2'] }),
 }));
 
 describe('OrgChoice test suite', () => {
+  beforeAll(() => {
+    configure({ adapter: new Adapter() });
+  });
 
-    it('should show an OrgSelect element', () => {
-        const wrapper = shallow(<OrgChoice />);
-        expect(wrapper.contains(<SelectOrg />)).toBeTruthy();
-    });
+  it('shows OrgSelect element', () => {
+    const wrapper = shallow(<OrgChoice />);
+    expect(wrapper.contains(<SelectOrg />)).toBeTruthy();
+  });
 });

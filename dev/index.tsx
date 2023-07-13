@@ -7,6 +7,6 @@ createDevApp()
   .addPage({
     element: <DependabotDashboardPage />,
     title: 'Root Page',
-    path: '/dependabot-dashboard'
+    path: '/dependabot-dashboard',
   })
   .render();

@@ -1,1 +1,1 @@
-export {VulnCardBadge} from './VulnCardBadge';
+export { VulnCardBadge } from './VulnCardBadge';
